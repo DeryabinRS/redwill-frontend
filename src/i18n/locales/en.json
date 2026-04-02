@@ -1,0 +1,46 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "noData": "No data"
+  },
+  "menu": {
+    "home": "Home",
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Sign In",
+    "register": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginSuccess": "Login successful",
+    "loginError": "Login failed"
+  },
+  "hero": {
+    "title": "Online Business Management Platform",
+    "subtitle": "Create an online store, sync products and orders on marketplaces, and manage customer conversations in one window",
+    "tryFree": "Try for Free"
+  },
+  "profile": {
+    "title": "Personal Data",
+    "id": "ID",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "roles": "Roles",
+    "loadError": "Failed to load user data"
+  }
+}
