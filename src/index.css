@@ -9,19 +9,7 @@
 }
 
 .header {
-  background-image: url('./assets/img/1775123071.png');
-  background-size: min(100%, 650px) min(100%, 600px);
-  background-repeat: no-repeat;
-  background-position: left;
   padding: 80px 0;
-}
-
-@media (max-width: 880px) {
-  .header {
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
 }
 
 .section--alt {

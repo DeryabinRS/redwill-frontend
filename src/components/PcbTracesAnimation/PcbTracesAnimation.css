@@ -1,0 +1,89 @@
+.pcb-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  /* Создаём новый контекст наложения для корректной работы z-index */
+  isolation: isolate;
+}
+
+.pcb-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Линии на нижнем слое */
+  pointer-events: none; /* Пропускаем клики сквозь SVG */
+}
+
+/* Контейнер для контента поверх анимации */
+.pcb-content {
+  position: relative; /* Обязательно для работы z-index! */
+  z-index: 10; /* Контент выше линий */
+  height: 100%;
+  width: 100%;
+}
+
+/* === Анимации (без изменений) === */
+.trace {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  animation: drawTrace var(--duration, 1.5s) 0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.trace-glow {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.5;
+  animation: drawTrace var(--duration, 1.5s) 0s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes drawTrace {
+  to { stroke-dashoffset: 0; }
+}
+
+.pad {
+  opacity: 0;
+  transform: scale(0);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: padAppear 0.3s var(--pad-delay, 1s) ease-out forwards;
+}
+
+.pad-ring {
+  fill: none;
+  stroke-width: 1;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: padAppear 0.3s var(--pad-delay, 1s) ease-out forwards;
+}
+
+.pad-inner {
+  opacity: 0;
+  animation: padAppear 0.3s var(--pad-delay, 1s) ease-out forwards;
+}
+
+@keyframes padAppear {
+  0% { opacity: 0; transform: scale(0); }
+  60% { opacity: 1; transform: scale(1.4); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.component-pin,
+.component-pad {
+  opacity: 0;
+  animation: pinAppear 0.2s 0s ease-out forwards;
+}
+
+.component-pad {
+  fill: none;
+  stroke-width: 1.5;
+}
+
+@keyframes pinAppear {
+  to { opacity: 1; }
+}

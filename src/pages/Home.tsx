@@ -1,12 +1,14 @@
 import { Button, Card, Col, Row, Space, Typography } from 'antd'
 import { RocketOutlined, ShopOutlined, TeamOutlined } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
+import PcbTracesAnimation from '../components/PcbTracesAnimation/PcbTracesAnimation'
 
 function Home() {
   const { t } = useTranslation()
 
   return (
     <div>
+      <PcbTracesAnimation maxTraces={15}>
       <div className="container">
         <div className='header'>
         <Space direction="vertical" size={24} style={{ width: '100%', alignItems: 'center' }}>
@@ -72,6 +74,7 @@ function Home() {
           </Row>
         </div>
       </section>
+      </PcbTracesAnimation>
     </div>
   )
 }
