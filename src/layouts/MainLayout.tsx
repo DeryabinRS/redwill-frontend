@@ -1,5 +1,5 @@
 import { Layout, Menu, Typography } from 'antd'
-import { HomeOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
+import { DashboardOutlined, HomeOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
@@ -27,6 +27,51 @@ function MainLayout() {
 		navigate('/login')
 	}
 
+	const hasAdminRole = userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor')
+
+	const menuItems = [
+		{
+			key: 'home',
+			icon: <HomeOutlined />,
+			label: <NavLink to="/">{t('menu.home')}</NavLink>,
+		},
+	]
+
+	// Добавляем Dashboard для admin/editor
+	if (hasAdminRole) {
+		menuItems.push({
+			key: 'dashboard',
+			icon: <DashboardOutlined />,
+			label: <NavLink to="/dashboard">Dashboard</NavLink>,
+		})
+	}
+
+	const authItems = (userIsAuthenticated && userInfo)
+		? [
+			{
+				key: 'profile',
+				icon: <UserOutlined />,
+				label: <NavLink to="/profile">{userInfo.first_name}</NavLink>,
+			},
+			{
+				key: 'logout',
+				icon: <LogoutOutlined />,
+				label: t('menu.logout'),
+				onClick: handleLogout,
+			},
+		] : [
+			{
+				key: 'login',
+				icon: <LoginOutlined />,
+				label: <NavLink to="/login">{t('menu.login')}</NavLink>,
+			},
+			{
+				key: 'register',
+				icon: <UserAddOutlined />,
+				label: <NavLink to="/register">{t('menu.register')}</NavLink>,
+			},
+		]
+
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Header style={{ padding: 0, height: '100%' }}>
@@ -42,13 +87,7 @@ function MainLayout() {
 						selectable={false}
 						style={{ flex: 1, minWidth: 0 }}
 						overflowedIndicator={<OrderedListOutlined/>}
-						items={[
-						{
-							key: 'home',
-							icon: <HomeOutlined />,
-							label: <NavLink to="/">{t('menu.home')}</NavLink>,
-						},
-						]}
+						items={menuItems}
 					/>
 					{!isLoadingUserInfo && (
 						<Menu
@@ -56,33 +95,7 @@ function MainLayout() {
 						selectable={false}
 						style={{ flex: 1, minWidth: 0, justifyContent: 'end' }}
 						overflowedIndicator={<MoreOutlined />}
-						items={
-							(userIsAuthenticated && userInfo)
-							? [
-								{
-									key: 'profile',
-									icon: <UserOutlined />,
-									label: <NavLink to="/profile">{userInfo.first_name}</NavLink>,
-								},
-								{
-									key: 'logout',
-									icon: <LogoutOutlined />,
-									label: t('menu.logout'),
-									onClick: handleLogout,
-								},
-							] : [
-								{
-									key: 'login',
-									icon: <LoginOutlined />,
-									label: <NavLink to="/login">{t('menu.login')}</NavLink>,
-								},
-								{
-									key: 'register',
-									icon: <UserAddOutlined />,
-									label: <NavLink to="/register">{t('menu.register')}</NavLink>,
-								},
-							]
-						}
+						items={authItems}
 					/>
 					)}
 					<ThemeSwitcher />

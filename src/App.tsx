@@ -2,8 +2,10 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 
 import MainLayout from './layouts/MainLayout'
+import DashboardLayout from './layouts/DashboardLayout'
 import AuthLayout from './layouts/AuthLayout'
 import ProtectedRoute from './components/ProtectedRoute'
+import AdminRoute from './components/AdminRoute'
 import AppInitializer from './components/AppInitializer'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -13,6 +15,7 @@ import ResendVerification from './pages/ResendVerification'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Profile from './pages/Profile'
+import Dashboard from './pages/Dashboard'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -37,6 +40,22 @@ function AppContent() {
               }
             />
           </Route>
+          
+          {/* Dashboard с боковым меню */}
+          <Route
+            path="/dashboard"
+            element={
+              <AdminRoute>
+                <DashboardLayout />
+              </AdminRoute>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="users" element={<div>Пользователи</div>} />
+            <Route path="orders" element={<div>Заказы</div>} />
+            <Route path="settings" element={<div>Настройки</div>} />
+          </Route>
+          
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
