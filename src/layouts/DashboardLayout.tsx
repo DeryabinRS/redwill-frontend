@@ -15,6 +15,7 @@ import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
 import LanguageSwitcher from '../components/LanguageSwitcher'
 import ThemeSwitcher from '../components/ThemeSwitcher'
+import { SITE_NAME } from '../config/constants'
 
 const { Header, Sider, Content, Footer } = Layout
 
@@ -97,6 +98,15 @@ function DashboardLayout() {
     />
   )
 
+  const renderLogo = () => (
+    <Typography.Title level={2} style={{ margin: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <img width={50} src='/public/logo.svg' /> 
+        <div style={{ borderBottom: '4px solid #cd2e2c', color: 'white' }}>{SITE_NAME}</div>
+      </div>
+    </Typography.Title>
+  )
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {/* Desktop: Sider - скрывается на экранах меньше lg */}
@@ -124,9 +134,7 @@ function DashboardLayout() {
             justifyContent: 'center',
             borderBottom: '1px solid rgba(255,255,255,0.1)'
           }}>
-            <Typography.Title level={4} style={{ color: 'white', margin: 0 }}>
-              {collapsed ? 'L' : 'LAPIF'}
-            </Typography.Title>
+            {renderLogo()}
           </div>
           <Menu
             theme="dark"
@@ -141,17 +149,16 @@ function DashboardLayout() {
       {/* Mobile: Drawer */}
       {isMobile && (
         <Drawer
-          title={
-            <Typography.Title level={4} style={{ color: 'white', margin: 0 }}>
-              LAPIF
-            </Typography.Title>
-          }
+          title={renderLogo()}
           placement="left"
           onClose={() => setDrawerOpen(false)}
+          closable={false}
           open={drawerOpen}
           width={250}
-          bodyStyle={{ padding: 0, background: '#001529' }}
-          headerStyle={{ background: '#001529', borderBottom: '1px solid rgba(255,255,255,0.1)' }}
+          styles={{
+            body: { padding: 0, background: '#001529' },
+            header: { background: '#001529', borderBottom: '1px solid rgba(255,255,255,0.1)' },
+          }}
         >
           {mobileMenu}
         </Drawer>
@@ -192,7 +199,7 @@ function DashboardLayout() {
         </Content>
         
         <Footer style={{ textAlign: 'center' }}>
-          LAPIF Admin © {new Date().getFullYear()}
+          {SITE_NAME} Admin © {new Date().getFullYear()}
         </Footer>
       </Layout>
     </Layout>
