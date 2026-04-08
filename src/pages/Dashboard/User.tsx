@@ -42,7 +42,9 @@ function User() {
             labelStyle={{ width: 200 }}
           >
             <Descriptions.Item label="ID">{user.id}</Descriptions.Item>
-            <Descriptions.Item label="Ф.И.О.">{user.last_name} {user.first_name} {user.middle_name || ''}</Descriptions.Item>
+            <Descriptions.Item label="Фамилия">{user.last_name}</Descriptions.Item>
+            <Descriptions.Item label="Имя">{user.first_name}</Descriptions.Item>
+            <Descriptions.Item label="Отчество">{user.middle_name}</Descriptions.Item>
             <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
             <Descriptions.Item label="Роли">
               <Space>
