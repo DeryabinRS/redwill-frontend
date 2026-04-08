@@ -1,6 +1,6 @@
 import { Card, Col, Row, Space, Statistic, Typography } from 'antd'
 import { UserOutlined, ShoppingOutlined, DollarOutlined, RiseOutlined } from '@ant-design/icons'
-import { useGetUserInfoQuery } from '../features/user/userSlice'
+import { useGetUserInfoQuery } from '../../features/user/userSlice'
 
 function Dashboard() {
   const { data: userInfo } = useGetUserInfoQuery()

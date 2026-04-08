@@ -16,6 +16,8 @@ import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
+import Users from './pages/Dashboard/Users'
+import User from './pages/Dashboard/User'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -51,7 +53,8 @@ function AppContent() {
             }
           >
             <Route index element={<Dashboard />} />
-            <Route path="users" element={<div>Пользователи</div>} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/:id" element={<User />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>

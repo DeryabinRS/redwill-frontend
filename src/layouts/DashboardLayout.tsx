@@ -8,7 +8,7 @@ import {
   SettingOutlined,
   LogoutOutlined 
 } from '@ant-design/icons'
-import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
@@ -99,12 +99,14 @@ function DashboardLayout() {
   )
 
   const renderLogo = () => (
-    <Typography.Title level={2} style={{ margin: 0 }}>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <img width={50} src='/public/logo.svg' /> 
-        <div style={{ borderBottom: '4px solid #cd2e2c', color: 'white' }}>{SITE_NAME}</div>
-      </div>
-    </Typography.Title>
+    <Link to="/">
+      <Typography.Title level={2} style={{ margin: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img width={50} src='/public/logo.svg' /> 
+          <div style={{ borderBottom: '4px solid #cd2e2c', color: 'white' }}>{SITE_NAME}</div>
+        </div>
+      </Typography.Title>
+    </Link>
   )
 
   return (
