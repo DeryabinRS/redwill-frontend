@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { Card, Typography, Tag, Space, Descriptions, Button } from 'antd'
-import { ArrowLeftOutlined, UserOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, CheckCircleOutlined, UserOutlined } from '@ant-design/icons'
 import { useGetUserQuery } from '../../features/user/userSlice'
 
 function User() {
@@ -15,6 +15,8 @@ function User() {
   if (!user) {
     return <div>Пользователь не найден</div>
   }
+
+  const getDate = (date: string | undefined) => date ? new Date(date).toLocaleString() : null;
 
   return (
     <div>
@@ -33,13 +35,15 @@ function User() {
             </Typography.Title>
           </Space>
 
-          <Descriptions bordered column={{ xs: 1, sm: 2 }}>
+          <Descriptions 
+            bordered 
+            size='small' 
+            column={1}
+            labelStyle={{ width: 200 }}
+          >
             <Descriptions.Item label="ID">{user.id}</Descriptions.Item>
-            <Descriptions.Item label="Имя">{user.first_name}</Descriptions.Item>
-            <Descriptions.Item label="Фамилия">{user.last_name}</Descriptions.Item>
-            <Descriptions.Item label="Email" span={2}>
-              {user.email}
-            </Descriptions.Item>
+            <Descriptions.Item label="Ф.И.О.">{user.last_name} {user.first_name} {user.middle_name || ''}</Descriptions.Item>
+            <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
             <Descriptions.Item label="Роли">
               <Space>
                 {user.roles.map(role => (
@@ -52,7 +56,16 @@ function User() {
                 ))}
               </Space>
             </Descriptions.Item>
-          </Descriptions>
+            <Descriptions.Item label="Создан">
+              {getDate(user?.created_at)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Обновлен">
+              {getDate(user?.updated_at)}
+            </Descriptions.Item>
+            <Descriptions.Item label="Активирован">
+              {user?.verified_at ? <><CheckCircleOutlined /> {getDate(user?.verified_at)}</> : ''}
+            </Descriptions.Item>
+          </Descriptions>  
         </Space>
       </Card>
     </div>
