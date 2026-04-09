@@ -1,5 +1,5 @@
 import { Layout, Menu, Typography } from 'antd'
-import { DashboardOutlined, HomeOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
+import { DashboardOutlined, HomeOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, PlusOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
@@ -43,6 +43,15 @@ function MainLayout() {
 			key: 'dashboard',
 			icon: <DashboardOutlined />,
 			label: <NavLink to="/dashboard">Dashboard</NavLink>,
+		})
+	}
+
+	// Добавляем "Создать пост" для авторизованных пользователей
+	if (userIsAuthenticated) {
+		menuItems.push({
+			key: 'create-post',
+			icon: <PlusOutlined />,
+			label: <NavLink to="/posts/create">Создать пост</NavLink>,
 		})
 	}
 

@@ -1,6 +1,7 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit'
 import { authApi } from '../features/auth/authSlice'
 import { userApi } from '../features/user/userSlice'
+import { postApi } from '../features/post/postSlice'
 
 const appSlice = createSlice({
   name: 'app',
@@ -19,10 +20,11 @@ export const store = configureStore({
     app: appSlice.reducer,
     [authApi.reducerPath]: authApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [postApi.reducerPath]: postApi.reducer,
   },
   devTools: import.meta.env.DEV,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, userApi.middleware),
+    getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, postApi.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>

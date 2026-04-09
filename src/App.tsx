@@ -18,6 +18,7 @@ import Profile from './pages/Profile'
 import Dashboard from './pages/Dashboard'
 import Users from './pages/Dashboard/Users'
 import User from './pages/Dashboard/User'
+import AddPost from './pages/Posts/AddPost'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -38,6 +39,14 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/posts/create"
+              element={
+                <ProtectedRoute>
+                  <AddPost />
                 </ProtectedRoute>
               }
             />
