@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { Form, Input, Select, DatePicker, TimePicker, Button, Typography, Card, message, Space } from 'antd'
-import { Editor } from '@tinymce/tinymce-react'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import LocationPicker from '../../components/LocationPicker'
 import ImageCropper from '../../components/ImageCropper'
 import { useGetPostCategoriesQuery, useCreatePostMutation } from '../../features/post/postSlice'
+import { TinyEditor } from '../../components/TinyEditor'
 
 const { Title } = Typography
 
@@ -34,10 +34,12 @@ function AddPost() {
   const [createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
 
   const handleSubmit = async (values: FormValues) => {
+    const content = ''
     try {
+      // Получаем контент из TinyMCE если редактор инициализирован
       const payload = {
         title: values.title,
-        content: values.content,
+        content: content,
         post_category_id: values.post_category_id,
         location: values.location?.address,
         latitude: values.location?.latitude,
@@ -103,24 +105,9 @@ function AddPost() {
             label="Содержание"
             rules={[{ required: true, message: 'Введите содержание' }]}
           >
-            <Editor
-              initialValue=""
-              init={{
-                height: 300,
-                menubar: false,
-                plugins: [
-                  'advlist', 'autolink', 'lists', 'link', 'image', 'charmap',
-                  'preview', 'anchor', 'searchreplace', 'visualblocks', 'code',
-                  'fullscreen', 'insertdatetime', 'media', 'table', 'codehelp',
-                  'wordcount', 'codesample'
-                ],
-                toolbar:
-                  'undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | image codesample',
-                content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
-                base_url: 'https://cdn.jsdelivr.net/npm/tinymce@8.4.0',
-                suffix: '.min',
-              }}
-            />
+            <TinyEditor 
+        initialValue="<p>Привет, мир!</p>" 
+      />
           </Form.Item>
 
           <Form.Item
