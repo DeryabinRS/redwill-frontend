@@ -32474,31 +32474,6 @@
     };
 
     const renderStatusbar = (editor, providersBackstage) => {
-        const renderBranding = () => {
-            return {
-                dom: {
-                    tag: 'span',
-                    classes: ['tox-statusbar__branding'],
-                },
-                components: [
-                    {
-                        dom: {
-                            tag: 'a',
-                            attributes: {
-                                'href': 'https://www.tiny.cloud/powered-by-tiny?utm_campaign=poweredby&utm_source=tiny&utm_medium=referral&utm_content=v7',
-                                'rel': 'noopener',
-                                'target': '_blank',
-                                'aria-label': editor.translate(['Build with {0}', 'TinyMCE'])
-                            },
-                            innerHtml: editor.translate(['Build with {0}', Logo.trim()])
-                        },
-                        behaviours: derive$1([
-                            Focusing.config({})
-                        ])
-                    }
-                ]
-            };
-        };
         const renderHelpAccessibility = () => {
             const shortcutText = convertText('Alt+0');
             const text = `Press {0} for help`;
@@ -32516,9 +32491,6 @@
             const components = [];
             if (editor.hasPlugin('wordcount')) {
                 components.push(renderWordCount(editor, providersBackstage));
-            }
-            if (useBranding(editor)) {
-                components.push(renderBranding());
             }
             return {
                 dom: {
