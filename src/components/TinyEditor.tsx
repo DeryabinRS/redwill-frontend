@@ -29,7 +29,6 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
         menubar: false,
         language: 'ru',
         language_url: '/tinymce/langs/ru.js',
-        
         // 🔑 Критично: пути к локальным скинам и контенту
         skin_url: '/tinymce/skins/ui/oxide',
         content_css: '/tinymce/skins/content/default/content.css',
@@ -40,7 +39,7 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
         initial_value: initialValue,
         // Оптимизация для React StrictMode
         init_instance_callback: () => {
-          console.log('TinyMCE initialized');
+        //   console.log('TinyMCE initialized');
         },
       }}
     />
