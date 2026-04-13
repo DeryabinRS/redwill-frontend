@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Editor } from '@tinymce/tinymce-react';
+import type { Editor as TinyMCEEditor } from 'tinymce';
 import { useRef } from 'react';
 
 interface TinyEditorProps {
@@ -7,6 +7,7 @@ interface TinyEditorProps {
   onChange?: (content: string) => void;
   disabled?: boolean;
   toolbar?: string;
+  maxLenght?: number;
 }
 
 export const TinyEditor: React.FC<TinyEditorProps> = ({ 
@@ -14,8 +15,9 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
   onChange, 
   disabled = false,
   toolbar = 'undo redo',
+  maxLenght = 1000,
 }) => {
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<TinyMCEEditor | null>(null);
 
   return (
     <Editor
@@ -23,7 +25,12 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
       licenseKey="gpl"
       disabled={disabled}
       onInit={(_evt, editor) => (editorRef.current = editor)}
-      onEditorChange={(content) => onChange?.(content)}
+      onEditorChange={(content) => {
+        if (content.length < maxLenght) {
+          onChange?.(content);
+        }
+      }}
+      
       init={{
         height: 400,
         menubar: false,
@@ -41,6 +48,36 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
         init_instance_callback: () => {
         //   console.log('TinyMCE initialized');
         },
+        paste_preprocess: (_plugin, args) => {
+          const currentLength = editorRef.current?.getContent({ format: 'text' }).length || 0;
+          const pastedText = args.content.replace(/<[^>]*>/g, '');
+          if (currentLength + pastedText.length > maxLenght) {
+            args.content = pastedText.slice(0, maxLenght - currentLength);
+          }
+        },
+        setup: (editor: TinyMCEEditor) => {
+          editor.on('init', () => {
+            const updateCounter = () => {
+              const content = editor.getContent({ format: 'text' });
+              const count = content.length;
+              const statusBar = editor.getContainer().querySelector('.tox-statusbar__text-container') as HTMLElement | null;
+              if (statusBar) {
+                let counter = statusBar.querySelector('.char-counter') as HTMLElement | null;
+                if (!counter) {
+                  counter = document.createElement('span');
+                  counter.className = 'char-counter';
+                  counter.style.cssText = 'margin-left: 8px; color: #666;';
+                  statusBar.appendChild(counter);
+                }
+                counter.textContent = `${count}/${maxLenght}`;
+                counter.style.color = count >= maxLenght ? '#d32f2f' : '#666';
+              }
+            };
+            
+            editor.on('keyup change undo redo input', updateCounter);
+            updateCounter(); // начальный вызов
+          });
+        }
       }}
     />
   );

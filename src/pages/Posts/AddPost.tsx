@@ -62,7 +62,7 @@ function AddPost() {
   }
 
   return (
-    <div>
+    <div className="container">
       <Title level={2}>Создание поста</Title>
       
       <Card>
@@ -102,12 +102,13 @@ function AddPost() {
 
           <Form.Item
             name="content"
-            label="Содержание"
+            label="Краткое описание"
             rules={[{ required: true, message: 'Введите содержание' }]}
           >
             <TinyEditor 
-        initialValue="<p>Привет, мир!</p>" 
-      />
+              initialValue="<p>Привет, мир!</p>"
+              
+            />
           </Form.Item>
 
           <Form.Item
