@@ -34,11 +34,10 @@ function AddPost() {
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
 
 	const handleSubmit = async (values: FormValues) => {
-		const content = ''
 		try {
 		const payload = {
 			title: values.title,
-			content: content,
+			content: values.content,
 			post_category_id: values.post_category_id,
 			location: values.location?.address,
 			latitude: values.location?.latitude,
@@ -122,7 +121,7 @@ function AddPost() {
 									{ max: 1000, message: 'Максимум 1000 символов' },
 								]}
 							>
-							<TinyEditor />
+								<TinyEditor onChange={(value) => form.setFieldValue('content', value)} />
 							</Form.Item>
 							<Form.Item
 								name="link"
