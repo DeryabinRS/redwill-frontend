@@ -1,7 +1,7 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
-import { Button, Segmented, Space, message } from 'antd'
-import { UploadOutlined, RotateLeftOutlined, RotateRightOutlined } from '@ant-design/icons'
+import { Button, Segmented, Space, message, Upload, Spin } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import 'react-image-crop/dist/ReactCrop.css'
 
 type Orientation = 'portrait' | 'landscape'
@@ -29,33 +29,47 @@ function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: numbe
   )
 }
 
-function ImageCropper({ value, onChange, orientation = 'landscape', onOrientationChange }: ImageCropperProps) {
+function ImageCropper({ value, onChange, orientation = 'portrait', onOrientationChange }: ImageCropperProps) {
+  const [messageApi, contextHolder] = message.useMessage()
   const [imgSrc, setImgSrc] = useState(value || '')
   const [crop, setCrop] = useState<Crop>()
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
   const [isCropping, setIsCropping] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const aspect = orientation === 'portrait' ? 3 / 4 : 4 / 3
   const maxSize = 1000
 
-  const onSelectFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (!file.type.startsWith('image/')) {
-      message.error('Выберите изображение')
-      return
+  // Автоматически обновляем crop при изменении ориентации
+  useEffect(() => {
+    if (imgRef.current && imgRef.current.complete) {
+      const { width, height } = imgRef.current
+      setCrop(centerAspectCrop(width, height, aspect))
+      setCompletedCrop(undefined)
     }
+  }, [aspect])
+
+  const beforeUpload = (file: File) => {
+    const allowedTypes = ['image/jpeg', 'image/png']
+    if (!allowedTypes.includes(file.type)) {
+      messageApi.error('Допустимые форматы: JPG, JPEG, PNG')
+      return false
+    }
+
+    setIsLoading(true)
 
     const reader = new FileReader()
     reader.onload = () => {
       setImgSrc(reader.result?.toString() || '')
       setIsCropping(true)
       setCrop(undefined)
+      setIsLoading(false)
     }
     reader.readAsDataURL(file)
+
+    return false
   }
 
   const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -83,7 +97,7 @@ function ImageCropper({ value, onChange, orientation = 'landscape', onOrientatio
     // Рассчитываем размеры с сохранением пропорций
     let outputWidth: number
     let outputHeight: number
-
+    
     if (orientation === 'portrait') {
       // Ресайз по высоте до 1000px
       outputHeight = maxSize
@@ -120,28 +134,30 @@ function ImageCropper({ value, onChange, orientation = 'landscape', onOrientatio
     setIsCropping(false)
   }, [completedCrop, orientation, onChange])
 
-  const handleRotate = () => {
-    // Для простоты просто перезагрузим изображение
-    // В реальном приложении можно повернуть canvas
-    message.info('Перезагрузите изображение для поворота')
-  }
-
   if (!isCropping) {
     return (
-      <Space direction="vertical" style={{ width: '100%' }}>
-        <Button icon={<UploadOutlined />} onClick={() => document.getElementById('image-upload')?.click()}>
-          Выбрать изображение
-        </Button>
-        <input
-          id="image-upload"
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={onSelectFile}
-        />
+      <>
+        {contextHolder}
+        <Space direction="vertical" style={{ width: '100%' }}>
+        {!imgSrc && (
+          <Upload
+            style={{ width: '100%', height: 250, marginTop: -16 }}
+            listType="picture-card"
+            beforeUpload={beforeUpload}
+            showUploadList={false}
+            accept=".jpg,.jpeg,.png"
+          >
+            {isLoading ? <Spin size="small" /> : (
+              <button style={{ border: 0, background: 'none', padding: 0 }}>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Загрузить</div>
+              </button>
+            )}
+          </Upload>
+        )}
         {imgSrc && (
-          <div>
-            <img src={imgSrc} alt="Preview" style={{ maxWidth: '100%', maxHeight: 200 }} />
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <img src={imgSrc} alt="Preview" style={{ maxWidth: '100%' }} />
             <Space style={{ marginTop: 8 }}>
               <Button size="small" onClick={() => setIsCropping(true)}>Обрезать</Button>
               <Button size="small" danger onClick={() => { setImgSrc(''); onChange?.('') }}>Удалить</Button>
@@ -149,11 +165,14 @@ function ImageCropper({ value, onChange, orientation = 'landscape', onOrientatio
           </div>
         )}
       </Space>
+      </>
     )
   }
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <>
+      {contextHolder}
+      <Space direction="vertical" style={{ width: '100%' }}>
       <Segmented
         options={[
           { label: 'Книжная (3:4)', value: 'portrait' },
@@ -163,7 +182,7 @@ function ImageCropper({ value, onChange, orientation = 'landscape', onOrientatio
         onChange={(val) => onOrientationChange?.(val as Orientation)}
       />
       
-      <div style={{ maxHeight: 400, overflow: 'auto' }}>
+      <div style={{ maxHeight: '100%', maxWidth: 400, overflow: 'auto' }}>
         <ReactCrop
           crop={crop}
           onChange={(c) => setCrop(c)}
@@ -182,13 +201,12 @@ function ImageCropper({ value, onChange, orientation = 'landscape', onOrientatio
 
       <Space>
         <Button type="primary" onClick={getCroppedImage}>Применить</Button>
-        <Button onClick={() => setIsCropping(false)}>Отмена</Button>
-        <Button icon={<RotateLeftOutlined />} onClick={handleRotate} />
-        <Button icon={<RotateRightOutlined />} onClick={handleRotate} />
+        <Button onClick={() => { setIsCropping(false); setImgSrc(''); onChange?.('') }}>Отмена</Button>
       </Space>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
     </Space>
+    </>
   )
 }
 

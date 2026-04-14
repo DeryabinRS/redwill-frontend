@@ -32,7 +32,7 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
       }}
       
       init={{
-        height: 400,
+        height: 250,
         menubar: false,
         language: 'ru',
         language_url: '/tinymce/langs/ru.js',
