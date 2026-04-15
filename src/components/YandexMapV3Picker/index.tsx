@@ -106,15 +106,15 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacnge
   } = reactify.module(window.ymaps3);
 
   return (
-    <div style={{ maxWidth: '650px', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif' }}>
       {/* 🔑 Контейнер с ЯВНОЙ высотой в пикселях — обязательно! */}
       <div style={{
         borderRadius: '8px',
         overflow: 'hidden',
         border: '1px solid #e2e8f0',
         height: `400px`,
+        // maxWidth: '650px',
         width: '100%',
-        position: 'relative'
       }}>
         <YMap
           location={reactify.useDefault({ center: DEFAULT_CENTER, zoom: 10 })}
@@ -160,8 +160,6 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacnge
             border: '1px solid #cbd5e1',
             borderRadius: '6px',
             backgroundColor: '#f8fafc',
-            boxSizing: 'border-box',
-            outline: 'none',
           }}
         />
       </div>
@@ -182,8 +180,6 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacnge
             border: '1px solid #cbd5e1',
             borderRadius: '6px',
             backgroundColor: '#f8fafc',
-            boxSizing: 'border-box',
-            outline: 'none',
           }}
         />
       </div>

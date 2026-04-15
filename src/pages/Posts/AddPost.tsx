@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Form, Input, Select, DatePicker, TimePicker, Button, Typography, Card, message, Space, Row, Col } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
-import LocationPicker from '../../components/LocationPicker'
 import ImageCropper from '../../components/ImageCropper'
 import { useGetPostCategoriesQuery, useCreatePostMutation } from '../../features/post/postSlice'
 import { TinyEditor } from '../../components/TinyEditor'
@@ -74,7 +73,7 @@ function AddPost() {
 					}}
 				>
 					<Row gutter={16}>
-						<Col xs={{ flex: '100%' }} sm={{ flex: '30%' }}>
+						<Col xs={24} md={8}>
 							<Form.Item
 								name="image"
 								label="Изображение (JPG, PNG)"
@@ -88,7 +87,7 @@ function AddPost() {
 								/>
 							</Form.Item>
 						</Col>
-						<Col xs={{ flex: '100%' }} sm={{ flex: '70%' }}>
+						<Col xs={24} md={16}>
 							<Form.Item
 								name="title"
 								label="Заголовок"
