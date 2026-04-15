@@ -10,42 +10,27 @@ interface YMapClickEvent {
 }
 
 interface IYandexMapV3Picker {
-  onChacngeLocation: (val: string) => void; 
-  onChacngeAddress: (val: string) => void;
+  onChangeLocation: (val: string) => void; 
+  onChangeAddress: (val: string) => void;
 }
 
-const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacngeAddress }) => {
+const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAddress }) => {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [inputValue, setInputValue] = useState('');
-  const [address, setAddress] = useState('');
 
   const handleMapClick = useCallback((_object: unknown, event: YMapClickEvent) => {
     if (event?.coordinates) {
       const [lng, lat] = event.coordinates;
       setCoords({ lat, lng });
-      onChacngeLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      setInputValue(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      setAddress('Поиск адреса...');
+      onChangeLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+      onChangeAddress('Поиск адреса...');
     }
   }, []);
-
-  // 🔧 Хак: после монтирования карты принудительно обновляем её размер
-  // Это нужно, потому что web-component может некорректно рассчитать высоту при первой отрисовке
-  useEffect(() => {
-    if (isReady && reactify) {
-      const timer = setTimeout(() => {
-        // Триггерим resize-событие для web-component
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isReady, reactify]);
 
   // 📍 Обратное геокодирование при изменении координат
   useEffect(() => {
     if (!coords) {
-      setAddress('');
+      onChangeAddress('');
       return;
     }
 
@@ -57,13 +42,13 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacnge
         const data = await response.json();
         const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject;
         if (geoObject) {
-          setAddress(geoObject.name || geoObject.description || 'Адрес не найден');
-          onChacngeAddress(geoObject.name || geoObject.description || '')
+          onChangeAddress(geoObject.name || geoObject.description || 'Адрес не найден');
+          onChangeAddress(geoObject.name || geoObject.description || '')
         } else {
-          setAddress('Адрес не найден');
+          onChangeAddress('Адрес не найден');
         }
       } catch {
-        setAddress('Ошибка при определении адреса');
+        onChangeAddress('Ошибка при определении адреса');
       }
     };
 
@@ -142,46 +127,6 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacnge
             </YMapMarker>
           )}
         </YMap>
-      </div>
-      <div style={{ marginTop: '12px' }}>
-        <label htmlFor="v3-address" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-          Адрес:
-        </label>
-        <input
-          id="v3-address"
-          type="text"
-          value={address}
-          readOnly
-          placeholder="Кликните по карте, чтобы определить адрес..."
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            fontSize: '15px',
-            border: '1px solid #cbd5e1',
-            borderRadius: '6px',
-            backgroundColor: '#f8fafc',
-          }}
-        />
-      </div>
-      <div style={{ marginTop: '16px' }}>
-        <label htmlFor="v3-coords" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>
-          Координаты выбранной точки:
-        </label>
-        <input
-          id="v3-coords"
-          type="text"
-          value={inputValue}
-          readOnly
-          placeholder="Кликните по карте, чтобы получить координаты..."
-          style={{
-            width: '100%',
-            padding: '10px 12px',
-            fontSize: '15px',
-            border: '1px solid #cbd5e1',
-            borderRadius: '6px',
-            backgroundColor: '#f8fafc',
-          }}
-        />
       </div>
     </div>
   );

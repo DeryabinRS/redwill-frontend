@@ -15,7 +15,8 @@ interface FormValues {
 	title: string
 	content: string
 	post_category_id: number
-	location?: { latitude: number; longitude: number; address: string }
+	location?: string
+	address?: string
 	image: string
 	link?: string
 	date_start: dayjs.Dayjs
@@ -29,8 +30,6 @@ function AddPost() {
 	const navigate = useNavigate()
 	const [orientation, setOrientation] = useState<Orientation>('portrait')
 	const [image, setImage] = useState('')
-	const [location, setLocation] = useState('');
-	const [address, setAddress] = useState('');
 	
 	const { data: categories, isLoading: isLoadingCategories } = useGetPostCategoriesQuery()
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
@@ -41,8 +40,8 @@ function AddPost() {
 			title: values.title,
 			content: values.content,
 			post_category_id: values.post_category_id,
-			location: location,
-			address: address,
+			location: values.location,
+			address: values.address,
 			image: image,
 			link: values.link,
 			date_start: values.date_start.format('YYYY-MM-DD'),
@@ -104,14 +103,14 @@ function AddPost() {
 								label="Категория"
 								rules={[{ required: true, message: 'Выберите категорию' }]}
 							>
-							<Select
+								<Select
 									placeholder="Выберите категорию"
 									loading={isLoadingCategories}
 									options={categories?.map((cat) => ({
 									value: cat.id,
 									label: cat.name,
 									}))}
-							/>
+								/>
 							</Form.Item>
 
 							<Form.Item
@@ -133,16 +132,29 @@ function AddPost() {
 							>
 								<Input placeholder="https://example.com" />
 							</Form.Item>
+							
+							<YandexMapV3Picker 
+								onChangeLocation={(loc: string) => {
+									form.setFieldValue('location', loc); // Синхронизируем с формой
+								}}
+								onChangeAddress={(addr: string) => {
+									form.setFieldValue('address', addr);
+								}}
+							/>
+							
 							<Form.Item
 								name="location"
-								label="Место проведения"
+								label="Координаты"
+								style={{ marginTop: 8, marginBottom: 8 }}
 							>
-								<YandexMapV3Picker 
-									onChacngeLocation={(location: string) => setLocation(location)}
-									onChacngeAddress={(address: string) => setAddress(address)}
-								/>
+								<Input readOnly placeholder="Кликните по карте, чтобы получить координаты..." />
 							</Form.Item>
-
+							<Form.Item
+								name="address"
+								label="Адрес"
+							>
+								<Input readOnly placeholder="Кликните по карте, чтобы определить адрес..." />
+							</Form.Item>
 							<Space size="large" style={{ width: '100%' }}>
 								<Form.Item
 									name="date_start"
