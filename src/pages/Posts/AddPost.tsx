@@ -30,6 +30,8 @@ function AddPost() {
 	const navigate = useNavigate()
 	const [orientation, setOrientation] = useState<Orientation>('portrait')
 	const [image, setImage] = useState('')
+	const [location, setLocation] = useState('');
+	const [address, setAddress] = useState('');
 	
 	const { data: categories, isLoading: isLoadingCategories } = useGetPostCategoriesQuery()
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
@@ -40,9 +42,8 @@ function AddPost() {
 			title: values.title,
 			content: values.content,
 			post_category_id: values.post_category_id,
-			location: values.location?.address,
-			latitude: values.location?.latitude,
-			longitude: values.location?.longitude,
+			location: location,
+			address: address,
 			image: image,
 			link: values.link,
 			date_start: values.date_start.format('YYYY-MM-DD'),
@@ -119,10 +120,10 @@ function AddPost() {
 								label="Краткое описание"
 								rules={[
 									{ required: true, message: 'Введите содержание' },
-									{ max: 1000, message: 'Максимум 1000 символов' },
+									{ max: 500, message: 'Максимум 1000 символов' },
 								]}
 							>
-								<TinyEditor onChange={(value) => form.setFieldValue('content', value)} />
+								<TinyEditor maxLenght={500} onChange={(value) => form.setFieldValue('content', value)} />
 							</Form.Item>
 							<Form.Item
 								name="link"
@@ -137,7 +138,10 @@ function AddPost() {
 								name="location"
 								label="Место проведения"
 							>
-								<YandexMapV3Picker />
+								<YandexMapV3Picker 
+									onChacngeLocation={(location: string) => setLocation(location)}
+									onChacngeAddress={(address: string) => setAddress(address)}
+								/>
 							</Form.Item>
 
 							<Space size="large" style={{ width: '100%' }}>

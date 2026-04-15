@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, type FC } from 'react';
 import { useYmaps3 } from '../../hooks/useYmaps3';
 
 const DEFAULT_CENTER: [number, number] = [37.618423, 55.751244]; // [lng, lat]
@@ -9,7 +9,12 @@ interface YMapClickEvent {
   details: Record<string, unknown>;
 }
 
-function YandexMapV3Picker() {
+interface IYandexMapV3Picker {
+  onChacngeLocation: (val: string) => void; 
+  onChacngeAddress: (val: string) => void;
+}
+
+const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChacngeLocation, onChacngeAddress }) => {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [inputValue, setInputValue] = useState('');
@@ -19,6 +24,7 @@ function YandexMapV3Picker() {
     if (event?.coordinates) {
       const [lng, lat] = event.coordinates;
       setCoords({ lat, lng });
+      onChacngeLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
       setInputValue(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
       setAddress('Поиск адреса...');
     }
@@ -52,6 +58,7 @@ function YandexMapV3Picker() {
         const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject;
         if (geoObject) {
           setAddress(geoObject.name || geoObject.description || 'Адрес не найден');
+          onChacngeAddress(geoObject.name || geoObject.description || '')
         } else {
           setAddress('Адрес не найден');
         }
