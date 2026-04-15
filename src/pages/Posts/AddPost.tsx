@@ -6,6 +6,7 @@ import LocationPicker from '../../components/LocationPicker'
 import ImageCropper from '../../components/ImageCropper'
 import { useGetPostCategoriesQuery, useCreatePostMutation } from '../../features/post/postSlice'
 import { TinyEditor } from '../../components/TinyEditor'
+import YandexMapV3Picker from '../../components/YandexMapV3Picker'
 
 const { Title } = Typography
 
@@ -136,7 +137,7 @@ function AddPost() {
 								name="location"
 								label="Место проведения"
 							>
-								<LocationPicker />
+								<YandexMapV3Picker />
 							</Form.Item>
 
 							<Space size="large" style={{ width: '100%' }}>
