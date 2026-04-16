@@ -5,6 +5,7 @@ import dayjs from 'dayjs'
 import ImageCropper from '../../components/ImageCropper'
 import { useCreatePostMutation } from '../../features/post/postSlice'
 import YandexMapV3Picker from '../../components/YandexMapV3Picker'
+import { base64ToFile, sanitizeInput } from '../../utils/form'
 
 const { Title } = Typography
 
@@ -15,7 +16,7 @@ interface FormValues {
 	post_category_id: number
 	location?: string
 	address?: string
-	image: string
+	image: File
 	link?: string
 	date_start: dayjs.Dayjs
 	date_end?: dayjs.Dayjs
@@ -33,20 +34,40 @@ function AddPost() {
 
 	const handleSubmit = async (values: FormValues) => {
 		try {
-			const payload = {
-				title: values.title,
-				post_category_id: 2,
-				location: values.location,
-				address: values.address,
-				image: image,
-				link: values.link,
-				date_start: values.date_start.format('YYYY-MM-DD'),
-				date_end: values.date_end?.format('YYYY-MM-DD'),
-				time_start: values.time_start?.format('HH:mm'),
-				time_end: values.time_end?.format('HH:mm'),
+			// 🔥 Создаём FormData для multipart/form-data
+			const formData = new FormData()
+			
+			// Текстовые поля с санитизацией
+			formData.append('title', sanitizeInput(values.title))
+			formData.append('post_category_id', '2')
+			if (values.location) formData.append('location', sanitizeInput(values.location))
+			if (values.address) formData.append('address', sanitizeInput(values.address))
+			if (values.link) formData.append('link', sanitizeInput(values.link))
+			
+			// Даты и время
+			formData.append('date_start', values.date_start.format('YYYY-MM-DD'))
+			if (values.date_end) formData.append('date_end', values.date_end.format('YYYY-MM-DD'))
+			if (values.time_start) formData.append('time_start', values.time_start.format('HH:mm'))
+			if (values.time_end) formData.append('time_end', values.time_end.format('HH:mm'))
+			
+			// 🖼️ Конвертация base64 → File
+			if (image && image.startsWith('data:image')) {
+				const file = await base64ToFile(image, `post_${Date.now()}.jpg`)
+				if (file) {
+					formData.append('image', file)
+					console.log('📤 Image appended:', { name: file.name, size: file.size, type: file.type })
+				}
 			}
-			console.log(payload)
-			await createPost(payload).unwrap()
+
+			// 🔍 Отладка
+			console.log('📦 FormData entries:')
+			for (let [key, value] of formData.entries()) {
+				console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value)
+			}
+
+			// 📡 Отправка через RTK Query (formData: true в postSlice.ts обработает это)
+			await createPost(formData).unwrap()
+			
 			message.success('Пост успешно создан')
 			navigate('/dashboard/posts')
 		} catch (error) {

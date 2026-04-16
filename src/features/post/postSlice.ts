@@ -33,7 +33,7 @@ export type CreatePostPayload = {
   location?: string
   latitude?: number
   longitude?: number
-  image: string
+  image?: File
   link?: string
   date_start: string
   date_end?: string
@@ -72,6 +72,7 @@ export const postApi = createApi({
         url: '/posts',
         method: 'POST',
         body: payload,
+        formData: true,
       }),
       transformResponse: (response: CreatePostResponse) => response.data,
     }),
