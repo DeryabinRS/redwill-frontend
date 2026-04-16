@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, type FC } from 'react';
 import { useYmaps3 } from '../../hooks/useYmaps3';
 
-const DEFAULT_CENTER: [number, number] = [37.618423, 55.751244]; // [lng, lat]
+const DEFAULT_CENTER: [number, number] = [50.618423, 55.751244]; // [lng, lat]
 
 interface YMapClickEvent {
   coordinates: [number, number];
@@ -102,7 +102,7 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
         width: '100%',
       }}>
         <YMap
-          location={reactify.useDefault({ center: DEFAULT_CENTER, zoom: 10 })}
+          location={reactify.useDefault({ center: DEFAULT_CENTER, zoom: 4 })}
         >
           <YMapDefaultSchemeLayer />
           <YMapDefaultFeaturesLayer />

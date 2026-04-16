@@ -1,21 +1,22 @@
 import { Editor } from '@tinymce/tinymce-react';
 import type { Editor as TinyMCEEditor } from 'tinymce';
 import { useRef } from 'react';
+import type { InitOptions } from '@tinymce/tinymce-react/lib/cjs/main/ts/components/Editor';
 
 interface TinyEditorProps {
   initialValue?: string;
   onChange?: (content: string) => void;
   disabled?: boolean;
-  toolbar?: string;
   maxLenght?: number;
+  init?: InitOptions;
 }
 
 export const TinyEditor: React.FC<TinyEditorProps> = ({ 
   initialValue = '', 
   onChange, 
   disabled = false,
-  toolbar = 'undo redo',
   maxLenght = 1000,
+  init,
 }) => {
   const editorRef = useRef<TinyMCEEditor | null>(null);
 
@@ -32,29 +33,19 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
       }}
       
       init={{
-        height: 250,
-        menubar: false,
-        language: 'ru',
+        height: init?.height || 250,
+        menubar: init?.menubar || false,
+        language: init?.language || 'ru',
         language_url: '/tinymce/langs/ru.js',
-        // 🔑 Критично: пути к локальным скинам и контенту
         skin_url: '/tinymce/skins/ui/oxide',
         content_css: '/tinymce/skins/content/default/content.css',
         
-        plugins: 'lists link image code table',
-        toolbar: toolbar,
+        // 🔥 ДОБАВЛЕНО: плагин 'paste' обязателен для paste_preprocess
+        plugins: init?.plugins ? `${init.plugins} paste` : 'paste',
+        
         placeholder: 'Начните вводить текст...',
         initial_value: initialValue,
-        // Оптимизация для React StrictMode
-        init_instance_callback: () => {
-        //   console.log('TinyMCE initialized');
-        },
-        paste_preprocess: (_plugin, args) => {
-          const currentLength = editorRef.current?.getContent({ format: 'text' }).length || 0;
-          const pastedText = args.content.replace(/<[^>]*>/g, '');
-          if (currentLength + pastedText.length > maxLenght) {
-            args.content = pastedText.slice(0, maxLenght - currentLength);
-          }
-        },
+        
         setup: (editor: TinyMCEEditor) => {
           editor.on('init', () => {
             const updateCounter = () => {
@@ -75,9 +66,10 @@ export const TinyEditor: React.FC<TinyEditorProps> = ({
             };
             
             editor.on('keyup change undo redo input', updateCounter);
-            updateCounter(); // начальный вызов
+            updateCounter();
           });
-        }
+        },
+        ...init,
       }}
     />
   );

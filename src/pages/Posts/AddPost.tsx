@@ -1,10 +1,9 @@
 import { useState } from 'react'
-import { Form, Input, Select, DatePicker, TimePicker, Button, Typography, Card, message, Space, Row, Col } from 'antd'
+import { Form, Input, DatePicker, TimePicker, Button, Typography, Card, message, Space, Row, Col } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import dayjs from 'dayjs'
 import ImageCropper from '../../components/ImageCropper'
-import { useGetPostCategoriesQuery, useCreatePostMutation } from '../../features/post/postSlice'
-import { TinyEditor } from '../../components/TinyEditor'
+import { useCreatePostMutation } from '../../features/post/postSlice'
 import YandexMapV3Picker from '../../components/YandexMapV3Picker'
 
 const { Title } = Typography
@@ -13,7 +12,6 @@ type Orientation = 'portrait' | 'landscape'
 
 interface FormValues {
 	title: string
-	content: string
 	post_category_id: number
 	location?: string
 	address?: string
@@ -31,15 +29,13 @@ function AddPost() {
 	const [orientation, setOrientation] = useState<Orientation>('portrait')
 	const [image, setImage] = useState('')
 	
-	const { data: categories, isLoading: isLoadingCategories } = useGetPostCategoriesQuery()
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
 
 	const handleSubmit = async (values: FormValues) => {
 		try {
 		const payload = {
 			title: values.title,
-			content: values.content,
-			post_category_id: values.post_category_id,
+			post_category_id: 2,
 			location: values.location,
 			address: values.address,
 			image: image,
@@ -50,14 +46,16 @@ function AddPost() {
 			time_end: values.time_end?.format('HH:mm'),
 		}
 		console.log(payload)
-		await createPost(payload).unwrap()
-		message.success('Пост успешно создан')
-		navigate('/dashboard/posts')
+		// await createPost(payload).unwrap()
+		// message.success('Пост успешно создан')
+		// navigate('/dashboard/posts')
 		} catch (error) {
-		console.error('Create post error:', error)
-		message.error('Ошибка при создании поста')
+			console.error('Create post error:', error)
+			message.error('Ошибка при создании поста')
 		}
 	}
+
+	const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i;
 
 	return (
 		<div className="container">
@@ -76,7 +74,9 @@ function AddPost() {
 							<Form.Item
 								name="image"
 								label="Изображение (JPG, PNG)"
-								rules={[{ required: true, message: 'Выберите изображение' }]}
+								rules={[
+									{ required: true, message: 'Выберите изображение' },
+								]}
 							>
 								<ImageCropper
 									value={image}
@@ -93,46 +93,21 @@ function AddPost() {
 								rules={[
 									{ required: true, message: 'Введите заголовок' },
 									{ max: 255, message: 'Максимум 255 символов' },
+									{ pattern: noScriptPattern, message: 'Недопустимые символы' },
 								]}
 							>
 							<Input placeholder="Введите заголовок" />
-							</Form.Item>
-
-							<Form.Item
-								name="post_category_id"
-								label="Категория"
-								rules={[{ required: true, message: 'Выберите категорию' }]}
-							>
-								<Select
-									placeholder="Выберите категорию"
-									loading={isLoadingCategories}
-									options={categories?.map((cat) => ({
-									value: cat.id,
-									label: cat.name,
-									}))}
-								/>
-							</Form.Item>
-
-							<Form.Item
-								name="content"
-								label="Краткое описание"
-								rules={[
-									{ required: true, message: 'Введите содержание' },
-									{ max: 500, message: 'Максимум 1000 символов' },
-								]}
-							>
-								<TinyEditor maxLenght={500} onChange={(value) => form.setFieldValue('content', value)} />
 							</Form.Item>
 							<Form.Item
 								name="link"
 								label="Ссылка"
 								rules={[
 									{ type: 'url', message: 'Введите корректный URL' },
+									{ pattern: noScriptPattern, message: 'Недопустимые символы' },
 								]}
 							>
 								<Input placeholder="https://example.com" />
 							</Form.Item>
-							
 							<YandexMapV3Picker 
 								onChangeLocation={(loc: string) => {
 									form.setFieldValue('location', loc); // Синхронизируем с формой
@@ -141,7 +116,6 @@ function AddPost() {
 									form.setFieldValue('address', addr);
 								}}
 							/>
-							
 							<Form.Item
 								name="location"
 								label="Координаты"
@@ -171,7 +145,6 @@ function AddPost() {
 									<TimePicker format="HH:mm" style={{ width: '100%' }} />
 								</Form.Item>
 							</Space>
-
 							<Space size="large" style={{ width: '100%' }}>
 								<Form.Item
 									name="date_end"
@@ -187,7 +160,6 @@ function AddPost() {
 									<TimePicker format="HH:mm" style={{ width: '100%' }} />
 								</Form.Item>
 							</Space>
-
 							<Form.Item>
 								<Space>
 									<Button type="primary" htmlType="submit" loading={isSubmitting}>
