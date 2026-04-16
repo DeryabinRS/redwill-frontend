@@ -33,22 +33,22 @@ function AddPost() {
 
 	const handleSubmit = async (values: FormValues) => {
 		try {
-		const payload = {
-			title: values.title,
-			post_category_id: 2,
-			location: values.location,
-			address: values.address,
-			image: image,
-			link: values.link,
-			date_start: values.date_start.format('YYYY-MM-DD'),
-			date_end: values.date_end?.format('YYYY-MM-DD'),
-			time_start: values.time_start?.format('HH:mm'),
-			time_end: values.time_end?.format('HH:mm'),
-		}
-		console.log(payload)
-		// await createPost(payload).unwrap()
-		// message.success('Пост успешно создан')
-		// navigate('/dashboard/posts')
+			const payload = {
+				title: values.title,
+				post_category_id: 2,
+				location: values.location,
+				address: values.address,
+				image: image,
+				link: values.link,
+				date_start: values.date_start.format('YYYY-MM-DD'),
+				date_end: values.date_end?.format('YYYY-MM-DD'),
+				time_start: values.time_start?.format('HH:mm'),
+				time_end: values.time_end?.format('HH:mm'),
+			}
+			console.log(payload)
+			await createPost(payload).unwrap()
+			message.success('Пост успешно создан')
+			navigate('/dashboard/posts')
 		} catch (error) {
 			console.error('Create post error:', error)
 			message.error('Ошибка при создании поста')

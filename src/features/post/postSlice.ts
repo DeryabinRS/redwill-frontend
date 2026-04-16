@@ -28,7 +28,7 @@ export type Post = {
 
 export type CreatePostPayload = {
   title: string
-  content: string
+  content?: string
   post_category_id: number
   location?: string
   latitude?: number
