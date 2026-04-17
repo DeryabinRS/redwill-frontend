@@ -1,6 +1,6 @@
 import { Layout, Menu, Typography } from 'antd'
 import { DashboardOutlined, HomeOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, PlusOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
@@ -86,10 +86,12 @@ function MainLayout() {
 			<Header style={{ padding: 0, height: '100%' }}>
 				<div className="container" style={{ display: 'flex', alignItems: 'center', gap: 24, height: '100%' }}>
 					<Typography.Title level={1} style={{ margin: 0 }}>
-						<div style={{ display: 'flex', alignItems: 'center' }}>
-							<img width={80} src='/public/logo.svg' /> 
-							<div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>
-						</div>
+							<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+								<div style={{ display: 'flex', alignItems: 'center' }}>
+									<img width={80} src='/public/logo.svg' /> 
+									<div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>
+								</div>
+							</Link>
 					</Typography.Title>
 					<Menu
 						mode="horizontal"
@@ -114,7 +116,7 @@ function MainLayout() {
 			<Content>
 				<Outlet />
 			</Content>
-			<Footer style={{ textAlign: 'center' }}>© {new Date().getFullYear()} LAPIF</Footer>
+			<Footer style={{ textAlign: 'center' }}>© {new Date().getFullYear()} {SITE_NAME}</Footer>
 		</Layout>
 	)
 }

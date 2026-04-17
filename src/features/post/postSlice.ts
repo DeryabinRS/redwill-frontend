@@ -67,7 +67,7 @@ export const postApi = createApi({
       query: () => ({ url: '/post-categories', method: 'GET' }),
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
-    createPost: builder.mutation<Post, CreatePostPayload>({
+    createPost: builder.mutation<Post, FormData>({
       query: (payload) => ({
         url: '/posts',
         method: 'POST',
