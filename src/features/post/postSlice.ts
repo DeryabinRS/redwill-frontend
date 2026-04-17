@@ -67,6 +67,10 @@ export const postApi = createApi({
       query: () => ({ url: '/post-categories', method: 'GET' }),
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
+    getPostList: builder.query<PostCategory[], void>({
+      query: () => ({ url: '/posts' }),
+      transformResponse: (response: GetCategoriesResponse) => response.data,
+    }),
     createPost: builder.mutation<Post, FormData>({
       query: (payload) => ({
         url: '/posts',
@@ -83,4 +87,5 @@ export const {
   useGetPostCategoriesQuery, 
   useLazyGetPostCategoriesQuery,
   useCreatePostMutation,
+  useGetPostListQuery,
 } = postApi
