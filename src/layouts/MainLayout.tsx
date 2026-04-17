@@ -1,5 +1,5 @@
-import { Layout, Menu, Typography } from 'antd'
-import { DashboardOutlined, HomeOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, PlusOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
+import { Grid, Layout, Menu, Typography } from 'antd'
+import { DashboardOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, PlusOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
@@ -11,9 +11,13 @@ import ThemeSwitcher from '../components/ThemeSwitcher'
 
 const { Header, Content, Footer } = Layout
 
+const { useBreakpoint } = Grid;
+
 function MainLayout() {
 	const { t } = useTranslation()
 	const userIsAuthenticated = isAuthenticated()
+	const { md } = useBreakpoint()
+
 	const { 
 		data: userInfo, 
 		isLoading: isLoadingUserInfo,
@@ -30,11 +34,11 @@ function MainLayout() {
 	const hasAdminRole = userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor')
 
 	const menuItems = [
-		{
-			key: 'home',
-			icon: <HomeOutlined />,
-			label: <NavLink to="/">{t('menu.home')}</NavLink>,
-		},
+		// {
+		// 	key: 'home',
+		// 	icon: <HomeOutlined />,
+		// 	label: <NavLink to="/">{t('menu.home')}</NavLink>,
+		// },
 	]
 
 	// Добавляем Dashboard для admin/editor
@@ -85,11 +89,11 @@ function MainLayout() {
 		<Layout style={{ minHeight: '100vh' }}>
 			<Header style={{ padding: 0, height: '100%' }}>
 				<div className="container" style={{ display: 'flex', alignItems: 'center', gap: 24, height: '100%' }}>
-					<Typography.Title level={1} style={{ margin: 0 }}>
+					<Typography.Title level={2} style={{ margin: 0 }}>
 							<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
 								<div style={{ display: 'flex', alignItems: 'center' }}>
 									<img width={80} src='/public/logo.svg' /> 
-									<div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>
+									{md && <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>}
 								</div>
 							</Link>
 					</Typography.Title>

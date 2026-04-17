@@ -1,81 +1,46 @@
-import { Button, Card, Col, Row, Space, Typography } from 'antd'
-import { RocketOutlined, ShopOutlined, TeamOutlined } from '@ant-design/icons'
-import { useTranslation } from 'react-i18next'
+import { Card, Col, Row, Space, Typography } from 'antd'
+import { ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
+// import { useTranslation } from 'react-i18next'
 import PcbTracesAnimation from '../components/PcbTracesAnimation/PcbTracesAnimation'
 
 function Home() {
-  const { t } = useTranslation()
+  // const { t } = useTranslation()
+
+  const cardData = [
+    {title: 'События', desc: 'Календарь мото-мероприятий', icon: <ScheduleOutlined style={{ fontSize: 28 }} /> },
+    {title: 'Мотоклубы', desc: 'Объединение мотоциклистов, основанное на общих интересах, философии', icon: <ShopOutlined style={{ fontSize: 28 }} /> },
+    {title: 'Байк-посты, бары', desc: 'Точки тусовок, отдыха и развлечений', icon: <TeamOutlined style={{ fontSize: 28 }} /> },
+    {title: 'Ремонтные мастерские', desc: 'Станции технического обслуживания мото-техники', icon: <ToolOutlined style={{ fontSize: 28 }} /> },
+  ];
+
+  const renderCard = () => cardData.map(item => (
+    <Col key={item.title} xs={24} md={8}>
+      <Card style={{ height: '100%', filter: 'opacity(0.95)' }}>
+        <Space direction="vertical" size={12}>
+          {item.icon}
+          <Typography.Title level={4} style={{ margin: 0 }}>
+            {item.title}
+          </Typography.Title>
+          <Typography.Paragraph>
+            {item.desc}
+          </Typography.Paragraph>
+        </Space>
+      </Card>
+    </Col>
+  ));
 
   return (
-    <div>
+    <>
       <PcbTracesAnimation maxTraces={15}>
-      <div className="container">
-        <div className='header'>
-        <Space direction="vertical" size={24} style={{ width: '100%', alignItems: 'center' }}>
-          <Typography.Title style={{ textAlign: 'center', marginBottom: 0 }}>
-            {t('hero.title')}
-          </Typography.Title>
-          <Typography.Paragraph style={{ textAlign: 'center', maxWidth: 720, fontSize: 16, opacity: 0.9 }}>
-            {t('hero.subtitle')}
-          </Typography.Paragraph>
-          <Space size="middle" wrap>
-            <Button type="primary" size="large">
-              {t('hero.tryFree')}
-            </Button>
-          </Space>
-        </Space>
-        </div>
-      </div>
-  
-
-      {/* Key Channels */}
-      <section className="section">
-        <div className="container">
-          <Row gutter={[16, 16]}>
-            <Col xs={24} md={8}>
-              <Card style={{ height: '100%' }}>
-                <Space direction="vertical" size={12}>
-                  <ShopOutlined style={{ fontSize: 28 }} />
-                  <Typography.Title level={4} style={{ margin: 0 }}>
-                    Интернет-магазин
-                  </Typography.Title>
-                  <Typography.Paragraph>
-                    Выберите шаблон и получите готовый сайт за 15 минут
-                  </Typography.Paragraph>
-                </Space>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card style={{ height: '100%' }}>
-                <Space direction="vertical" size={12}>
-                  <RocketOutlined style={{ fontSize: 28 }} />
-                  <Typography.Title level={4} style={{ margin: 0 }}>
-                    Маркетплейсы
-                  </Typography.Title>
-                  <Typography.Paragraph>
-                    Продавайте в режиме одного окна на популярных площадках
-                  </Typography.Paragraph>
-                </Space>
-              </Card>
-            </Col>
-            <Col xs={24} md={8}>
-              <Card style={{ height: '100%' }}>
-                <Space direction="vertical" size={12}>
-                  <TeamOutlined style={{ fontSize: 28 }} />
-                  <Typography.Title level={4} style={{ margin: 0 }}>
-                    Соцсети и мессенджеры
-                  </Typography.Title>
-                  <Typography.Paragraph>
-                    Ведите диалоги и выгружайте товары во все каналы
-                  </Typography.Paragraph>
-                </Space>
-              </Card>
-            </Col>
-          </Row>
-        </div>
-      </section>
+        <section className="section" style={{ padding: '30px 0' }}>
+          <div className="container">
+            <Row gutter={[16, 16]}>
+              {renderCard()}
+            </Row>
+          </div>
+        </section>
       </PcbTracesAnimation>
-    </div>
+    </>
   )
 }
 
