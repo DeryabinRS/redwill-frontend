@@ -2,12 +2,10 @@ import { Card, Col, Row, Space, Typography } from 'antd'
 import { ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
 // import { useTranslation } from 'react-i18next'
 import PcbTracesAnimation from '../components/PcbTracesAnimation/PcbTracesAnimation'
-import { useGetPostListQuery } from '../features/post/postSlice';
+import PostFeed from '../components/PostFeed'
 
 function Home() {
   // const { t } = useTranslation()
-  const { data } = useGetPostListQuery();
-  console.log(data)
 
   const cardData = [
     {title: 'События', desc: 'Календарь мото-мероприятий', icon: <ScheduleOutlined style={{ fontSize: 28 }} /> },
@@ -40,6 +38,12 @@ function Home() {
             <Row gutter={[16, 16]}>
               {renderCard()}
             </Row>
+          </div>
+        </section>
+
+        <section className="section" style={{ padding: '30px 0' }}>
+          <div className="container">
+            <PostFeed title="Будущие мероприятия" />
           </div>
         </section>
       </PcbTracesAnimation>

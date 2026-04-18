@@ -24,6 +24,26 @@ export type Post = {
   user_id: number
   created_at: string
   updated_at: string
+  profile?: {
+    first_name: string
+    last_name: string
+  }
+  category?: {
+    id: number
+    name: string
+  }
+}
+
+export type PaginatedResponse<T> = {
+  data: T[]
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
+  next_page_url: string | null
+  prev_page_url: string | null
 }
 
 export type CreatePostPayload = {
@@ -49,6 +69,18 @@ type CreatePostResponse = {
   data: Post
 }
 
+type GetPostListResponse = {
+  data: Post[]
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
+  next_page_url: string | null
+  prev_page_url: string | null
+}
+
 export const postApi = createApi({
   reducerPath: 'postApi',
   baseQuery: fetchBaseQuery({
@@ -67,9 +99,21 @@ export const postApi = createApi({
       query: () => ({ url: '/post-categories', method: 'GET' }),
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
-    getPostList: builder.query<PostCategory[], void>({
-      query: () => ({ url: '/posts' }),
-      transformResponse: (response: GetCategoriesResponse) => response.data,
+    getPostList: builder.query<{ data: Post[]; next_page_url: string | null }, void>({
+      query: () => ({ url: '/posts', params: { per_page: 10 } }),
+      transformResponse: (response: GetPostListResponse) => ({
+        data: response.data,
+        next_page_url: response.next_page_url,
+      }),
+    }),
+    getPaginatedPosts: builder.query<GetPostListResponse, number>({
+      query: (page) => ({ url: '/posts', params: { page, per_page: 10 } }),
+      transformResponse: (response: { 
+        response_code: number
+        status: string
+        message: string
+        data: GetPostListResponse
+      }) => response.data,
     }),
     createPost: builder.mutation<Post, FormData>({
       query: (payload) => ({
@@ -88,4 +132,5 @@ export const {
   useLazyGetPostCategoriesQuery,
   useCreatePostMutation,
   useGetPostListQuery,
+  useGetPaginatedPostsQuery,
 } = postApi

@@ -1,15 +1,18 @@
-import { useState } from 'react'
-import { Form, Input, DatePicker, TimePicker, Button, Typography, Card, message, Space, Row, Col } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react';
+import { 
+	App as AntdApp, Form, Input, DatePicker, TimePicker, 
+	Button, Typography, Card, Space, Row, Col,
+} from 'antd';
+import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs'
-import ImageCropper from '../../components/ImageCropper'
-import { useCreatePostMutation } from '../../features/post/postSlice'
-import YandexMapV3Picker from '../../components/YandexMapV3Picker'
-import { base64ToFile, sanitizeInput } from '../../utils/form'
+import ImageCropper from '../../components/ImageCropper';
+import { useCreatePostMutation } from '../../features/post/postSlice';
+import YandexMapV3Picker from '../../components/YandexMapV3Picker';
+import { base64ToFile, sanitizeInput } from '../../utils/form';
 
-const { Title } = Typography
+const { Title } = Typography;
 
-type Orientation = 'portrait' | 'landscape'
+type Orientation = 'portrait' | 'landscape';
 
 interface FormValues {
 	title: string
@@ -26,6 +29,7 @@ interface FormValues {
 
 function AddPost() {
 	const [form] = Form.useForm()
+	const { message } = AntdApp.useApp()
 	const navigate = useNavigate()
 	const [orientation, setOrientation] = useState<Orientation>('portrait')
 	const [image, setImage] = useState('')
@@ -55,14 +59,7 @@ function AddPost() {
 				const file = await base64ToFile(image, `post_${Date.now()}.jpg`)
 				if (file) {
 					formData.append('image', file)
-					console.log('📤 Image appended:', { name: file.name, size: file.size, type: file.type })
 				}
-			}
-
-			// 🔍 Отладка
-			console.log('📦 FormData entries:')
-			for (let [key, value] of formData.entries()) {
-				console.log(`${key}:`, value instanceof File ? `File: ${value.name}` : value)
 			}
 
 			// 📡 Отправка через RTK Query (formData: true в postSlice.ts обработает это)
