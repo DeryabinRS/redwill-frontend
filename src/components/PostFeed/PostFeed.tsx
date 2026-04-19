@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Card, Col, Typography, Button, Space, Tag, Row } from 'antd'
+import { Card, Col, Typography, Button, Space, Tag, Row, Spin } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useGetPaginatedPostsQuery } from '../../features/post/postSlice'
@@ -134,23 +134,14 @@ const PostFeed: React.FC<PostFeedProps> = ({
         ))}
       </Row>
 
-      {isLoading && posts.length === 0 && (
-        <div className="post-feed-loading">
-          <div className="loading-spinner" />
-          <Text type="secondary">Загрузка мероприятий...</Text>
-        </div>
-      )}
-
-      {isFetching && posts.length > 0 && (
-        <div className="post-feed-fetching">
-          <div className="loading-spinner" />
-        </div>
+      {isFetching && (
+        <Spin />
       )}
 
       {!isLoading && hasNextPage && (
         <div className="post-feed-load-more">
           <Button 
-            type="primary" 
+            type="text"
             size="large"
             onClick={handleLoadMore}
             loading={isFetching}
