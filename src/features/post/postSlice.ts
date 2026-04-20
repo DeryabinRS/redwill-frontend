@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getAuthToken } from '../../utils/auth'
 import { API_URL } from '../../config/constants'
+import dayjs from 'dayjs'
 
 export type PostCategory = {
   id: number
@@ -99,15 +100,20 @@ export const postApi = createApi({
       query: () => ({ url: '/post-categories', method: 'GET' }),
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
-    getPostList: builder.query<{ data: Post[]; next_page_url: string | null }, void>({
-      query: () => ({ url: '/posts', params: { per_page: 10 } }),
-      transformResponse: (response: GetPostListResponse) => ({
-        data: response.data,
-        next_page_url: response.next_page_url,
+    getPaginatedPostList: builder.query<GetPostListResponse, { 
+      pagination?: { page?: number, per_page?: number };
+      post_category_ids?: number | number[];
+    }>({
+      query: ({ pagination, post_category_ids }) => ({ 
+        url: '/posts', 
+        params: { 
+          page: pagination?.page, 
+          per_page: pagination?.per_page || 10, 
+          post_category_ids,
+          min_start_date: dayjs().format('YYYY-MM-DD'),
+          // max_start_date: '2026-05-01',
+        },
       }),
-    }),
-    getPaginatedPosts: builder.query<GetPostListResponse, number>({
-      query: (page) => ({ url: '/posts', params: { page, per_page: 10 } }),
       transformResponse: (response: { 
         response_code: number
         status: string
@@ -131,6 +137,5 @@ export const {
   useGetPostCategoriesQuery, 
   useLazyGetPostCategoriesQuery,
   useCreatePostMutation,
-  useGetPostListQuery,
-  useGetPaginatedPostsQuery,
+  useGetPaginatedPostListQuery,
 } = postApi

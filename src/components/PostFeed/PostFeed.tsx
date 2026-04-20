@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Card, Col, Typography, Button, Space, Tag, Row, Spin } from 'antd'
+import { Card, Col, Typography, Button, Space, Row, Spin } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { useGetPaginatedPostsQuery } from '../../features/post/postSlice'
+import { useGetPaginatedPostListQuery } from '../../features/post/postSlice'
 import './PostFeed.css'
 import { API_URL } from '../../config/constants'
 
@@ -18,7 +18,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
   initialPage = 1,
 }) => {
   const [currentPage, setCurrentPage] = useState(initialPage)
-  const { data, isLoading, isFetching, error } = useGetPaginatedPostsQuery(currentPage)
+  const { data, isLoading, isFetching, error } = useGetPaginatedPostListQuery({ pagination: { page: currentPage }, post_category_ids: 2 });
 
   const handleLoadMore = () => {
     setCurrentPage(prev => prev + 1)
@@ -70,11 +70,6 @@ const PostFeed: React.FC<PostFeedProps> = ({
                       className="post-card-image"
                       loading="lazy"
                     />
-                    {post.category && (
-                      <Tag className="post-category-tag" color="blue">
-                        {post.category.name}
-                      </Tag>
-                    )}
                   </div>
                 ) : (
                   <div className="post-card-image-placeholder">
@@ -149,12 +144,6 @@ const PostFeed: React.FC<PostFeedProps> = ({
           >
             Загрузить ещё
           </Button>
-        </div>
-      )}
-
-      {!isLoading && !hasNextPage && posts.length > 0 && (
-        <div className="post-feed-no-more">
-          <Text type="secondary">Больше мероприятий нет</Text>
         </div>
       )}
 
