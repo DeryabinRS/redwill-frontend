@@ -43,7 +43,7 @@ function Home() {
 
         <section className="section" style={{ padding: '30px 0' }}>
           <div className="container">
-            <PostFeed title="Будущие мероприятия" />
+            <PostFeed title="Мото-события" />
           </div>
         </section>
       </PcbTracesAnimation>

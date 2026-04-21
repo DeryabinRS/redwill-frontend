@@ -54,7 +54,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
             sm={24}
             md={12}
             lg={8}
-            xl={8}
+            xl={6}
             className={`post-feed-item animate-fade-in`}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
@@ -79,7 +79,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
               }
             >
               <Space direction="vertical" size="small" style={{ width: '100%' }}>
-                <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: '18px' }}>
+                <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: '16px', lineHeight: 1.2 }}>
                   {post.title}
                 </Title>
 
