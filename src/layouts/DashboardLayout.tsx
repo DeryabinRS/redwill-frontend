@@ -119,14 +119,11 @@ function DashboardLayout() {
           collapsed={collapsed}
           breakpoint="lg"
           collapsedWidth={0}
+          width={250}
           style={{
             overflow: 'auto',
             height: '100vh',
             position: 'fixed',
-            left: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 100,
           }}
         >
           <div style={{ 
@@ -134,7 +131,7 @@ function DashboardLayout() {
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            borderBottom: '1px solid rgba(255,255,255,0.1)'
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
           }}>
             {renderLogo()}
           </div>
@@ -158,18 +155,17 @@ function DashboardLayout() {
           open={drawerOpen}
           width={250}
           styles={{
-            body: { padding: 0, background: '#001529' },
-            header: { background: '#001529', borderBottom: '1px solid rgba(255,255,255,0.1)' },
+            body: { padding: 0, },
+            header: { borderBottom: '1px solid rgba(255,255,255,0.1)' },
           }}
         >
           {mobileMenu}
         </Drawer>
       )}
       
-      <Layout style={{ marginLeft: !isMobile && collapsed ? 0 : !isMobile ? 200 : 0, transition: 'margin-left 0.2s' }}>
+      <Layout style={{ marginLeft: !isMobile && collapsed ? 0 : !isMobile ? 250 : 0, transition: 'margin-left 0.2s' }}>
         <Header style={{ 
           padding: '0 16px', 
-          background: '#001529', 
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'space-between',
