@@ -1,6 +1,6 @@
 // src/lib/ymaps.ts
 import React from 'react';
-import ReactDOM from 'react-dom/client';
+import * as ReactDOM from 'react-dom';
 
 // Ждём загрузки API и импортируем reactify-модуль
 const [ymaps3React] = await Promise.all([

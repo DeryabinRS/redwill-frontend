@@ -3,9 +3,9 @@ import { CalendarOutlined, EnvironmentOutlined, LinkOutlined, UserOutlined } fro
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import { useParams } from 'react-router-dom'
-import { API_URL } from '../../config/constants'
-import { useGetPostQuery } from '../../features/post/postSlice'
-import { useYmaps3 } from '../../hooks/useYmaps3'
+import { API_URL } from '@config/constants'
+import { useGetPostQuery } from '@features/post/postSlice'
+import { useYmaps3 } from '@hooks/useYmaps3'
 
 const { Title, Text, Paragraph } = Typography
 
