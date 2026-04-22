@@ -26,22 +26,26 @@ function parseLocation(location?: string) {
 const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAddress, initialLocation }) => {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
-  const [zoom, setZoom] = useState(14)
+  const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
+  const [zoom, setZoom] = useState(DEFAULT_ZOOM)
 
   useEffect(() => {
     const parsed = parseLocation(initialLocation)
     if (!parsed) return
     setCoords(parsed)
+    setCenter([parsed.lng, parsed.lat])
+    setZoom(14)
   }, [initialLocation])
 
   const handleMapClick = useCallback((_object: unknown, event: YMapClickEvent) => {
     if (event?.coordinates) {
       const [lng, lat] = event.coordinates;
       setCoords({ lat, lng });
+      setCenter([lng, lat])
       onChangeLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
       onChangeAddress('Поиск адреса...');
     }
-  }, []);
+  }, [onChangeAddress, onChangeLocation]);
 
   // 📍 Обратное геокодирование при изменении координат
   useEffect(() => {
@@ -69,7 +73,7 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
     };
 
     fetchAddress();
-  }, [coords]);
+  }, [coords, onChangeAddress]);
 
   if (error) {
     return (
@@ -106,9 +110,6 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
     YMapListener,
   } = reactify.module(window.ymaps3);
 
-  const center: [number, number] = coords ? [coords.lng, coords.lat] : DEFAULT_CENTER
-  const mapZoom = coords ? zoom : DEFAULT_ZOOM
-
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif' }}>
       {/* 🔑 Контейнер с ЯВНОЙ высотой в пикселях — обязательно! */}
@@ -124,7 +125,7 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
         <YMap
           location={{
             center,
-            zoom: mapZoom,
+            zoom,
           }}
         >
           <YMapDefaultSchemeLayer />
@@ -160,21 +161,22 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
             zIndex: 1,
             display: 'flex',
             flexDirection: 'column',
-            gap: 8,
+            gap: 4,
           }}
         >
           <button
             type="button"
             onClick={() => setZoom((currentZoom) => Math.min(currentZoom + 1, 20))}
             style={{
-              width: 32,
-              height: 32,
+              width: 28,
+              height: 28,
               border: '1px solid #d9d9d9',
               borderRadius: 6,
               background: '#fff',
               cursor: 'pointer',
               fontSize: 18,
               lineHeight: 1,
+              color: '#64748b',
             }}
             aria-label="Увеличить масштаб"
           >
@@ -184,14 +186,15 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
             type="button"
             onClick={() => setZoom((currentZoom) => Math.max(currentZoom - 1, 2))}
             style={{
-              width: 32,
-              height: 32,
+              width: 28,
+              height: 28,
               border: '1px solid #d9d9d9',
               borderRadius: 6,
               background: '#fff',
               cursor: 'pointer',
               fontSize: 18,
               lineHeight: 1,
+              color: '#64748b',
             }}
             aria-label="Уменьшить масштаб"
           >
