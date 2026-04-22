@@ -51,6 +51,12 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
     }
   }, [aspect])
 
+  // Синхронизируем превью при асинхронном обновлении value (например, при загрузке данных поста)
+  useEffect(() => {
+    if (isCropping) return
+    setImgSrc(value || '')
+  }, [value, isCropping])
+
   const beforeUpload = (file: File) => {
     const allowedTypes = ['image/jpeg', 'image/png']
     if (!allowedTypes.includes(file.type)) {

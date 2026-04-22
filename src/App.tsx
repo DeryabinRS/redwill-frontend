@@ -19,6 +19,10 @@ import Dashboard from './pages/Dashboard'
 import Users from './pages/Dashboard/Users'
 import User from './pages/Dashboard/User'
 import AddPost from './pages/Posts/AddPost'
+import Post from './pages/Posts/Post'
+import DashboardPosts from './pages/Dashboard/Posts/Posts'
+import DashboardAddPost from './pages/Dashboard/Posts/AddPost'
+import DashboardUpdatePost from './pages/Dashboard/Posts/UpdatePost'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -50,6 +54,7 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+            <Route path="/posts/:post" element={<Post />} />
           </Route>
           
           {/* Dashboard с боковым меню */}
@@ -64,6 +69,9 @@ function AppContent() {
             <Route index element={<Dashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<User />} />
+            <Route path="posts" element={<DashboardPosts />} />
+            <Route path="posts/create" element={<DashboardAddPost />} />
+            <Route path="posts/:post/edit" element={<DashboardUpdatePost />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>

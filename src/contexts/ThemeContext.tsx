@@ -47,9 +47,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         headerBg: mode === 'dark' ? '#141414' : '#fff',
         siderBg: mode === 'dark' ? '#141414' : '',
       },
-      Menu: {
-        colorBgContainer: mode === 'dark' ? '#141414' : '',
-      },
+
     },
   }), [mode])
 

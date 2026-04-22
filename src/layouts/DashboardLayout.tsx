@@ -4,6 +4,7 @@ import {
   DashboardOutlined, 
   MenuOutlined, 
   UserOutlined, 
+  FileTextOutlined,
   ShoppingOutlined, 
   SettingOutlined,
   LogoutOutlined 
@@ -64,6 +65,11 @@ function DashboardLayout() {
       key: 'users',
       icon: <UserOutlined />,
       label: <NavLink to="/dashboard/users" onClick={handleMenuClick}>Пользователи</NavLink>,
+    },
+    {
+      key: 'posts',
+      icon: <FileTextOutlined />,
+      label: <NavLink to="/dashboard/posts" onClick={handleMenuClick}>Посты</NavLink>,
     },
     {
       key: 'orders',
@@ -136,7 +142,6 @@ function DashboardLayout() {
             {renderLogo()}
           </div>
           <Menu
-            theme="dark"
             mode="inline"
             selectedKeys={[location.pathname]}
             items={menuItems}

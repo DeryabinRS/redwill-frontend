@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, type FC } from 'react';
 import { useYmaps3 } from '../../hooks/useYmaps3';
 
 const DEFAULT_CENTER: [number, number] = [50.618423, 55.751244]; // [lng, lat]
+const DEFAULT_ZOOM = 4
 
 interface YMapClickEvent {
   coordinates: [number, number];
@@ -12,11 +13,26 @@ interface YMapClickEvent {
 interface IYandexMapV3Picker {
   onChangeLocation: (val: string) => void; 
   onChangeAddress: (val: string) => void;
+  initialLocation?: string;
 }
 
-const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAddress }) => {
+function parseLocation(location?: string) {
+  if (!location) return null
+  const [latValue, lngValue] = location.split(',').map((part) => Number(part.trim()))
+  if (Number.isNaN(latValue) || Number.isNaN(lngValue)) return null
+  return { lat: latValue, lng: lngValue }
+}
+
+const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAddress, initialLocation }) => {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [zoom, setZoom] = useState(14)
+
+  useEffect(() => {
+    const parsed = parseLocation(initialLocation)
+    if (!parsed) return
+    setCoords(parsed)
+  }, [initialLocation])
 
   const handleMapClick = useCallback((_object: unknown, event: YMapClickEvent) => {
     if (event?.coordinates) {
@@ -90,6 +106,9 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
     YMapListener,
   } = reactify.module(window.ymaps3);
 
+  const center: [number, number] = coords ? [coords.lng, coords.lat] : DEFAULT_CENTER
+  const mapZoom = coords ? zoom : DEFAULT_ZOOM
+
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif' }}>
       {/* 🔑 Контейнер с ЯВНОЙ высотой в пикселях — обязательно! */}
@@ -100,9 +119,13 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
         height: `400px`,
         // maxWidth: '650px',
         width: '100%',
+        position: 'relative',
       }}>
         <YMap
-          location={reactify.useDefault({ center: DEFAULT_CENTER, zoom: 4 })}
+          location={{
+            center,
+            zoom: mapZoom,
+          }}
         >
           <YMapDefaultSchemeLayer />
           <YMapDefaultFeaturesLayer />
@@ -127,6 +150,54 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
             </YMapMarker>
           )}
         </YMap>
+
+        {/* Кастомный зум (работает стабильно, без antd) */}
+        <div
+          style={{
+            position: 'absolute',
+            right: 12,
+            top: 12,
+            zIndex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setZoom((currentZoom) => Math.min(currentZoom + 1, 20))}
+            style={{
+              width: 32,
+              height: 32,
+              border: '1px solid #d9d9d9',
+              borderRadius: 6,
+              background: '#fff',
+              cursor: 'pointer',
+              fontSize: 18,
+              lineHeight: 1,
+            }}
+            aria-label="Увеличить масштаб"
+          >
+            +
+          </button>
+          <button
+            type="button"
+            onClick={() => setZoom((currentZoom) => Math.max(currentZoom - 1, 2))}
+            style={{
+              width: 32,
+              height: 32,
+              border: '1px solid #d9d9d9',
+              borderRadius: 6,
+              background: '#fff',
+              cursor: 'pointer',
+              fontSize: 18,
+              lineHeight: 1,
+            }}
+            aria-label="Уменьшить масштаб"
+          >
+            -
+          </button>
+        </div>
       </div>
     </div>
   );

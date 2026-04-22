@@ -3,6 +3,7 @@ import { Card, Col, Typography, Button, Space, Row, Spin } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useGetPaginatedPostListQuery } from '../../features/post/postSlice'
+import { useNavigate } from 'react-router-dom'
 import './PostFeed.css'
 import { API_URL } from '../../config/constants'
 
@@ -17,6 +18,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
   title = 'Будущие мероприятия',
   initialPage = 1,
 }) => {
+  const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(initialPage)
   const { data, isLoading, isFetching, error } = useGetPaginatedPostListQuery({ pagination: { page: currentPage }, post_category_ids: 2 });
 
@@ -61,6 +63,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
             <Card
               className="post-card"
               hoverable
+              onClick={() => navigate(`/posts/${post.id}`)}
               cover={
                 post.image ? (
                   <div className="post-card-image-container">

@@ -13,6 +13,9 @@ export type Post = {
   title: string
   content: string
   post_category_id: number
+  publication_status?: number
+  moderation_status?: 0 | 1 | 2
+  address?: string | null
   location: string | null
   latitude: number | null
   longitude: number | null
@@ -70,6 +73,10 @@ type CreatePostResponse = {
   data: Post
 }
 
+type GetPostResponse = {
+  data: Post
+}
+
 type GetPostListResponse = {
   data: Post[]
   current_page: number
@@ -84,6 +91,7 @@ type GetPostListResponse = {
 
 export const postApi = createApi({
   reducerPath: 'postApi',
+  tagTypes: ['Posts', 'Post'],
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL || '/api',
     credentials: 'include',
@@ -120,6 +128,31 @@ export const postApi = createApi({
         message: string
         data: GetPostListResponse
       }) => response.data,
+      providesTags: ['Posts'],
+    }),
+    getDashboardPosts: builder.query<GetPostListResponse, { pagination?: { page?: number, per_page?: number } } | void>({
+      query: (args) => ({
+        url: '/posts',
+        params: {
+          page: args?.pagination?.page,
+          per_page: args?.pagination?.per_page || 10,
+        },
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: GetPostListResponse
+      }) => response.data,
+      providesTags: ['Posts'],
+    }),
+    getPost: builder.query<Post, string | number>({
+      query: (post) => ({
+        url: `/posts/${post}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: GetPostResponse) => response.data,
+      providesTags: (_result, _error, post) => [{ type: 'Post', id: post }],
     }),
     createPost: builder.mutation<Post, FormData>({
       query: (payload) => ({
@@ -129,6 +162,24 @@ export const postApi = createApi({
         formData: true,
       }),
       transformResponse: (response: CreatePostResponse) => response.data,
+      invalidatesTags: ['Posts'],
+    }),
+    updatePost: builder.mutation<Post, { post: string | number; payload: FormData }>({
+      query: ({ post, payload }) => ({
+        url: `/posts/${post}`,
+        method: 'PUT',
+        body: payload,
+        formData: true,
+      }),
+      transformResponse: (response: CreatePostResponse) => response.data,
+      invalidatesTags: (_result, _error, { post }) => ['Posts', { type: 'Post', id: post }],
+    }),
+    deletePost: builder.mutation<void, string | number>({
+      query: (post) => ({
+        url: `/posts/${post}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Posts'],
     }),
   }),
 })
@@ -138,4 +189,8 @@ export const {
   useLazyGetPostCategoriesQuery,
   useCreatePostMutation,
   useGetPaginatedPostListQuery,
+  useGetDashboardPostsQuery,
+  useGetPostQuery,
+  useUpdatePostMutation,
+  useDeletePostMutation,
 } = postApi
