@@ -29,6 +29,7 @@ export type UserInfo = {
   last_name: string
   first_name: string
   middle_name: string
+  login: string
   email: string
   roles: string[]
   created_at?: string

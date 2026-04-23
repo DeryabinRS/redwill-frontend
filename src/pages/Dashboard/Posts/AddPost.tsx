@@ -50,9 +50,9 @@ function AddPost() {
         if (file) formData.append('image', file)
       }
 
-      await createPost(formData).unwrap()
+      const created = await createPost(formData).unwrap()
       message.success('Пост создан')
-      navigate('/dashboard/posts')
+      navigate(`/dashboard/posts/${created.id}`)
     } catch {
       message.error('Не удалось создать пост')
     }

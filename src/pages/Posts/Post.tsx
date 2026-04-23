@@ -1,4 +1,4 @@
-import { Alert, Card, Col, Row, Skeleton, Space, Typography } from 'antd'
+import { Alert, Card, Col, Divider, Row, Skeleton, Space, Tag, Typography } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, LinkOutlined, UserOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import dayjs from 'dayjs'
@@ -215,7 +215,15 @@ function Post() {
               <Title level={2} style={{ margin: 0 }}>
                 {postData.title}
               </Title>
-
+              <Space>
+                {!postData.publication_status && (
+                  <Tag color="yellow">На модерации</Tag>
+                )}
+                {postData.moderation_status === 3 && (
+                  <Tag color="red">Модерация отклонена</Tag>
+                )}
+              </Space>
+              <Divider style={{ margin: '00' }} />
               <Space direction="vertical" size={8}>
                 {(postData.date_start || postData.time_start) && (
                   <Space size={8}>

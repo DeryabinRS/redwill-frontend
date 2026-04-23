@@ -72,6 +72,7 @@ function AppContent() {
             <Route path="posts" element={<DashboardPosts />} />
             <Route path="posts/create" element={<DashboardAddPost />} />
             <Route path="posts/:post/edit" element={<DashboardUpdatePost />} />
+            <Route path="posts/:post" element={<DashboardUpdatePost />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>

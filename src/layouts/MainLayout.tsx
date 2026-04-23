@@ -64,7 +64,7 @@ function MainLayout() {
 			{
 				key: 'profile',
 				icon: <UserOutlined />,
-				label: <NavLink to="/profile">{userInfo.first_name}</NavLink>,
+				label: <NavLink to="/profile">{userInfo.login}</NavLink>,
 			},
 			{
 				key: 'logout',

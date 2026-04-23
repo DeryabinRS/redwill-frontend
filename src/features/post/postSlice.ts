@@ -14,7 +14,7 @@ export type Post = {
   content: string
   post_category_id: number
   publication_status?: number
-  moderation_status?: 0 | 1 | 2
+  moderation_status?: 0 | 1 | 2 | 3
   address?: string | null
   location: string | null
   latitude: number | null

@@ -13,7 +13,7 @@ export const moderationStatusTagColor: Record<number, string> = {
 };
 
 export const publicationStatusOptions = [
-	{ value: 0, label: 'Черновик' },
+	{ value: 0, label: 'Не опубликован' },
 	{ value: 1, label: 'Опубликован' },
 ];
 
