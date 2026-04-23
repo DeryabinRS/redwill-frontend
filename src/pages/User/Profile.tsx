@@ -16,22 +16,25 @@ function Profile() {
 
   if (!userInfo) {
     return (
-      <Card>
-        <Typography.Title level={2}>{t('profile.title')}</Typography.Title>
+      <Card size="small">
+        <Typography.Title level={4}>{t('profile.title')}</Typography.Title>
         <Typography.Text>{t('profile.loadError')}</Typography.Text>
       </Card>
     )
   }
 
   return (
-    <Card size="small" className='container' style={{ marginTop: 8 }}>
-      <Typography.Title level={2}>{t('profile.title')}</Typography.Title>
-      <Descriptions size="small" column={1} bordered>
-        <Descriptions.Item label={t('profile.lastName')}>{userInfo.last_name}</Descriptions.Item>
-        <Descriptions.Item label={t('profile.firstName')}>{userInfo.first_name}</Descriptions.Item>
-        <Descriptions.Item label={t('profile.email')}>{userInfo.email}</Descriptions.Item>
-      </Descriptions>
-    </Card>
+    <div className='container' style={{ marginTop: 8 }}>
+      <Card size="small">
+        <Typography.Title level={4}>{t('profile.title')}</Typography.Title>
+        <Descriptions size="small" column={1} bordered>
+          <Descriptions.Item label={t('profile.login')}>{userInfo.login}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.lastName')}>{userInfo.last_name}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.firstName')}>{userInfo.first_name}</Descriptions.Item>
+          <Descriptions.Item label={t('profile.email')}>{userInfo.email}</Descriptions.Item>
+        </Descriptions>
+      </Card>
+    </div>
   )
 }
 

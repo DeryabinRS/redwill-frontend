@@ -65,7 +65,7 @@ function AddPost() {
           К списку событий
         </Button>
       </Link>
-      <Typography.Title level={2}>Создать пост</Typography.Title>
+      <Typography.Title level={4}>Создать пост</Typography.Title>
       <Card>
         <Form
           form={form}

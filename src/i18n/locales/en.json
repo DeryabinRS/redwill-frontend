@@ -37,6 +37,7 @@
   "profile": {
     "title": "Personal Data",
     "id": "ID",
+    "login": "Login",
     "firstName": "First Name",
     "lastName": "Last Name",
     "email": "Email",

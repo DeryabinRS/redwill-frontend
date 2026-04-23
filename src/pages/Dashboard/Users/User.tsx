@@ -30,7 +30,7 @@ function User() {
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
           <Space align="center">
             <UserOutlined style={{ fontSize: 48 }} />
-            <Typography.Title level={2} style={{ margin: 0 }}>
+            <Typography.Title level={4} style={{ margin: 0 }}>
               {user.first_name} {user.last_name}
             </Typography.Title>
           </Space>

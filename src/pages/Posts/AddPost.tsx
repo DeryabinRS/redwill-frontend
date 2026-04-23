@@ -66,7 +66,7 @@ function AddPost() {
 			const created = await createPost(formData).unwrap()
 
 			message.success('Пост успешно создан')
-			navigate(`/dashboard/posts/${created.id}`)
+			navigate(`/posts/${created.id}`)
 		} catch (error) {
 			console.error('Create post error:', error)
 			message.error('Ошибка при создании поста')

@@ -32,6 +32,7 @@
   "profile": {
     "title": "Личные данные",
     "id": "ID",
+    "login": "Логин",
     "firstName": "Имя",
     "lastName": "Фамилия",
     "email": "Email",

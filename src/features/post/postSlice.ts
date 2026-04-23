@@ -132,7 +132,7 @@ export const postApi = createApi({
     }),
     getDashboardPosts: builder.query<GetPostListResponse, { pagination?: { page?: number, per_page?: number } } | void>({
       query: (args) => ({
-        url: '/posts',
+        url: '/dashboard/posts',
         params: {
           page: args?.pagination?.page,
           per_page: args?.pagination?.per_page || 10,

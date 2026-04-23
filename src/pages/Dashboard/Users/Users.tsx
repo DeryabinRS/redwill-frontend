@@ -52,7 +52,7 @@ function Users() {
 
   return (
     <div>
-      <Typography.Title level={2}>Пользователи</Typography.Title>
+      <Typography.Title level={4}>Пользователи</Typography.Title>
       
       <Table
         dataSource={usersData?.data}

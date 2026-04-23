@@ -16,7 +16,7 @@ type FormValues = {
   location?: string
   address?: string
   publication_status: boolean
-  moderation_status: 0 | 1 | 2
+  moderation_status: 0 | 1 | 2 | 3
   date_start: dayjs.Dayjs
   date_end?: dayjs.Dayjs
   time_start?: dayjs.Dayjs
@@ -114,7 +114,7 @@ function UpdatePost() {
           К списку событий
         </Button>
       </Link>
-      <Typography.Title level={2}>Редактировать пост</Typography.Title>
+      <Typography.Title level={4}>Редактировать пост</Typography.Title>
       <Card>
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>

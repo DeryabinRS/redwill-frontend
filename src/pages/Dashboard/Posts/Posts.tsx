@@ -93,7 +93,7 @@ function Posts() {
   return (
     <div>
       <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: 16 }}>
-        <Typography.Title level={2} style={{ margin: 0 }}>
+        <Typography.Title level={4} style={{ margin: 0 }}>
           Посты
         </Typography.Title>
         <Link to="/dashboard/posts/create">
