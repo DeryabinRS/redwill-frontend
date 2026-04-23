@@ -1,11 +1,12 @@
 import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Space, Switch, TimePicker, Typography } from 'antd'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCreatePostMutation } from '../../../features/post/postSlice'
 import ImageCropper from '../../../components/ImageCropper'
 import YandexMapV3Picker from '../../../components/YandexMapV3Picker'
 import { base64ToFile, sanitizeInput } from '../../../utils/form'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 
 type FormValues = {
   title: string
@@ -59,6 +60,11 @@ function AddPost() {
 
   return (
     <div>
+      <Link to="/dashboard/posts">
+        <Button icon={<ArrowLeftOutlined />} style={{ marginBottom: 16 }}>
+          К списку событий
+        </Button>
+      </Link>
       <Typography.Title level={2}>Создать пост</Typography.Title>
       <Card>
         <Form

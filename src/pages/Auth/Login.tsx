@@ -1,9 +1,10 @@
 import { App as AntdApp, Button, Form, Input, Result } from 'antd'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLoginMutation } from '../features/auth/authSlice'
-import { useLazyGetUserInfoQuery } from '../features/user/userSlice'
+import { useLoginMutation } from '@features/auth/authSlice'
+import { useLazyGetUserInfoQuery } from '@features/user/userSlice'
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
-import { setAuthToken } from '../utils/auth'
+import { setAuthToken } from '@utils/auth'
+import { handleApiFormError } from '@utils/apiValidationErrors'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 
 type LoginFormValues = {
@@ -36,11 +37,12 @@ function Login() {
       message.success('Успешный вход')
       navigate('/')
     } catch (e: unknown) {
-
-
-      const dataMessage = (e as { data?: { message?: string } })?.data?.message
-      const errorMessage = (e as { message?: string })?.message
-      message.error(dataMessage || errorMessage || 'Не удалось войти')
+      handleApiFormError({
+        error: e,
+        form,
+        notifyError: (text) => message.error(text),
+        fallback: 'Не удалось войти',
+      })
     }
   }
 

@@ -1,7 +1,7 @@
 import { App as AntdApp, Button, Form, Input, Result } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useResetPasswordMutation } from '../features/auth/authSlice'
+import { useResetPasswordMutation } from '@features/auth/authSlice'
 
 type FormValues = { password: string; confirmPassword: string }
 

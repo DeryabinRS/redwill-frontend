@@ -1,10 +1,11 @@
-import { App as AntdApp, Button, Popconfirm, Space, Table, Typography } from 'antd'
+import { App as AntdApp, Button, Popconfirm, Space, Table, Tag, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import { useDeletePostMutation, useGetDashboardPostsQuery, type Post } from '../../../features/post/postSlice'
+import { useDeletePostMutation, useGetDashboardPostsQuery, type Post } from '@features/post/postSlice'
+import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function Posts() {
   const { message } = AntdApp.useApp()
@@ -44,19 +45,35 @@ function Posts() {
       title: 'Дата',
       dataIndex: 'date_start',
       key: 'date_start',
-      width: 140,
+      width: 80,
       render: (value: string) => dayjs(value).format('DD.MM.YYYY'),
+    },
+    {
+      title: 'Публикация',
+      dataIndex: 'publication_status',
+      key: 'publication_status',
+      width: 80,
+      render: (value: number) => value === 1 ? <Tag color="green">Опубликовано</Tag> : <Tag color="red">Черновик</Tag>,
+    },
+    {
+      title: 'Модерация',
+      dataIndex: 'moderation_status',
+      key: 'moderation_status',
+      width: 160,
+      render: (value?: number) => {
+        const option = moderationStatusOptions.find((o) => o.value === value)
+        if (!option) return <Tag>—</Tag>
+        return <Tag color={moderationStatusTagColor[value ?? 0] ?? 'default'}>{option.label}</Tag>
+      },
     },
     {
       title: 'Действия',
       key: 'actions',
-      width: 180,
+      width: 100,
       render: (_value, record) => (
         <Space>
           <Link to={`/dashboard/posts/${record.id}/edit`}>
-            <Button icon={<EditOutlined />} size="small">
-              Изменить
-            </Button>
+            <Button icon={<EditOutlined />} size="small" />
           </Link>
           <Popconfirm
             title="Удалить пост?"
@@ -66,9 +83,7 @@ function Posts() {
             okButtonProps={{ danger: true, loading: isDeleting }}
             onConfirm={() => handleDeletePost(record.id)}
           >
-            <Button danger icon={<DeleteOutlined />} size="small">
-              Удалить
-            </Button>
+            <Button danger icon={<DeleteOutlined />} size="small" />
           </Popconfirm>
         </Space>
       ),
@@ -83,7 +98,7 @@ function Posts() {
         </Typography.Title>
         <Link to="/dashboard/posts/create">
           <Button type="primary" icon={<PlusOutlined />}>
-            Добавить пост
+            Добавить событие
           </Button>
         </Link>
       </Space>

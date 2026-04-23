@@ -47,6 +47,21 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
     }
   }, [onChangeAddress, onChangeLocation]);
 
+  // Добавляем обработчик изменения камеры скролом
+  const handleActionEnd = useCallback((event: { 
+    location: { center: [number, number]; zoom: number };
+    type: string;
+  }) => {
+    // Обновляем зум только если он изменился
+    if (event.location.zoom !== zoom) {
+      setZoom(event.location.zoom);
+    }
+    // Опционально: обновляем center, если нужно отслеживать панорамирование
+    if (event.location.center[0] !== center[0] || event.location.center[1] !== center[1]) {
+      setCenter(event.location.center);
+    }
+  }, [zoom, center]);
+
   // 📍 Обратное геокодирование при изменении координат
   useEffect(() => {
     if (!coords) {
@@ -132,6 +147,7 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
           <YMapDefaultFeaturesLayer />
 
           <YMapListener onClick={handleMapClick} />
+          <YMapListener onActionEnd={handleActionEnd} />
 
           {coords && (
             <YMapMarker

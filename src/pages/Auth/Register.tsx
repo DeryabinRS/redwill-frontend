@@ -1,11 +1,13 @@
 import { App as AntdApp, Button, Form, Input, Result } from 'antd'
 import { Link } from 'react-router-dom'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
-import { useRegisterMutation } from '../features/auth/authSlice'
+import { useRegisterMutation } from '@features/auth/authSlice'
+import { handleApiFormError } from '@utils/apiValidationErrors'
 
 type RegisterFormValues = {
-  first_name: string
-  last_name: string
+  // first_name: string
+  // last_name: string
+  login: string
   email: string
   password: string
   confirmPassword: string
@@ -30,14 +32,18 @@ function Register() {
       await register({
         email: values.email,
         password: values.password,
-        first_name: values.first_name,
-        last_name: values.last_name,
+        // first_name: values.first_name,
+        // last_name: values.last_name,
+        login: values.login,
         recaptcha_token: token, // Передаем токен
       }).unwrap()
     } catch (e: unknown) {
-      const dataMessage = (e as { data?: { message?: string } })?.data?.message
-      const errorMessage = (e as { message?: string })?.message
-      message.error(dataMessage || errorMessage || 'Не удалось создать аккаунт')
+      handleApiFormError({
+        error: e,
+        form,
+        notifyError: (text) => message.error(text),
+        fallback: 'Не удалось создать аккаунт',
+      })
     }
   }
 
@@ -54,12 +60,16 @@ function Register() {
 
   return (
     <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
-      <Form.Item label="Имя" name="first_name" rules={[{ required: true, message: 'Введите имя' }]}> 
+      {/* <Form.Item label="Имя" name="first_name" rules={[{ required: true, message: 'Введите имя' }]}> 
         <Input placeholder="Иван" autoComplete="given-name" />
       </Form.Item>
 
       <Form.Item label="Фамилия" name="last_name" rules={[{ required: true, message: 'Введите фамилию' }]}> 
         <Input placeholder="Иванов" autoComplete="family-name" />
+      </Form.Item> */}
+
+      <Form.Item label="Login" name="login" rules={[{ required: true, message: 'Введите login' }]}> 
+        <Input placeholder="Введите логин" autoComplete="login" />
       </Form.Item>
 
       <Form.Item

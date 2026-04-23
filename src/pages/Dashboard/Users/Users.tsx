@@ -1,7 +1,7 @@
 import { Table, Typography, Tag, Space } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import { useGetAllUsersQuery, type UserInfo } from '../../features/user/userSlice'
+import { useGetAllUsersQuery, type UserInfo } from '../../../features/user/userSlice'
 
 function Users() {
   const { data: usersData, isLoading } = useGetAllUsersQuery()

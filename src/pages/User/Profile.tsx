@@ -1,6 +1,6 @@
 import { Card, Descriptions, Spin, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { useGetUserInfoQuery } from '../features/user/userSlice'
+import { useGetUserInfoQuery } from '@features/user/userSlice'
 
 function Profile() {
   const { t } = useTranslation()
@@ -24,9 +24,9 @@ function Profile() {
   }
 
   return (
-    <Card className='container'>
+    <Card size="small" className='container' style={{ marginTop: 8 }}>
       <Typography.Title level={2}>{t('profile.title')}</Typography.Title>
-      <Descriptions column={1} bordered>
+      <Descriptions size="small" column={1} bordered>
         <Descriptions.Item label={t('profile.lastName')}>{userInfo.last_name}</Descriptions.Item>
         <Descriptions.Item label={t('profile.firstName')}>{userInfo.first_name}</Descriptions.Item>
         <Descriptions.Item label={t('profile.email')}>{userInfo.email}</Descriptions.Item>

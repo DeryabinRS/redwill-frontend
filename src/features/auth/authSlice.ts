@@ -6,6 +6,7 @@ export type User = {
   email: string
   first_name?: string
   last_name?: string
+  login: string
 }
 
 export type LoginResponse = {
@@ -18,12 +19,11 @@ export type LoginResponse = {
 }
 
 type LoginRequest = { email: string; password: string; recaptcha_token?: string; }
-type RegisterRequest = { 
-  email: string; 
-  password: string; 
-  first_name: string; 
-  last_name: string;
-  recaptcha_token?: string;
+type RegisterRequest = {
+  email: string
+  password: string
+  login: string
+  recaptcha_token?: string
 }
 
 export type RegisterResponse = {

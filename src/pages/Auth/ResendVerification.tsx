@@ -1,7 +1,7 @@
 import { App as AntdApp, Button, Form, Input, Result } from 'antd'
 import { useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useResendVerificationMutation } from '../features/auth/authSlice'
+import { useResendVerificationMutation } from '@features/auth/authSlice'
 
 type FormValues = { email: string }
 

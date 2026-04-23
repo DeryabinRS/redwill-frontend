@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { Button, Result, Spin } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useVerifyEmailMutation } from '../features/auth/authSlice'
+import { useVerifyEmailMutation } from '@features/auth/authSlice'
 
 function useQuery() {
   const { search } = useLocation()

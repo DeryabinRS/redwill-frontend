@@ -3,10 +3,11 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGetPostQuery, useUpdatePostMutation } from '../../../features/post/postSlice'
-import { API_URL } from '../../../config/constants'
-import ImageCropper from '../../../components/ImageCropper'
-import YandexMapV3Picker from '../../../components/YandexMapV3Picker'
-import { base64ToFile, sanitizeInput } from '../../../utils/form'
+import { API_URL } from '@config/constants'
+import ImageCropper from '@components/ImageCropper'
+import YandexMapV3Picker from '@components/YandexMapV3Picker'
+import { base64ToFile, moderationStatusOptions, sanitizeInput } from '@utils/form'
+import { ArrowLeftOutlined } from '@ant-design/icons'
 
 type FormValues = {
   title: string
@@ -108,9 +109,11 @@ function UpdatePost() {
 
   return (
     <div>
-      <Space style={{ marginBottom: 16 }}>
-        <Link to="/dashboard/posts">К списку постов</Link>
-      </Space>
+      <Link to="/dashboard/posts">
+        <Button icon={<ArrowLeftOutlined />} style={{ marginBottom: 16 }}>
+          К списку событий
+        </Button>
+      </Link>
       <Typography.Title level={2}>Редактировать пост</Typography.Title>
       <Card>
         <Form form={form} layout="vertical" onFinish={onSubmit}>
@@ -149,11 +152,7 @@ function UpdatePost() {
                 <Form.Item name="moderation_status" label="Модерация">
                   <Select
                     style={{ minWidth: 220 }}
-                    options={[
-                      { value: 0, label: 'На модерации' },
-                      { value: 1, label: 'Одобрено' },
-                      { value: 2, label: 'Отменено' },
-                    ]}
+                    options={moderationStatusOptions}
                   />
                 </Form.Item>
               </Space>

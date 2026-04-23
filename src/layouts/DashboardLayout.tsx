@@ -5,7 +5,6 @@ import {
   MenuOutlined, 
   UserOutlined, 
   FileTextOutlined,
-  ShoppingOutlined, 
   SettingOutlined,
   LogoutOutlined 
 } from '@ant-design/icons'
@@ -70,11 +69,6 @@ function DashboardLayout() {
       key: 'posts',
       icon: <FileTextOutlined />,
       label: <NavLink to="/dashboard/posts" onClick={handleMenuClick}>Посты</NavLink>,
-    },
-    {
-      key: 'orders',
-      icon: <ShoppingOutlined />,
-      label: <NavLink to="/dashboard/orders" onClick={handleMenuClick}>Заказы</NavLink>,
     },
     {
       key: 'settings',

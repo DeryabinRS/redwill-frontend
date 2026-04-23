@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { Card, Typography, Tag, Space, Descriptions, Button } from 'antd'
 import { ArrowLeftOutlined, CheckCircleOutlined, UserOutlined } from '@ant-design/icons'
-import { useGetUserQuery } from '../../features/user/userSlice'
+import { useGetUserQuery } from '../../../features/user/userSlice'
 
 function User() {
   const { id } = useParams<{ id: string }>()

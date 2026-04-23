@@ -1,7 +1,7 @@
 import { App as AntdApp, Button, Form, Input, Result } from 'antd'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
-import { useForgotPasswordMutation } from '../features/auth/authSlice'
+import { useForgotPasswordMutation } from '@features/auth/authSlice'
 
 type FormValues = { email: string }
 
