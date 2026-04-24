@@ -1,11 +1,11 @@
-import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Skeleton, Space, Switch, TimePicker, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, DatePicker, Divider, Form, Input, Row, Select, Skeleton, Space, Switch, TimePicker, Typography } from 'antd'
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useGetPostQuery, useUpdatePostMutation } from '../../../features/post/postSlice'
+import { useGetPostQuery, useUpdatePostMutation, useUploadPostImageMutation } from '../../../features/post/postSlice'
 import { API_URL } from '@config/constants'
 import ImageCropper from '@components/ImageCropper'
-import YandexMapV3Picker from '@components/YandexMapV3Picker'
+import MapPicker from '@components/YandexMapV3/MapPicker'
 import { base64ToFile, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -28,9 +28,15 @@ function UpdatePost() {
   const { post } = useParams<{ post: string }>()
   const navigate = useNavigate()
   const [form] = Form.useForm<FormValues>()
-  const [image, setImage] = useState('')
+  const [imageForm] = Form.useForm()
+  const [previewUrl, setPreviewUrl] = useState('')
+  const [pendingImage, setPendingImage] = useState('')
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait')
   const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
+  const [uploadPostImage, { isLoading: isUploadingImage }] = useUploadPostImageMutation()
+
+  const cropperValue = pendingImage || previewUrl
+  const hasNewImageToUpload = Boolean(pendingImage && pendingImage.startsWith('data:image'))
 
   const {
     data: postData,
@@ -61,9 +67,35 @@ function UpdatePost() {
         : undefined,
     })
     if (postData.image) {
-      setImage(`${API_URL}${postData.image}`)
+      setPreviewUrl(`${API_URL}${postData.image}`)
+      setPendingImage('')
     }
   }, [form, postData])
+
+  const onImageSubmit = async () => {
+    if (!post) return
+    if (!pendingImage || !pendingImage.startsWith('data:image')) {
+      message.warning('Выберите новое изображение')
+      return
+    }
+    try {
+      const file = await base64ToFile(pendingImage, `post_${Date.now()}.jpg`)
+      if (!file) {
+        message.error('Не удалось подготовить файл')
+        return
+      }
+      const fd = new FormData()
+      fd.append('image', file)
+      const imageResult = await uploadPostImage({ post, payload: fd }).unwrap()
+      message.success('Изображение обновлено')
+      if (imageResult.image) {
+        setPreviewUrl(`${API_URL}${imageResult.image}`)
+      }
+      setPendingImage('')
+    } catch {
+      message.error('Не удалось обновить изображение')
+    }
+  }
 
   const onSubmit = async (values: FormValues) => {
     if (!post) return
@@ -82,10 +114,6 @@ function UpdatePost() {
       if (values.date_end) formData.append('date_end', values.date_end.format('YYYY-MM-DD'))
       if (values.time_start) formData.append('time_start', values.time_start.format('HH:mm'))
       if (values.time_end) formData.append('time_end', values.time_end.format('HH:mm'))
-      if (image && image.startsWith('data:image')) {
-        const file = await base64ToFile(image, `post_${Date.now()}.jpg`)
-        if (file) formData.append('image', file)
-      }
 
       await updatePost({ post, payload: formData }).unwrap()
       message.success('Пост обновлен')
@@ -107,6 +135,30 @@ function UpdatePost() {
     return <Typography.Text type="danger">Пост не найден</Typography.Text>
   }
 
+  const renderImageForm = () => (
+    <Form form={imageForm} layout="vertical" onFinish={onImageSubmit}>
+        <Form.Item label="Обложка (JPG, PNG)">
+          <ImageCropper
+            value={cropperValue}
+            onChange={(v) => {
+              if (v.startsWith('data:image')) setPendingImage(v)
+              else setPendingImage('')
+            }}
+            orientation={orientation}
+            onOrientationChange={setOrientation}
+          />
+        </Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={isUploadingImage}
+          disabled={!hasNewImageToUpload || isUploadingImage}
+        >
+          Обновить изображение
+        </Button>
+    </Form>
+  );
+  
   return (
     <div>
       <Link to="/dashboard/posts">
@@ -115,20 +167,14 @@ function UpdatePost() {
         </Button>
       </Link>
       <Typography.Title level={4}>Редактировать пост</Typography.Title>
-      <Card>
-        <Form form={form} layout="vertical" onFinish={onSubmit}>
-          <Row gutter={16}>
-            <Col xs={24} md={8}>
-              <Form.Item label="Изображение (JPG, PNG)">
-                <ImageCropper
-                  value={image}
-                  onChange={setImage}
-                  orientation={orientation}
-                  onOrientationChange={setOrientation}
-                />
-              </Form.Item>
-            </Col>
-            <Col xs={24} md={16}>
+
+      <Card size="small">
+        <Row gutter={16}>
+          <Col xs={24} md={8} lg={8} xl={6}>
+            {renderImageForm()}
+          </Col>
+          <Col xs={24} md={16} lg={16} xl={18}>
+            <Form form={form} layout="vertical" onFinish={onSubmit}>
               <Form.Item
                 label="Заголовок"
                 name="title"
@@ -157,7 +203,7 @@ function UpdatePost() {
                 </Form.Item>
               </Space>
 
-              <YandexMapV3Picker
+              <MapPicker
                 initialLocation={postData.location || undefined}
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
@@ -175,7 +221,7 @@ function UpdatePost() {
                 <Input readOnly placeholder="Кликните по карте, чтобы определить адрес..." />
               </Form.Item>
 
-              <Space size="large">
+              <Space.Compact style={{ display: 'flex'}}>
                 <Form.Item
                   name="date_start"
                   label="Дата начала"
@@ -186,26 +232,27 @@ function UpdatePost() {
                 <Form.Item name="time_start" label="Время начала">
                   <TimePicker format="HH:mm" />
                 </Form.Item>
-              </Space>
+              </Space.Compact>
 
-              <Space size="large">
+              <Space.Compact>
                 <Form.Item name="date_end" label="Дата окончания">
                   <DatePicker />
                 </Form.Item>
                 <Form.Item name="time_end" label="Время окончания">
                   <TimePicker format="HH:mm" />
                 </Form.Item>
-              </Space>
-            </Col>
-          </Row>
+              </Space.Compact>
 
-          <Space>
-            <Button type="primary" htmlType="submit" loading={isUpdating}>
-              Сохранить
-            </Button>
-            <Button onClick={() => navigate('/dashboard/posts')}>Отмена</Button>
-          </Space>
-        </Form>
+              <Divider style={{ margin: '0' }} />
+              <Space style={{ marginTop: 16 }}>
+                <Button type="primary" htmlType="submit" loading={isUpdating}>
+                  Сохранить пост
+                </Button>
+                <Button onClick={() => navigate('/dashboard/posts')}>Отмена</Button>
+              </Space>
+            </Form>
+          </Col>
+        </Row>
       </Card>
     </div>
   )

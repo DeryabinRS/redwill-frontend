@@ -191,7 +191,7 @@ function DashboardLayout() {
           </div>
         </Header>
         
-        <Content style={{ margin: 24, minHeight: 280 }}>
+        <Content style={{ margin: 8, minHeight: 280 }}>
           <Outlet />
         </Content>
         

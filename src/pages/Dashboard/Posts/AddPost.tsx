@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCreatePostMutation } from '../../../features/post/postSlice'
 import ImageCropper from '../../../components/ImageCropper'
-import YandexMapV3Picker from '../../../components/YandexMapV3Picker'
+import MapPicker from '../../../components/YandexMapV3/MapPicker'
 import { base64ToFile, sanitizeInput } from '../../../utils/form'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -124,7 +124,7 @@ function AddPost() {
                 </Form.Item>
               </Space>
 
-              <YandexMapV3Picker
+              <MapPicker
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
                 }}

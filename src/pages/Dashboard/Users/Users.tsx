@@ -1,4 +1,4 @@
-import { Table, Typography, Tag, Space } from 'antd'
+import { Table, Typography, Tag, Space, Card } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { useGetAllUsersQuery, type UserInfo } from '../../../features/user/userSlice'
@@ -51,10 +51,11 @@ function Users() {
   ]
 
   return (
-    <div>
+    <Card size="small">
       <Typography.Title level={4}>Пользователи</Typography.Title>
       
       <Table
+        size="small"
         dataSource={usersData?.data}
         columns={columns}
         rowKey="id"
@@ -67,7 +68,7 @@ function Users() {
           showTotal: (total) => `Всего: ${total}`,
         }}
       />
-    </div>
+    </Card>
   )
 }
 

@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { ConfigProvider } from 'antd'
 
 import MainLayout from './layouts/MainLayout'
@@ -42,10 +42,13 @@ function AppContent() {
               path="/profile"
               element={
                 <ProtectedRoute>
-                  <Profile />
+                  <Outlet />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<Profile />} />
+              <Route path="posts/:post/edit" element={<DashboardUpdatePost />} />
+            </Route>
             <Route
               path="/posts/create"
               element={

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs'
 import ImageCropper from '../../components/ImageCropper';
 import { useCreatePostMutation } from '../../features/post/postSlice';
-import YandexMapV3Picker from '../../components/YandexMapV3Picker';
+import MapPicker from '../../components/YandexMapV3/MapPicker';
 import { base64ToFile, sanitizeInput } from '../../utils/form';
 
 const { Title } = Typography;
@@ -126,7 +126,7 @@ function AddPost() {
 							>
 								<Input placeholder="https://example.com" />
 							</Form.Item>
-							<YandexMapV3Picker 
+							<MapPicker 
 								onChangeLocation={(loc: string) => {
 									form.setFieldValue('location', loc); // Синхронизируем с формой
 								}}

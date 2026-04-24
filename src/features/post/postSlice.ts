@@ -91,7 +91,7 @@ type GetPostListResponse = {
 
 export const postApi = createApi({
   reducerPath: 'postApi',
-  tagTypes: ['Posts', 'Post'],
+  tagTypes: ['Posts', 'Post', 'UserPosts'],
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL || '/api',
     credentials: 'include',
@@ -146,6 +146,22 @@ export const postApi = createApi({
       }) => response.data,
       providesTags: ['Posts'],
     }),
+    getUserPosts: builder.query<GetPostListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
+      query: (args) => ({
+        url: '/user/posts',
+        params: {
+          page: args?.pagination?.page,
+          per_page: args?.pagination?.per_page || 10,
+        },
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: GetPostListResponse
+      }) => response.data,
+      providesTags: ['UserPosts'],
+    }),
     getPost: builder.query<Post, string | number>({
       query: (post) => ({
         url: `/posts/${post}`,
@@ -162,24 +178,34 @@ export const postApi = createApi({
         formData: true,
       }),
       transformResponse: (response: CreatePostResponse) => response.data,
-      invalidatesTags: ['Posts'],
+      invalidatesTags: ['Posts', 'UserPosts'],
     }),
     updatePost: builder.mutation<Post, { post: string | number; payload: FormData }>({
       query: ({ post, payload }) => ({
         url: `/posts/${post}`,
-        method: 'PUT',
+        method: 'POST',
         body: payload,
         formData: true,
       }),
       transformResponse: (response: CreatePostResponse) => response.data,
-      invalidatesTags: (_result, _error, { post }) => ['Posts', { type: 'Post', id: post }],
+      invalidatesTags: (_result, _error, { post }) => ['Posts', 'UserPosts', { type: 'Post', id: post }],
+    }),
+    uploadPostImage: builder.mutation<Post, { post: string | number; payload: FormData }>({
+      query: ({ post, payload }) => ({
+        url: `/posts/${post}/image`,
+        method: 'POST',
+        body: payload,
+        formData: true,
+      }),
+      transformResponse: (response: CreatePostResponse) => response.data,
+      invalidatesTags: (_result, _error, { post }) => ['Posts', 'UserPosts', { type: 'Post', id: post }],
     }),
     deletePost: builder.mutation<void, string | number>({
       query: (post) => ({
         url: `/posts/${post}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Posts'],
+      invalidatesTags: ['Posts', 'UserPosts'],
     }),
   }),
 })
@@ -190,7 +216,9 @@ export const {
   useCreatePostMutation,
   useGetPaginatedPostListQuery,
   useGetDashboardPostsQuery,
+  useGetUserPostsQuery,
   useGetPostQuery,
   useUpdatePostMutation,
+  useUploadPostImageMutation,
   useDeletePostMutation,
 } = postApi

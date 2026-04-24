@@ -10,7 +10,7 @@ interface YMapClickEvent {
   details: Record<string, unknown>;
 }
 
-interface IYandexMapV3Picker {
+interface IMapPicker {
   onChangeLocation: (val: string) => void; 
   onChangeAddress: (val: string) => void;
   initialLocation?: string;
@@ -23,7 +23,7 @@ function parseLocation(location?: string) {
   return { lat: latValue, lng: lngValue }
 }
 
-const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAddress, initialLocation }) => {
+const MapPicker:FC<IMapPicker> = ({ onChangeLocation, onChangeAddress, initialLocation }) => {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
@@ -222,4 +222,4 @@ const YandexMapV3Picker:FC<IYandexMapV3Picker> = ({ onChangeLocation, onChangeAd
   );
 }
 
-export default YandexMapV3Picker;
+export default MapPicker;

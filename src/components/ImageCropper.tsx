@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import { Button, Segmented, Space, message, Upload, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
@@ -11,6 +11,11 @@ interface ImageCropperProps {
   onChange?: (value: string) => void
   orientation?: Orientation
   onOrientationChange?: (orientation: Orientation) => void
+}
+
+/** Обрезка через canvas возможна только для локального data URL (новый файл), не для URL с сервера */
+function isCroppableDataUrl(src: string): boolean {
+  return src.startsWith('data:image/')
 }
 
 function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number) {
@@ -42,14 +47,23 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
   const aspect = orientation === 'portrait' ? 3 / 4 : 4 / 3
   const maxSize = 1000
 
-  // Автоматически обновляем crop при изменении ориентации
+  // Автоматически обновляем crop при изменении ориентации (в режиме обрезки)
   useEffect(() => {
-    if (imgRef.current && imgRef.current.complete) {
-      const { width, height } = imgRef.current
-      setCrop(centerAspectCrop(width, height, aspect))
-      setCompletedCrop(undefined)
-    }
-  }, [aspect])
+    if (!isCropping || !imgRef.current?.complete) return
+    const { width, height } = imgRef.current
+    setCrop(centerAspectCrop(width, height, aspect))
+    setCompletedCrop(undefined)
+  }, [aspect, isCropping])
+
+  // При входе в обрезку картинка часто уже в кэше — onLoad не вызывается, без этого нет рамки crop
+  useLayoutEffect(() => {
+    if (!isCropping || !imgSrc) return
+    const img = imgRef.current
+    if (!img?.complete || !img.naturalWidth) return
+    const { width, height } = img
+    setCrop(centerAspectCrop(width, height, aspect))
+    setCompletedCrop(undefined)
+  }, [isCropping, imgSrc, aspect])
 
   // Синхронизируем превью при асинхронном обновлении value (например, при загрузке данных поста)
   useEffect(() => {
@@ -83,7 +97,7 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
     setCrop(centerAspectCrop(width, height, aspect))
   }, [aspect])
 
-  const getCroppedImage = useCallback(async () => {
+  const getCroppedImage = useCallback(() => {
     const image = imgRef.current
     const canvas = canvasRef.current
 
@@ -100,16 +114,13 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
     const cropWidth = completedCrop.width * scaleX
     const cropHeight = completedCrop.height * scaleY
 
-    // Рассчитываем размеры с сохранением пропорций
     let outputWidth: number
     let outputHeight: number
-    
+
     if (orientation === 'portrait') {
-      // Ресайз по высоте до 1000px
       outputHeight = maxSize
       outputWidth = (cropWidth / cropHeight) * maxSize
     } else {
-      // Ресайз по ширине 1000px
       outputWidth = maxSize
       outputHeight = (cropHeight / cropWidth) * maxSize
     }
@@ -165,7 +176,11 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <img src={imgSrc} alt="Preview" style={{ maxWidth: '100%' }} />
             <Space style={{ marginTop: 8 }}>
-              <Button size="small" onClick={() => setIsCropping(true)}>Обрезать</Button>
+              {isCroppableDataUrl(imgSrc) && (
+                <Button size="small" onClick={() => setIsCropping(true)}>
+                  Обрезать
+                </Button>
+              )}
               <Button size="small" danger onClick={() => { setImgSrc(''); onChange?.('') }}>Удалить</Button>
             </Space>
           </div>
@@ -207,7 +222,14 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
 
       <Space>
         <Button type="primary" onClick={getCroppedImage}>Применить</Button>
-        <Button onClick={() => { setIsCropping(false); setImgSrc(''); onChange?.('') }}>Отмена</Button>
+        <Button
+          onClick={() => {
+            setIsCropping(false)
+            setImgSrc(value || '')
+          }}
+        >
+          Отмена
+        </Button>
       </Space>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />

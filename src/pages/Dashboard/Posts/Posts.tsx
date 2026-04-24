@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Popconfirm, Space, Table, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Popconfirm, Space, Table, Tag, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -91,7 +91,7 @@ function Posts() {
   ]
 
   return (
-    <div>
+    <Card size="small">
       <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: 16 }}>
         <Typography.Title level={4} style={{ margin: 0 }}>
           Посты
@@ -104,6 +104,7 @@ function Posts() {
       </Space>
 
       <Table
+        size="small"
         rowKey="id"
         loading={isLoading}
         dataSource={data?.data || []}
@@ -117,7 +118,7 @@ function Posts() {
           showTotal: (total) => `Всего: ${total}`,
         }}
       />
-    </div>
+    </Card>
   )
 }
 
