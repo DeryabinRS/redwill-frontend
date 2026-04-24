@@ -13,10 +13,8 @@
 }
 
 .section__header {
-  background-image: url('/public/img/map.png');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 100vh;
-  max-height: 800px;
+  position: relative;
+  overflow: hidden;
+  height: min(100vh, 800px);
+  min-height: 320px;
 }
