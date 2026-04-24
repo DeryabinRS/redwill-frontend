@@ -7,12 +7,11 @@ function Dashboard() {
 
   return (
     <div>
-      <Typography.Title level={2}>Панель администратора</Typography.Title>
       <Typography.Paragraph>
-        Добро пожаловать, {userInfo?.first_name} {userInfo?.last_name}!
+        Добро пожаловать, {userInfo?.first_name}!
       </Typography.Paragraph>
 
-      <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
+      <Row gutter={[16, 16]} style={{ marginTop: 8 }}>
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
