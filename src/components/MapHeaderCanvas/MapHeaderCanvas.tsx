@@ -46,7 +46,7 @@ function pointOnPolyline(pts: P2[], t0: number): P2 {
 function buildNetwork(w: number, h: number): NetPath[] {
   const m = Math.min(w, h)
   const cx = w * 0.5
-  const cy = h * 0.45
+  const cy = h * 0.38
   const out: NetPath[] = []
   for (let i = 0; i < 20; i++) {
     const a0 = (i / 20) * Math.PI * 2 + 0.02 * (i % 3)
@@ -200,9 +200,6 @@ function drawMapFromPng(
   ctx.restore()
 }
 
-/**
- * Анимированные «неоновые» линии и точки — поверх карты (screen).
- */
 function drawNetworkOverlay(
   ctx: CanvasRenderingContext2D,
   w: number,
@@ -230,7 +227,7 @@ function drawNetworkOverlay(
       ctx.lineTo(pts[i].x, pts[i].y)
     }
     ctx.setLineDash([p.dash, p.gap])
-    ctx.lineDashOffset = t * 38 * p.speed + p.phase * 24
+    ctx.lineDashOffset = -(t * 44 * p.speed + p.phase * 28)
     ctx.lineWidth = lw
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
@@ -430,7 +427,7 @@ export default function MapHeaderCanvas() {
         pulse,
         network,
         w * 0.5,
-        h * 0.45,
+        h * 0.4,
       )
 
       if (now >= spikeEnd && Math.random() < 0.0007) {
