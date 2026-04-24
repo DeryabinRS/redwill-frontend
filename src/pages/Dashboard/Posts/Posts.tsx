@@ -4,13 +4,13 @@ import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import { useDeletePostMutation, useGetDashboardPostsQuery, type Post } from '@features/post/postSlice'
+import { useDeletePostMutation, useGetDashboardPostListQuery, type Post } from '@features/post/postSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function Posts() {
   const { message } = AntdApp.useApp()
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 })
-  const { data, isLoading } = useGetDashboardPostsQuery({ pagination })
+  const { data, isLoading } = useGetDashboardPostListQuery({ pagination })
   const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation()
 
   const handleDeletePost = async (postId: number) => {

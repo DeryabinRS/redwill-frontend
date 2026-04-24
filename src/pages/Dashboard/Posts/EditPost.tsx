@@ -2,7 +2,7 @@ import { App as AntdApp, Button, Card, Col, DatePicker, Divider, Form, Input, Ro
 import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { useGetPostQuery, useUpdatePostMutation, useUploadPostImageMutation } from '../../../features/post/postSlice'
+import { useGetDashboardPostQuery, useUpdatePostMutation, useUploadPostImageMutation } from '../../../features/post/postSlice'
 import { API_URL } from '@config/constants'
 import ImageCropper from '@components/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
@@ -42,7 +42,7 @@ function UpdatePost() {
     data: postData,
     isLoading,
     isError,
-  } = useGetPostQuery(post as string, {
+  } = useGetDashboardPostQuery(post as string, {
     skip: !post,
   })
 

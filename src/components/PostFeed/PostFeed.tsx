@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Card, Col, Typography, Button, Space, Row, Spin } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { useGetPaginatedPostListQuery } from '../../features/post/postSlice'
+import { useGetPostListQuery } from '../../features/post/postSlice'
 import { useNavigate } from 'react-router-dom'
 import './PostFeed.css'
 import { API_URL } from '../../config/constants'
@@ -20,7 +20,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
 }) => {
   const navigate = useNavigate()
   const [currentPage, setCurrentPage] = useState(initialPage)
-  const { data, isLoading, isFetching, error } = useGetPaginatedPostListQuery({ pagination: { page: currentPage }, post_category_ids: 2 });
+  const { data, isLoading, isFetching, error } = useGetPostListQuery({ pagination: { page: currentPage }, post_category_ids: 2 });
 
   const handleLoadMore = () => {
     setCurrentPage(prev => prev + 1)

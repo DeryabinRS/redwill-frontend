@@ -90,7 +90,6 @@ function DashboardLayout() {
   // Мобильное меню - Drawer
   const mobileMenu = (
     <Menu
-      theme="dark"
       mode="inline"
       selectedKeys={[location.pathname]}
       items={menuItems}
@@ -103,7 +102,7 @@ function DashboardLayout() {
       <Typography.Title level={2} style={{ margin: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <img width={50} src='/public/logo.svg' /> 
-          <div style={{ borderBottom: '4px solid #cd2e2c', color: 'white' }}>{SITE_NAME}</div>
+          <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>
         </div>
       </Typography.Title>
     </Link>
@@ -178,9 +177,9 @@ function DashboardLayout() {
               type="text" 
               icon={<MenuOutlined />}
               onClick={() => isMobile ? setDrawerOpen(true) : setCollapsed(!collapsed)}
-              style={{ fontSize: 18, color: 'white' }}
+              style={{ fontSize: 18 }}
             />
-            <Typography.Title level={4} style={{ color: 'white', margin: 0 }}>
+            <Typography.Title level={4} style={{ margin: 0 }}>
               Панель администратора
             </Typography.Title>
           </div>

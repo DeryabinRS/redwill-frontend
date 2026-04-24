@@ -108,7 +108,7 @@ export const postApi = createApi({
       query: () => ({ url: '/post-categories', method: 'GET' }),
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
-    getPaginatedPostList: builder.query<GetPostListResponse, { 
+    getPostList: builder.query<GetPostListResponse, { 
       pagination?: { page?: number, per_page?: number };
       post_category_ids?: number | number[];
     }>({
@@ -130,7 +130,7 @@ export const postApi = createApi({
       }) => response.data,
       providesTags: ['Posts'],
     }),
-    getDashboardPosts: builder.query<GetPostListResponse, { pagination?: { page?: number, per_page?: number } } | void>({
+    getDashboardPostList: builder.query<GetPostListResponse, { pagination?: { page?: number, per_page?: number } } | void>({
       query: (args) => ({
         url: '/dashboard/posts',
         params: {
@@ -145,6 +145,14 @@ export const postApi = createApi({
         data: GetPostListResponse
       }) => response.data,
       providesTags: ['Posts'],
+    }),
+    getDashboardPost: builder.query<Post, string | number>({
+      query: (post) => ({
+        url: `/dashboard/posts/${post}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: GetPostResponse) => response.data,
+      providesTags: (_result, _error, post) => [{ type: 'Post', id: post }],
     }),
     getUserPosts: builder.query<GetPostListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
       query: (args) => ({
@@ -214,8 +222,9 @@ export const {
   useGetPostCategoriesQuery, 
   useLazyGetPostCategoriesQuery,
   useCreatePostMutation,
-  useGetPaginatedPostListQuery,
-  useGetDashboardPostsQuery,
+  useGetPostListQuery,
+  useGetDashboardPostListQuery,
+  useGetDashboardPostQuery,
   useGetUserPostsQuery,
   useGetPostQuery,
   useUpdatePostMutation,
