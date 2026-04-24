@@ -92,7 +92,7 @@ function MainLayout() {
 					<Typography.Title level={2} style={{ margin: 0 }}>
 							<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
 								<div style={{ display: 'flex', alignItems: 'center' }}>
-									<img width={80} src='/public/logo.svg' /> 
+									<img width={80} src='/public/img/logo.svg' /> 
 									{md && <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>}
 								</div>
 							</Link>

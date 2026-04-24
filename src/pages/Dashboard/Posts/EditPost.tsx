@@ -193,7 +193,7 @@ function UpdatePost() {
 
               <Space size="large" style={{ width: '100%' }}>
                 <Form.Item name="publication_status" label="Публикация" valuePropName="checked">
-                  <Switch checkedChildren="Опубликован" unCheckedChildren="Черновик" />
+                  <Switch checkedChildren="Опубликован" unCheckedChildren="Не опубликован" />
                 </Form.Item>
                 <Form.Item name="moderation_status" label="Модерация">
                   <Select

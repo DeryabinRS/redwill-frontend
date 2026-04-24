@@ -53,7 +53,7 @@ function Posts() {
       dataIndex: 'publication_status',
       key: 'publication_status',
       width: 80,
-      render: (value: number) => value === 1 ? <Tag color="green">Опубликовано</Tag> : <Tag color="red">Черновик</Tag>,
+      render: (value: number) => value === 1 ? <Tag color="green">Опубликован</Tag> : <Tag color="red">Не опубликован</Tag>,
     },
     {
       title: 'Модерация',

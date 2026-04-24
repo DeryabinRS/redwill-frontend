@@ -1,15 +1,13 @@
 export const moderationStatusOptions = [
-	{ value: 0, label: 'Новая' },
-	{ value: 1, label: 'На модерации' },
+	{ value: 0, label: 'На модерации' },
+	{ value: 1, label: 'Модерация отклонена' },
 	{ value: 2, label: 'Модерация пройдена' },
-	{ value: 3, label: 'Модерация отклонена' },
 ];
 
 export const moderationStatusTagColor: Record<number, string> = {
-	0: 'default',
-	1: 'gold',
+	0: 'gold',
+	1: 'red',
 	2: 'green',
-	3: 'red',
 };
 
 export const publicationStatusOptions = [
