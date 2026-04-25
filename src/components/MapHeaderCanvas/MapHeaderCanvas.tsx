@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import './MapHeaderCanvas.css'
 
-const MAP_SRC = '/img/map.png'
+const MAP_SRC = '/img/map_dark.png'
 const MOTO_SRC = '/img/moto.png'
 
 type P2 = { x: number; y: number }
