@@ -50,12 +50,22 @@ function MainLayout() {
 		})
 	}
 
-	// Добавляем "Создать пост" для авторизованных пользователей
+	// Добавляем меню создания сущностей для авторизованных пользователей
 	if (userIsAuthenticated) {
 		menuItems.push({
-			key: 'create-post',
+			key: 'add',
 			icon: <PlusOutlined />,
-			label: <NavLink to="/posts/create">Создать пост</NavLink>,
+			label: 'Добавить',
+			children: [
+				{
+					key: 'create-post',
+					label: <NavLink to="/posts/create">Событие</NavLink>,
+				},
+				{
+					key: 'create-motoclub',
+					label: <NavLink to="/motoclubs/create">Мотоклуб</NavLink>,
+				},
+			],
 		})
 	}
 

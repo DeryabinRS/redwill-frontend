@@ -39,7 +39,7 @@ function Home() {
 
   return (
     <>
-      <section className="section section__header" style={{ padding: '30px 0' }}>
+      <section className="section section__header" style={{ padding: '8px 0' }}>
         <MapHeaderCanvas />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <Row gutter={[16, 16]}>

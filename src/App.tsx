@@ -23,6 +23,8 @@ import Post from './pages/Posts/Post'
 import DashboardPosts from './pages/Dashboard/Posts/Posts'
 import DashboardAddPost from './pages/Dashboard/Posts/AddPost'
 import DashboardUpdatePost from './pages/Dashboard/Posts/EditPost'
+import Motoclubs from './pages/Motoclubs'
+import AddMotoclub from './pages/Motoclubs/addMotoclub'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -58,6 +60,15 @@ function AppContent() {
               }
             />
             <Route path="/posts/:post" element={<Post />} />
+            <Route path="/motoclubs" element={<Motoclubs />} />
+            <Route
+              path="/motoclubs/create"
+              element={
+                <ProtectedRoute>
+                  <AddMotoclub />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           
           {/* Dashboard с боковым меню */}
