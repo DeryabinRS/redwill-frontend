@@ -46,8 +46,8 @@
           -45deg,
           transparent,
           transparent 20px,
-          rgba(207, 207, 207, 0.2) 20px,
-          rgba(65, 65, 65, 0.08) 22px
+          rgba(109, 109, 109, 0.2) 20px,
+          rgba(80, 80, 80, 0.08) 22px
       ),
       repeating-linear-gradient(
           -45deg,
@@ -56,7 +56,7 @@
           rgba(59, 59, 59, 0.26) 40px,
           rgba(46, 46, 46, 0.18) 44px
       ),
-      linear-gradient(160deg,rgb(15, 15, 15) 0%,rgba(97, 88, 88, 0.64) 40%,rgba(82, 74, 74, 0.432) 70%,rgba(10, 10, 10, 0.34) 100%);
+      linear-gradient(160deg,rgb(15, 15, 15) 0%,rgba(97, 88, 88, 0.64) 40%,rgba(131, 40, 40, 0.432) 70%,rgba(10, 10, 10, 0.34) 100%);
     z-index: 0;
   }
   
