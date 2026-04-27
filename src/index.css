@@ -179,5 +179,74 @@
     }
 }
 
+.motoclubs-marquee {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+  cursor: grab;
+  scrollbar-width: none;
+  touch-action: pan-y;
+  overscroll-behavior-x: contain;
+  user-select: none;
+}
+
+.motoclubs-marquee::-webkit-scrollbar {
+  display: none;
+}
+
+.motoclubs-marquee--dragging {
+  cursor: grabbing;
+}
+
+.motoclubs-marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 24px;
+  animation: motoclubs-marquee 45s linear infinite;
+}
+
+.motoclubs-marquee:hover .motoclubs-marquee__track {
+  animation-play-state: paused;
+}
+
+.motoclubs-marquee--dragging .motoclubs-marquee__track {
+  animation-play-state: paused;
+}
+
+.motoclubs-marquee__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  flex: 0 0 150px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+  -webkit-user-drag: none;
+}
+
+.motoclubs-marquee__item img {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes motoclubs-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 12px));
+  }
+}
+
 
 

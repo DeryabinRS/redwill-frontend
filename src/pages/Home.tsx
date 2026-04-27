@@ -3,10 +3,10 @@ import { ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant
 // import { useTranslation } from 'react-i18next'
 import MapHeaderCanvas from '../components/MapHeaderCanvas/MapHeaderCanvas'
 import PostFeed from '../components/PostFeed'
+import MotoclubsMarquee from '@components/MotoclubsMarquee'
 
 function Home() {
   // const { t } = useTranslation()
-
   const cardData = [
     {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} /> },
     {title: 'Мотоклубы', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} /> },
@@ -52,6 +52,10 @@ function Home() {
         <div className="container">
           <PostFeed title="Ближайшие события" />
         </div>
+      </section>
+
+      <section className="section motoclubs" style={{ padding: '30px 0' }}>
+        <MotoclubsMarquee />
       </section>
     </>
   )

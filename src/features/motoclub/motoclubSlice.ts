@@ -61,6 +61,22 @@ export const motoclubApi = createApi({
       transformResponse: (response: CreateMotoclubResponse) => response.data,
       providesTags: (_result, _error, motoclub) => [{ type: 'Motoclub', id: motoclub }],
     }),
+    getMotoclubList: builder.query<MotoclubListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
+      query: (args) => ({
+        url: '/motoclubs',
+        params: {
+          page: args?.pagination?.page,
+          per_page: args?.pagination?.per_page || 40,
+        },
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: MotoclubListResponse
+      }) => response.data,
+      providesTags: ['Motoclubs'],
+    }),
     getDashboardMotoclubList: builder.query<MotoclubListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
       query: (args) => ({
         url: '/dashboard/motoclubs',
@@ -134,6 +150,7 @@ export const motoclubApi = createApi({
 export const {
   useCreateMotoclubMutation,
   useGetMotoclubQuery,
+  useGetMotoclubListQuery,
   useGetDashboardMotoclubQuery,
   useUpdateMotoclubMutation,
   useUploadMotoclubLogoMutation,

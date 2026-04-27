@@ -42,7 +42,7 @@ function AddPost() {
 	})
 	const motoclubOptions = (motoclubsData?.data || []).map((motoclub: Motoclub) => ({
 		value: motoclub.id,
-		label: motoclub.name,
+		label: `${motoclub.name} ${motoclub.address ? `(${motoclub.address})` : ''}`,
 	}))
 
 	const handleSubmit = async (values: FormValues) => {
