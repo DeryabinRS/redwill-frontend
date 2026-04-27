@@ -6,16 +6,18 @@ import 'react-image-crop/dist/ReactCrop.css'
 
 type Orientation = 'portrait' | 'landscape'
 
-interface ImageCropperProps {
+type OutputSize = {
+  width: number
+  height: number
+}
+
+export interface ImageCropperProps {
   value?: string
   onChange?: (value: string) => void
   orientation?: Orientation
   onOrientationChange?: (orientation: Orientation) => void
   aspectRatio?: number
-  outputSize?: {
-    width: number
-    height: number
-  }
+  outputSize?: OutputSize
   showOrientationSwitch?: boolean
 }
 

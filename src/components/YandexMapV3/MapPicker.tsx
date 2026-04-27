@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, type FC } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useYmaps3 } from '../../hooks/useYmaps3';
 
 const DEFAULT_CENTER: [number, number] = [50.618423, 55.751244]; // [lng, lat]
@@ -10,11 +10,13 @@ interface YMapClickEvent {
   details: Record<string, unknown>;
 }
 
-interface IMapPicker {
+export type AddressMode = 'full' | 'locality';
+
+export interface IMapPicker {
   onChangeLocation: (val: string) => void; 
   onChangeAddress: (val: string) => void;
   initialLocation?: string;
-  addressMode?: 'full' | 'locality';
+  addressMode?: AddressMode;
 }
 
 type GeocoderAddressComponent = {
@@ -51,7 +53,7 @@ function getLocalityName(geoObject: GeocoderGeoObject): string {
   )
 }
 
-const MapPicker:FC<IMapPicker> = ({ onChangeLocation, onChangeAddress, initialLocation, addressMode = 'full' }) => {
+function MapPicker({ onChangeLocation, onChangeAddress, initialLocation, addressMode = 'full' }: IMapPicker) {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)

@@ -48,7 +48,7 @@ function Home() {
         </div>
       </section>
 
-      <section className="section" style={{ padding: '30px 0', marginTop: -120 }}>
+      <section className="section" style={{ padding: '30px 0', marginTop: -100 }}>
         <div className="container">
           <PostFeed title="Ближайшие события" />
         </div>

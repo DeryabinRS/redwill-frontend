@@ -120,7 +120,7 @@ function AddPost() {
                 <Input placeholder="https://example.com" />
               </Form.Item>
 
-              <Form.Item label="Мотоклубы" name="motoclub_ids">
+              <Form.Item label="Организаторы (Мотоклубы):" name="motoclub_ids">
                 <Select
                   mode="multiple"
                   allowClear

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs'
 import ImageCropper from '../../components/ImageCropper';
 import { useCreatePostMutation } from '../../features/post/postSlice';
-import { useGetDashboardMotoclubListQuery } from '../../features/motoclub/motoclubSlice'
+import { useGetDashboardMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
 import MapPicker from '../../components/YandexMapV3/MapPicker';
 import { base64ToFile, sanitizeInput } from '../../utils/form';
 
@@ -40,7 +40,7 @@ function AddPost() {
 	const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
 		pagination: { page: 1, per_page: 100 },
 	})
-	const motoclubOptions = (motoclubsData?.data || []).map((motoclub) => ({
+	const motoclubOptions = (motoclubsData?.data || []).map((motoclub: Motoclub) => ({
 		value: motoclub.id,
 		label: motoclub.name,
 	}))
@@ -138,7 +138,7 @@ function AddPost() {
 							>
 								<Input placeholder="https://example.com" />
 							</Form.Item>
-							<Form.Item label="Мотоклубы" name="motoclub_ids">
+							<Form.Item label="Организаторы (Мотоклубы):" name="motoclub_ids">
 								<Select
 									mode="multiple"
 									allowClear

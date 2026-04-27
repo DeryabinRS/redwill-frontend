@@ -5,6 +5,7 @@ import ImageCropper from '../../components/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
 import { useCreateMotoclubMutation } from '../../features/motoclub/motoclubSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
+import dayjs from 'dayjs'
 
 type FormValues = {
   name: string
@@ -41,7 +42,7 @@ function AddMotoclub() {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
-      appendString(formData, 'birthday', values.birthday)
+      appendString(formData, 'birthday', values.birthday ? dayjs(values.birthday).format('YYYY-MM-DD') : undefined)
       appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
@@ -101,9 +102,19 @@ function AddMotoclub() {
               <Form.Item
                 name="desc"
                 label="Описание"
-                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+                rules={[
+                  { max: 500, message: 'Максимум 500 символов' },
+                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                ]}
               >
-                <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
+                <Input.TextArea
+                  rows={4}
+                  maxLength={500}
+                  showCount={{
+                    formatter: ({ count, maxLength }) => `${(maxLength || 500) - count} осталось`,
+                  }}
+                  placeholder="Краткое описание мотоклуба"
+                />
               </Form.Item>
 
               <Form.Item name="birthday" label="День рождения клуба">

@@ -106,7 +106,7 @@ function Motoclub() {
                 </Paragraph>
               )}
 
-              {motoclubData.location && <MapView location={motoclubData.location} />}
+              {motoclubData.location && <MapView location={motoclubData.location} zoom={7} />}
             </Space>
           </Col>
         </Row>

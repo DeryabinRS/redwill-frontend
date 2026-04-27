@@ -3,10 +3,20 @@ import { CalendarOutlined, EnvironmentOutlined, LinkOutlined, UserOutlined } fro
 import dayjs from 'dayjs'
 import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
-import { useGetPostQuery } from '@features/post/postSlice'
+import { useGetPostQuery, type Post as PostData } from '@features/post/postSlice'
 import MapView from '@components/YandexMapV3/MapView'
 
 const { Title, Text, Paragraph } = Typography
+
+type PostMotoclub = {
+  id: number
+  name: string
+  logo: string | null
+}
+
+type PostWithMotoclubs = PostData & {
+  motoclubs?: PostMotoclub[]
+}
 
 function formatTime(value?: string | null) {
   if (!value) return null
@@ -63,7 +73,8 @@ function Post() {
     )
   }
 
-  const imageSrc = postData.image ? `${API_URL}${postData.image}` : null
+  const postDetails = postData as PostWithMotoclubs
+  const imageSrc = postDetails.image ? `${API_URL}${postDetails.image}` : null
 
   return (
     <div className="container">
@@ -121,11 +132,11 @@ function Post() {
                   </Space>
                 )}
 
-                {postData.motoclubs && postData.motoclubs.length > 0 && (
+                {postDetails.motoclubs && postDetails.motoclubs.length > 0 && (
                   <Space direction="vertical" size={8}>
-                    <Text strong>Организаторы</Text>
+                    <Text strong>Организаторы (Мотоклубы):</Text>
                     <Space size={12} wrap>
-                      {postData.motoclubs.map((motoclub) => (
+                      {postDetails.motoclubs.map((motoclub) => (
                         <Link
                           key={motoclub.id}
                           to={`/motoclubs/${motoclub.id}`}
@@ -142,8 +153,8 @@ function Post() {
                               src={`${API_URL}${motoclub.logo}`}
                               alt={motoclub.name}
                               style={{
-                                width: 40,
-                                height: 40,
+                                width: 80,
+                                height: 80,
                                 borderRadius: '50%',
                                 objectFit: 'cover',
                                 border: '1px solid #e2e8f0',

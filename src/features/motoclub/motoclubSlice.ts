@@ -134,9 +134,10 @@ export const motoclubApi = createApi({
 export const {
   useCreateMotoclubMutation,
   useGetMotoclubQuery,
-  useGetDashboardMotoclubListQuery,
   useGetDashboardMotoclubQuery,
   useUpdateMotoclubMutation,
   useUploadMotoclubLogoMutation,
   useDeleteMotoclubMutation,
 } = motoclubApi
+
+export const useGetDashboardMotoclubListQuery = motoclubApi.useGetDashboardMotoclubListQuery

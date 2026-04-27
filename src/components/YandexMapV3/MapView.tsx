@@ -3,16 +3,18 @@ import { useState } from 'react'
 import { useYmaps3 } from '@hooks/useYmaps3'
 import { parseLocationCoordinates } from '@utils/mapLocation'
 
-type MapViewProps = {
+export interface MapViewProps {
   location: string
   /** Высота блока карты в px */
   height?: number
+  /** Начальный масштаб карты */
+  zoom?: number
 }
 
-function MapView({ location, height = 400 }: MapViewProps) {
+function MapView({ location, height = 400, zoom: initialZoom = 14 }: MapViewProps) {
   const { isReady, error, reactify } = useYmaps3()
   const coords = parseLocationCoordinates(location)
-  const [zoom, setZoom] = useState(14)
+  const [zoom, setZoom] = useState(initialZoom)
 
   if (!coords) {
     return null
