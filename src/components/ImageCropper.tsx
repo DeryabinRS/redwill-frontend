@@ -11,6 +11,12 @@ interface ImageCropperProps {
   onChange?: (value: string) => void
   orientation?: Orientation
   onOrientationChange?: (orientation: Orientation) => void
+  aspectRatio?: number
+  outputSize?: {
+    width: number
+    height: number
+  }
+  showOrientationSwitch?: boolean
 }
 
 /** Обрезка через canvas возможна только для локального data URL (новый файл), не для URL с сервера */
@@ -34,7 +40,15 @@ function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: numbe
   )
 }
 
-function ImageCropper({ value, onChange, orientation = 'portrait', onOrientationChange }: ImageCropperProps) {
+function ImageCropper({
+  value,
+  onChange,
+  orientation = 'portrait',
+  onOrientationChange,
+  aspectRatio,
+  outputSize,
+  showOrientationSwitch = true,
+}: ImageCropperProps) {
   const [messageApi, contextHolder] = message.useMessage()
   const [imgSrc, setImgSrc] = useState(value || '')
   const [crop, setCrop] = useState<Crop>()
@@ -44,7 +58,7 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
   const imgRef = useRef<HTMLImageElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const aspect = orientation === 'portrait' ? 3 / 4 : 4 / 3
+  const aspect = aspectRatio ?? (orientation === 'portrait' ? 3 / 4 : 4 / 3)
   const maxSize = 1000
 
   // Автоматически обновляем crop при изменении ориентации (в режиме обрезки)
@@ -117,7 +131,10 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
     let outputWidth: number
     let outputHeight: number
 
-    if (orientation === 'portrait') {
+    if (outputSize) {
+      outputWidth = outputSize.width
+      outputHeight = outputSize.height
+    } else if (orientation === 'portrait') {
       outputHeight = maxSize
       outputWidth = (cropWidth / cropHeight) * maxSize
     } else {
@@ -149,7 +166,7 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
     setImgSrc(dataUrl)
     onChange?.(dataUrl)
     setIsCropping(false)
-  }, [completedCrop, orientation, onChange])
+  }, [completedCrop, orientation, onChange, outputSize])
 
   if (!isCropping) {
     return (
@@ -194,14 +211,16 @@ function ImageCropper({ value, onChange, orientation = 'portrait', onOrientation
     <>
       {contextHolder}
       <Space direction="vertical" style={{ width: '100%' }}>
-      <Segmented
-        options={[
-          { label: 'Книжная (3:4)', value: 'portrait' },
-          { label: 'Альбомная (4:3)', value: 'landscape' },
-        ]}
-        value={orientation}
-        onChange={(val) => onOrientationChange?.(val as Orientation)}
-      />
+      {showOrientationSwitch && (
+        <Segmented
+          options={[
+            { label: 'Книжная (3:4)', value: 'portrait' },
+            { label: 'Альбомная (4:3)', value: 'landscape' },
+          ]}
+          value={orientation}
+          onChange={(val) => onOrientationChange?.(val as Orientation)}
+        />
+      )}
       
       <div style={{ maxHeight: '100%', maxWidth: 400, overflow: 'auto' }}>
         <ReactCrop

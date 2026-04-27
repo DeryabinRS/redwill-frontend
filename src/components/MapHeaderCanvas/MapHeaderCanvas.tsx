@@ -58,7 +58,7 @@ function buildNetwork(w: number, h: number): NetPath[] {
         { x: cx + Math.cos(a0) * m * r1, y: cy + Math.sin(a0) * m * (r1 * 0.92) },
         { x: cx + Math.cos(a0) * m * r2, y: cy + Math.sin(a0) * m * (r2 * 0.95) },
       ],
-      speed: 0.11 + (i % 6) * 0.018,
+      speed: 0.11 + (i % 6) * 0.038,
       phase: i * 0.31,
       dash: 3.5 + (i % 5) * 1.2,
       gap: 9 + (i % 4) * 2.5,
@@ -397,8 +397,8 @@ export default function MapHeaderCanvas() {
       pr.x = lerp(pr.x, m.x, 0.06)
       pr.y = lerp(pr.y, m.y, 0.06)
       const inSpike = now < spikeEnd
-      const px = (pr.x - 0.5) * 24 + (inSpike ? Math.sin(t * 88) * 0.6 : 0)
-      const py = (pr.y - 0.5) * 16
+      const px = (pr.x - 0.5) * 44 + (inSpike ? Math.sin(t * 88) * 0.6 : 0)
+      const py = (pr.y - 0.5) * 26
       const pulse = 0.82 + 0.18 * Math.sin(t * 0.65)
       const redPulse = 0.06 * pulse
 

@@ -3,6 +3,10 @@
   --theme-color: #cd2e2c;
 }
 
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
@@ -16,16 +20,15 @@
 .section__header {
   position: relative;
   overflow: hidden;
-  height: min(100vh, 800px);
-  min-height: 320px;
+  min-height: min(100vh, 700px);
 }
 
 .card-stripes {
   position: relative;
-  border-radius: 24px;
-  padding: 20px;
+  border-radius: 8px;
+  padding: 6px 4px 0;
   overflow: hidden;
-  color: #fff;
+  color: #c4c4c4;
   cursor: pointer;
   transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -47,7 +50,7 @@
           -45deg,
           transparent,
           transparent 20px,
-          rgba(245, 20, 20, 0.2) 20px,
+          rgba(207, 207, 207, 0.2) 20px,
           rgba(65, 65, 65, 0.08) 22px
       ),
       repeating-linear-gradient(
@@ -57,7 +60,7 @@
           rgba(59, 59, 59, 0.26) 40px,
           rgba(46, 46, 46, 0.18) 44px
       ),
-      linear-gradient(160deg,rgb(15, 15, 15) 0%,rgba(26, 5, 5, 0.64) 40%,rgba(51, 14, 14, 0.89) 70%,rgba(10, 10, 10, 0.34) 100%);
+      linear-gradient(160deg,rgb(15, 15, 15) 0%,rgba(97, 88, 88, 0.64) 40%,rgba(82, 74, 74, 0.432) 70%,rgba(10, 10, 10, 0.34) 100%);
     z-index: 0;
   }
   

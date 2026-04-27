@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { App as AntdApp, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
 import { useCreateMotoclubMutation } from '../../features/motoclub/motoclubSlice'
@@ -24,9 +24,10 @@ function AddMotoclub() {
   const [form] = Form.useForm<FormValues>()
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [logo, setLogo] = useState('')
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('landscape')
   const [createMotoclub, { isLoading }] = useCreateMotoclubMutation()
+  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/motoclubs'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
@@ -52,7 +53,7 @@ function AddMotoclub() {
 
       await createMotoclub(formData).unwrap()
       message.success('Мотоклуб создан и отправлен на модерацию')
-      navigate('/motoclubs')
+      navigate(backPath)
     } catch {
       message.error('Не удалось создать мотоклуб')
     }
@@ -70,8 +71,9 @@ function AddMotoclub() {
                   <ImageCropper
                     value={logo}
                     onChange={setLogo}
-                    orientation={orientation}
-                    onOrientationChange={setOrientation}
+                    aspectRatio={1}
+                    outputSize={{ width: 500, height: 500 }}
+                    showOrientationSwitch={false}
                   />
                 </Form.Item>
               </Col>
@@ -163,7 +165,7 @@ function AddMotoclub() {
               <Button type="primary" htmlType="submit" loading={isLoading}>
                 Сохранить
               </Button>
-              <Button onClick={() => navigate('/motoclubs')}>
+              <Button onClick={() => navigate(backPath)}>
                 Отмена
               </Button>
             </Space>

@@ -23,6 +23,8 @@ import Post from './pages/Posts/Post'
 import DashboardPosts from './pages/Dashboard/Posts/Posts'
 import DashboardAddPost from './pages/Dashboard/Posts/AddPost'
 import DashboardUpdatePost from './pages/Dashboard/Posts/EditPost'
+import DashboardMotoclubs from './pages/Dashboard/Motoclubs/Motoclubs'
+import DashboardEditMotoclub from './pages/Dashboard/Motoclubs/EditMotoclub'
 import Motoclubs from './pages/Motoclubs'
 import AddMotoclub from './pages/Motoclubs/addMotoclub'
 
@@ -87,6 +89,9 @@ function AppContent() {
             <Route path="posts/create" element={<DashboardAddPost />} />
             <Route path="posts/:post/edit" element={<DashboardUpdatePost />} />
             <Route path="posts/:post" element={<DashboardUpdatePost />} />
+            <Route path="motoclubs" element={<DashboardMotoclubs />} />
+            <Route path="motoclubs/create" element={<AddMotoclub />} />
+            <Route path="motoclubs/:motoclub/edit" element={<DashboardEditMotoclub />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>

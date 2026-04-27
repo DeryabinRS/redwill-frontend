@@ -2,7 +2,31 @@
   padding: 20px 0;
 }
 
+.post-feed-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 26px 0 18px;
+  overflow: visible; /* Гарантируем, что звезда не обрежется контейнером */
+}
+
+.post-feed-header::before {
+  content: "";
+  position: absolute;
+  inset: -12px; /* Расширяем звезду за пределы текста */
+  background: conic-gradient(from 0deg at 50% 50%, 
+    var(--theme-color) 0%, transparent 15%, #5c5c5c 50%, transparent 85%, var(--theme-color) 100%);
+  clip-path: polygon(
+    50% 0%, 65% 35%, 100% 50%, 65% 65%, 
+    50% 100%, 35% 65%, 0% 50%, 35% 35%
+  );
+  z-index: 0; /* ❗ Не -1! Иначе уйдёт под фон родителя/страницы */
+  pointer-events: none;
+}
+
 .post-feed-title {
+  position: relative; /* Обязательный контекст наложения */
+  z-index: 1;         /* Текст строго поверх звезды */
   text-align: center;
   margin-bottom: 30px;
   color: #1a1a1a;

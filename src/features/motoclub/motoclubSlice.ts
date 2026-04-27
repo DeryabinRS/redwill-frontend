@@ -25,9 +25,21 @@ type CreateMotoclubResponse = {
   data: Motoclub
 }
 
+type MotoclubListResponse = {
+  data: Motoclub[]
+  current_page: number
+  last_page: number
+  per_page: number
+  total: number
+  from: number
+  to: number
+  next_page_url: string | null
+  prev_page_url: string | null
+}
+
 export const motoclubApi = createApi({
   reducerPath: 'motoclubApi',
-  tagTypes: ['Motoclubs'],
+  tagTypes: ['Motoclubs', 'Motoclub'],
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL || '/api',
     credentials: 'include',
@@ -40,6 +52,30 @@ export const motoclubApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    getDashboardMotoclubList: builder.query<MotoclubListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
+      query: (args) => ({
+        url: '/dashboard/motoclubs',
+        params: {
+          page: args?.pagination?.page,
+          per_page: args?.pagination?.per_page || 10,
+        },
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: MotoclubListResponse
+      }) => response.data,
+      providesTags: ['Motoclubs'],
+    }),
+    getDashboardMotoclub: builder.query<Motoclub, string | number>({
+      query: (motoclub) => ({
+        url: `/dashboard/motoclubs/${motoclub}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: CreateMotoclubResponse) => response.data,
+      providesTags: (_result, _error, motoclub) => [{ type: 'Motoclub', id: motoclub }],
+    }),
     createMotoclub: builder.mutation<Motoclub, FormData>({
       query: (payload) => ({
         url: '/motoclubs',
@@ -50,7 +86,47 @@ export const motoclubApi = createApi({
       transformResponse: (response: CreateMotoclubResponse) => response.data,
       invalidatesTags: ['Motoclubs'],
     }),
+    updateMotoclub: builder.mutation<Motoclub, { motoclub: string | number; payload: FormData }>({
+      query: ({ motoclub, payload }) => ({
+        url: `/motoclubs/${motoclub}`,
+        method: 'POST',
+        body: payload,
+        formData: true,
+      }),
+      transformResponse: (response: CreateMotoclubResponse) => response.data,
+      invalidatesTags: (_result, _error, { motoclub }) => [
+        'Motoclubs',
+        { type: 'Motoclub', id: motoclub },
+      ],
+    }),
+    uploadMotoclubLogo: builder.mutation<Motoclub, { motoclub: string | number; payload: FormData }>({
+      query: ({ motoclub, payload }) => ({
+        url: `/motoclubs/${motoclub}/logo`,
+        method: 'POST',
+        body: payload,
+        formData: true,
+      }),
+      transformResponse: (response: CreateMotoclubResponse) => response.data,
+      invalidatesTags: (_result, _error, { motoclub }) => [
+        'Motoclubs',
+        { type: 'Motoclub', id: motoclub },
+      ],
+    }),
+    deleteMotoclub: builder.mutation<void, string | number>({
+      query: (motoclub) => ({
+        url: `/motoclubs/${motoclub}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Motoclubs'],
+    }),
   }),
 })
 
-export const { useCreateMotoclubMutation } = motoclubApi
+export const {
+  useCreateMotoclubMutation,
+  useGetDashboardMotoclubListQuery,
+  useGetDashboardMotoclubQuery,
+  useUpdateMotoclubMutation,
+  useUploadMotoclubLogoMutation,
+  useDeleteMotoclubMutation,
+} = motoclubApi
