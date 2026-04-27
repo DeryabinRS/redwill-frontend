@@ -14,6 +14,24 @@ interface IMapPicker {
   onChangeLocation: (val: string) => void; 
   onChangeAddress: (val: string) => void;
   initialLocation?: string;
+  addressMode?: 'full' | 'locality';
+}
+
+type GeocoderAddressComponent = {
+  kind?: string
+  name?: string
+}
+
+type GeocoderGeoObject = {
+  name?: string
+  description?: string
+  metaDataProperty?: {
+    GeocoderMetaData?: {
+      Address?: {
+        Components?: GeocoderAddressComponent[]
+      }
+    }
+  }
 }
 
 function parseLocation(location?: string) {
@@ -23,7 +41,17 @@ function parseLocation(location?: string) {
   return { lat: latValue, lng: lngValue }
 }
 
-const MapPicker:FC<IMapPicker> = ({ onChangeLocation, onChangeAddress, initialLocation }) => {
+function getLocalityName(geoObject: GeocoderGeoObject): string {
+  const components = geoObject.metaDataProperty?.GeocoderMetaData?.Address?.Components || []
+  return (
+    components.find((component) => component.kind === 'locality')?.name ||
+    components.find((component) => component.kind === 'province')?.name ||
+    components.find((component) => component.kind === 'area')?.name ||
+    ''
+  )
+}
+
+const MapPicker:FC<IMapPicker> = ({ onChangeLocation, onChangeAddress, initialLocation, addressMode = 'full' }) => {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
@@ -75,10 +103,12 @@ const MapPicker:FC<IMapPicker> = ({ onChangeLocation, onChangeAddress, initialLo
           `https://geocode-maps.yandex.ru/1.x/?apikey=c83cc3de-70ab-47e1-8168-76d252ad4f1e&geocode=${coords.lng},${coords.lat}&format=json&results=1`
         );
         const data = await response.json();
-        const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject;
+        const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject as GeocoderGeoObject | undefined;
         if (geoObject) {
-          onChangeAddress(geoObject.name || geoObject.description || 'Адрес не найден');
-          onChangeAddress(geoObject.name || geoObject.description || '')
+          const address = addressMode === 'locality'
+            ? getLocalityName(geoObject)
+            : geoObject.name || geoObject.description || ''
+          onChangeAddress(address || 'Адрес не найден');
         } else {
           onChangeAddress('Адрес не найден');
         }
@@ -88,7 +118,7 @@ const MapPicker:FC<IMapPicker> = ({ onChangeLocation, onChangeAddress, initialLo
     };
 
     fetchAddress();
-  }, [coords, onChangeAddress]);
+  }, [addressMode, coords, onChangeAddress]);
 
   if (error) {
     return (

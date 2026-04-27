@@ -36,6 +36,12 @@ export type Post = {
     id: number
     name: string
   }
+  motoclub_ids?: number[]
+  motoclubs?: {
+    id: number
+    name: string
+    logo: string | null
+  }[]
 }
 
 export type PaginatedResponse<T> = {

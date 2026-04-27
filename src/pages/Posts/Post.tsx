@@ -1,7 +1,7 @@
 import { Alert, Card, Col, Divider, Row, Skeleton, Space, Typography } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, LinkOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetPostQuery } from '@features/post/postSlice'
 import MapView from '@components/YandexMapV3/MapView'
@@ -118,6 +118,57 @@ function Post() {
                     <Text type="secondary">
                       {postData.profile.first_name} {postData.profile.last_name}
                     </Text>
+                  </Space>
+                )}
+
+                {postData.motoclubs && postData.motoclubs.length > 0 && (
+                  <Space direction="vertical" size={8}>
+                    <Text strong>Организаторы</Text>
+                    <Space size={12} wrap>
+                      {postData.motoclubs.map((motoclub) => (
+                        <Link
+                          key={motoclub.id}
+                          to={`/motoclubs/${motoclub.id}`}
+                          title={motoclub.name}
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: 8,
+                            color: 'inherit',
+                          }}
+                        >
+                          {motoclub.logo ? (
+                            <img
+                              src={`${API_URL}${motoclub.logo}`}
+                              alt={motoclub.name}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: '50%',
+                                objectFit: 'cover',
+                                border: '1px solid #e2e8f0',
+                              }}
+                            />
+                          ) : (
+                            <span
+                              style={{
+                                width: 40,
+                                height: 40,
+                                borderRadius: '50%',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                border: '1px solid #e2e8f0',
+                                background: '#f8fafc',
+                                fontWeight: 600,
+                              }}
+                            >
+                              {motoclub.name.slice(0, 1).toUpperCase()}
+                            </span>
+                          )}
+                        </Link>
+                      ))}
+                    </Space>
                   </Space>
                 )}
 

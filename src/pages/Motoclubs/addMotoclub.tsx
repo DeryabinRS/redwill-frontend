@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { App as AntdApp, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Space, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
@@ -9,6 +9,7 @@ import { base64ToFile, sanitizeInput } from '../../utils/form'
 type FormValues = {
   name: string
   desc?: string
+  birthday?: string
   logo?: File
   website?: string
   phone?: string
@@ -40,6 +41,7 @@ function AddMotoclub() {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
+      appendString(formData, 'birthday', values.birthday)
       appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
@@ -99,6 +101,10 @@ function AddMotoclub() {
                   <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
                 </Form.Item>
 
+                <Form.Item name="birthday" label="День рождения клуба">
+                  <DatePicker />
+                </Form.Item>
+
                 <Row gutter={16}>
                   <Col xs={24} md={12}>
                     <Form.Item
@@ -139,6 +145,7 @@ function AddMotoclub() {
                 </Row>
 
                 <MapPicker
+                  addressMode="locality"
                   onChangeLocation={(loc: string) => {
                     form.setFieldValue('location', loc)
                   }}

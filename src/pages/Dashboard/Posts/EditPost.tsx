@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGetDashboardPostQuery, useUpdatePostMutation, useUploadPostImageMutation } from '../../../features/post/postSlice'
+import { useGetDashboardMotoclubListQuery } from '@features/motoclub/motoclubSlice'
 import { API_URL } from '@config/constants'
 import ImageCropper from '@components/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
@@ -15,6 +16,7 @@ type FormValues = {
   link?: string
   location?: string
   address?: string
+  motoclub_ids?: number[]
   publication_status: boolean
   moderation_status: 0 | 1 | 2 | 3
   date_start: dayjs.Dayjs
@@ -34,9 +36,16 @@ function UpdatePost() {
   const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait')
   const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
   const [uploadPostImage, { isLoading: isUploadingImage }] = useUploadPostImageMutation()
+  const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
 
   const cropperValue = pendingImage || previewUrl
   const hasNewImageToUpload = Boolean(pendingImage && pendingImage.startsWith('data:image'))
+  const motoclubOptions = (motoclubsData?.data || []).map((motoclub) => ({
+    value: motoclub.id,
+    label: motoclub.name,
+  }))
 
   const {
     data: postData,
@@ -55,6 +64,7 @@ function UpdatePost() {
       link: postData.link || '',
       location: postData.location || '',
       address: postData.address || '',
+      motoclub_ids: postData.motoclub_ids || postData.motoclubs?.map((motoclub) => motoclub.id) || [],
       publication_status: Boolean(postData.publication_status),
       moderation_status: postData.moderation_status ?? 0,
       date_start: dayjs(postData.date_start),
@@ -108,6 +118,9 @@ function UpdatePost() {
       if (values.link) formData.append('link', sanitizeInput(values.link))
       if (values.location) formData.append('location', sanitizeInput(values.location))
       if (values.address) formData.append('address', sanitizeInput(values.address))
+      values.motoclub_ids?.forEach((id) => {
+        formData.append('motoclub_ids[]', String(id))
+      })
       formData.append('publication_status', values.publication_status ? '1' : '0')
       formData.append('moderation_status', String(values.moderation_status))
       formData.append('date_start', values.date_start.format('YYYY-MM-DD'))
@@ -189,6 +202,18 @@ function UpdatePost() {
 
               <Form.Item label="Ссылка" name="link">
                 <Input placeholder="https://example.com" />
+              </Form.Item>
+
+              <Form.Item label="Мотоклубы" name="motoclub_ids">
+                <Select
+                  mode="multiple"
+                  allowClear
+                  showSearch
+                  optionFilterProp="label"
+                  loading={isLoadingMotoclubs}
+                  options={motoclubOptions}
+                  placeholder="Выберите мотоклубы"
+                />
               </Form.Item>
 
               <Space size="large" style={{ width: '100%' }}>

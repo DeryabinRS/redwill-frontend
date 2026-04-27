@@ -1,7 +1,8 @@
-import { App as AntdApp, Button, Card, Col, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
+import dayjs from 'dayjs'
 import ImageCropper from '@components/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import { API_URL } from '@config/constants'
@@ -15,6 +16,7 @@ import {
 type FormValues = {
   name: string
   desc?: string
+  birthday?: dayjs.Dayjs
   website?: string
   phone?: string
   email?: string
@@ -52,6 +54,7 @@ function EditMotoclub() {
     form.setFieldsValue({
       name: motoclubData.name,
       desc: motoclubData.desc || '',
+      birthday: motoclubData.birthday ? dayjs(motoclubData.birthday) : undefined,
       website: motoclubData.website || '',
       phone: motoclubData.phone || '',
       email: motoclubData.email || '',
@@ -106,6 +109,7 @@ function EditMotoclub() {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
+      if (values.birthday) formData.append('birthday', values.birthday.format('YYYY-MM-DD'))
       appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
@@ -197,6 +201,10 @@ function EditMotoclub() {
                 <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
               </Form.Item>
 
+              <Form.Item name="birthday" label="День рождения клуба">
+                <DatePicker />
+              </Form.Item>
+
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
@@ -249,6 +257,7 @@ function EditMotoclub() {
               </Space>
 
               <MapPicker
+                addressMode="locality"
                 initialLocation={motoclubData.location || undefined}
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)

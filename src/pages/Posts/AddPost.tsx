@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { 
 	App as AntdApp, Form, Input, DatePicker, TimePicker, 
-	Button, Typography, Card, Space, Row, Col,
+	Button, Typography, Card, Space, Row, Col, Select,
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs'
 import ImageCropper from '../../components/ImageCropper';
 import { useCreatePostMutation } from '../../features/post/postSlice';
+import { useGetDashboardMotoclubListQuery } from '../../features/motoclub/motoclubSlice'
 import MapPicker from '../../components/YandexMapV3/MapPicker';
 import { base64ToFile, sanitizeInput } from '../../utils/form';
 
@@ -19,6 +20,7 @@ interface FormValues {
 	post_category_id: number
 	location?: string
 	address?: string
+	motoclub_ids?: number[]
 	image: File
 	link?: string
 	date_start: dayjs.Dayjs
@@ -35,6 +37,13 @@ function AddPost() {
 	const [image, setImage] = useState('')
 	
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
+	const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
+		pagination: { page: 1, per_page: 100 },
+	})
+	const motoclubOptions = (motoclubsData?.data || []).map((motoclub) => ({
+		value: motoclub.id,
+		label: motoclub.name,
+	}))
 
 	const handleSubmit = async (values: FormValues) => {
 		try {
@@ -47,6 +56,9 @@ function AddPost() {
 			if (values.location) formData.append('location', sanitizeInput(values.location))
 			if (values.address) formData.append('address', sanitizeInput(values.address))
 			if (values.link) formData.append('link', sanitizeInput(values.link))
+			values.motoclub_ids?.forEach((id) => {
+				formData.append('motoclub_ids[]', String(id))
+			})
 			
 			// Даты и время
 			formData.append('date_start', values.date_start.format('YYYY-MM-DD'))
@@ -125,6 +137,17 @@ function AddPost() {
 								]}
 							>
 								<Input placeholder="https://example.com" />
+							</Form.Item>
+							<Form.Item label="Мотоклубы" name="motoclub_ids">
+								<Select
+									mode="multiple"
+									allowClear
+									showSearch
+									optionFilterProp="label"
+									loading={isLoadingMotoclubs}
+									options={motoclubOptions}
+									placeholder="Выберите мотоклубы"
+								/>
 							</Form.Item>
 							<MapPicker 
 								onChangeLocation={(loc: string) => {

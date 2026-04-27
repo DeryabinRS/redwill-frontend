@@ -6,6 +6,7 @@ export type Motoclub = {
   id: number
   name: string
   desc: string | null
+  birthday: string | null
   logo: string | null
   website: string | null
   phone: string | null
@@ -52,6 +53,14 @@ export const motoclubApi = createApi({
     },
   }),
   endpoints: (builder) => ({
+    getMotoclub: builder.query<Motoclub, string | number>({
+      query: (motoclub) => ({
+        url: `/motoclubs/${motoclub}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: CreateMotoclubResponse) => response.data,
+      providesTags: (_result, _error, motoclub) => [{ type: 'Motoclub', id: motoclub }],
+    }),
     getDashboardMotoclubList: builder.query<MotoclubListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
       query: (args) => ({
         url: '/dashboard/motoclubs',
@@ -124,6 +133,7 @@ export const motoclubApi = createApi({
 
 export const {
   useCreateMotoclubMutation,
+  useGetMotoclubQuery,
   useGetDashboardMotoclubListQuery,
   useGetDashboardMotoclubQuery,
   useUpdateMotoclubMutation,
