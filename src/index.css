@@ -3,10 +3,6 @@
   --theme-color: #cd2e2c;
 }
 
-* {
-  font-family: 'Roboto', sans-serif;
-}
-
 .container {
   max-width: var(--container-max);
   margin: 0 auto;

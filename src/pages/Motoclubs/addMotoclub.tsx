@@ -62,124 +62,128 @@ function AddMotoclub() {
   }
 
   return (
-    <section className="section" style={{ padding: '30px 0' }}>
-      <div className="container">
-        <Typography.Title level={2}>Добавить мотоклуб</Typography.Title>
-        <Card>
-          <Form form={form} layout="vertical" onFinish={onSubmit}>
-            <Row gutter={16}>
-              <Col xs={24} md={8}>
-                <Form.Item label="Логотип (JPG, PNG)">
-                  <ImageCropper
-                    value={logo}
-                    onChange={setLogo}
-                    aspectRatio={1}
-                    outputSize={{ width: 500, height: 500 }}
-                    showOrientationSwitch={false}
-                  />
-                </Form.Item>
-              </Col>
-
-              <Col xs={24} md={16}>
-                <Form.Item
-                  name="name"
-                  label="Название"
-                  rules={[
-                    { required: true, message: 'Введите название мотоклуба' },
-                    { max: 255, message: 'Максимум 255 символов' },
-                    { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                  ]}
-                >
-                  <Input placeholder="Название мотоклуба" />
-                </Form.Item>
-
-                <Form.Item
-                  name="desc"
-                  label="Описание"
-                  rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
-                >
-                  <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
-                </Form.Item>
-
-                <Form.Item name="birthday" label="День рождения клуба">
-                  <DatePicker />
-                </Form.Item>
-
-                <Row gutter={16}>
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="website"
-                      label="Сайт"
-                      rules={[
-                        { type: 'url', message: 'Введите корректный URL' },
-                        { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                      ]}
-                    >
-                      <Input placeholder="https://example.com" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="email"
-                      label="Email"
-                      rules={[
-                        { type: 'email', message: 'Введите корректный email' },
-                        { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                      ]}
-                    >
-                      <Input placeholder="club@example.com" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <Row gutter={16}>
-                  <Col xs={24} md={12}>
-                    <Form.Item
-                      name="phone"
-                      label="Телефон"
-                      rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
-                    >
-                      <Input placeholder="+7..." />
-                    </Form.Item>
-                  </Col>
-                </Row>
-
-                <MapPicker
-                  addressMode="locality"
-                  onChangeLocation={(loc: string) => {
-                    form.setFieldValue('location', loc)
-                  }}
-                  onChangeAddress={(addr: string) => {
-                    form.setFieldValue('address', addr)
-                  }}
+    <div className="container">
+      <Typography.Title level={2}>Добавить мотоклуб</Typography.Title>
+      <Card>
+        <Form form={form} layout="vertical" onFinish={onSubmit}>
+          <Row gutter={16}>
+            <Col xs={24} md={8}>
+              <Form.Item 
+                name="logo"
+                label="Логотип (JPG, PNG)"
+                rules={[
+                  { required: true, message: 'Выберите изображение' },
+                ]}
+              >
+                <ImageCropper
+                  value={logo}
+                  onChange={setLogo}
+                  aspectRatio={1}
+                  outputSize={{ width: 500, height: 500 }}
+                  showOrientationSwitch={false}
                 />
+              </Form.Item>
+            </Col>
 
-                <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
-                  <Input readOnly placeholder="Кликните по карте, чтобы получить координаты..." />
-                </Form.Item>
+            <Col xs={24} md={16}>
+              <Form.Item
+                name="name"
+                label="Название"
+                rules={[
+                  { required: true, message: 'Введите название мотоклуба' },
+                  { max: 255, message: 'Максимум 255 символов' },
+                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                ]}
+              >
+                <Input placeholder="Название мотоклуба" />
+              </Form.Item>
 
-                <Form.Item
-                  name="address"
-                  label="Адрес"
-                  rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
-                >
-                  <Input placeholder="Адрес мотоклуба" />
-                </Form.Item>
-              </Col>
-            </Row>
+              <Form.Item
+                name="desc"
+                label="Описание"
+                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+              >
+                <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
+              </Form.Item>
 
-            <Space>
-              <Button type="primary" htmlType="submit" loading={isLoading}>
-                Сохранить
-              </Button>
-              <Button onClick={() => navigate(backPath)}>
-                Отмена
-              </Button>
-            </Space>
-          </Form>
-        </Card>
-      </div>
-    </section>
+              <Form.Item name="birthday" label="День рождения клуба">
+                <DatePicker />
+              </Form.Item>
+
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="website"
+                    label="Сайт"
+                    rules={[
+                      { type: 'url', message: 'Введите корректный URL' },
+                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                    ]}
+                  >
+                    <Input placeholder="https://example.com" />
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="email"
+                    label="Email"
+                    rules={[
+                      { type: 'email', message: 'Введите корректный email' },
+                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                    ]}
+                  >
+                    <Input placeholder="club@example.com" />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="phone"
+                    label="Телефон"
+                    rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+                  >
+                    <Input placeholder="+7..." />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <MapPicker
+                addressMode="locality"
+                onChangeLocation={(loc: string) => {
+                  form.setFieldValue('location', loc)
+                }}
+                onChangeAddress={(addr: string) => {
+                  form.setFieldValue('address', addr)
+                }}
+              />
+
+              <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
+                <Input readOnly placeholder="Кликните по карте, чтобы получить координаты..." />
+              </Form.Item>
+
+              <Form.Item
+                name="address"
+                label="Адрес"
+                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+              >
+                <Input placeholder="Адрес мотоклуба" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Space>
+            <Button type="primary" htmlType="submit" loading={isLoading}>
+              Сохранить
+            </Button>
+            <Button onClick={() => navigate(backPath)}>
+              Отмена
+            </Button>
+          </Space>
+        </Form>
+      </Card>
+    </div>
   )
 }
 
