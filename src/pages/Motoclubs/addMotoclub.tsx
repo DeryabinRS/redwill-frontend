@@ -159,7 +159,7 @@ function AddMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
-
+              <div>Чтобы получить координаты и название населенного пункта, кликните по нему на карте</div>
               <MapPicker
                 addressMode="locality"
                 onChangeLocation={(loc: string) => {
