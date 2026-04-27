@@ -15,11 +15,8 @@ type FormValues = {
   website?: string
   phone?: string
   email?: string
-  address?: string
-  city?: string
-  state?: string
-  zip?: string
-  location?: string
+  address: string
+  location: string
 }
 
 function AddMotoclub() {
@@ -46,8 +43,8 @@ function AddMotoclub() {
       appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
-      appendString(formData, 'address', values.address)
-      appendString(formData, 'location', values.location)
+      formData.append('address', sanitizeInput(values.address))
+      formData.append('location', sanitizeInput(values.location))
 
       if (logo && logo.startsWith('data:image')) {
         const file = await base64ToFile(logo, `motoclub_${Date.now()}.jpg`)
@@ -159,8 +156,9 @@ function AddMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
-              <div>Чтобы получить координаты и название населенного пункта, кликните по нему на карте</div>
+              <div>Чтобы получить координаты и название населенного пункта, введите адрес или название места в поле поиска</div>
               <MapPicker
+                onlySearchInput={true}
                 addressMode="locality"
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
@@ -170,14 +168,22 @@ function AddMotoclub() {
                 }}
               />
 
-              <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
-                <Input readOnly placeholder="Кликните по карте, чтобы получить координаты..." />
+              <Form.Item
+                name="location"
+                label="Координаты"
+                style={{ marginTop: 8, marginBottom: 8 }}
+                rules={[{ required: true, message: 'Выберите место через поиск' }]}
+              >
+                <Input readOnly placeholder="Введите место в поиске, чтобы получить координаты..." />
               </Form.Item>
 
               <Form.Item
                 name="address"
                 label="Адрес"
-                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+                rules={[
+                  { required: true, message: 'Выберите адрес через поиск' },
+                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                ]}
               >
                 <Input placeholder="Адрес мотоклуба" />
               </Form.Item>

@@ -1,8 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, type KeyboardEvent } from 'react';
+import { Button, Input, Space, Typography } from 'antd';
 import { useYmaps3 } from '../../hooks/useYmaps3';
 
 const DEFAULT_CENTER: [number, number] = [50.618423, 55.751244]; // [lng, lat]
 const DEFAULT_ZOOM = 4
+const GEOCODER_API_KEY = 'c83cc3de-70ab-47e1-8168-76d252ad4f1e'
 
 interface YMapClickEvent {
   coordinates: [number, number];
@@ -17,6 +19,7 @@ export interface IMapPicker {
   onChangeAddress: (val: string) => void;
   initialLocation?: string;
   addressMode?: AddressMode;
+  onlySearchInput?: boolean;
 }
 
 type GeocoderAddressComponent = {
@@ -27,6 +30,9 @@ type GeocoderAddressComponent = {
 type GeocoderGeoObject = {
   name?: string
   description?: string
+  Point?: {
+    pos?: string
+  }
   metaDataProperty?: {
     GeocoderMetaData?: {
       Address?: {
@@ -53,11 +59,28 @@ function getLocalityName(geoObject: GeocoderGeoObject): string {
   )
 }
 
-function MapPicker({ onChangeLocation, onChangeAddress, initialLocation, addressMode = 'full' }: IMapPicker) {
+function getAddressText(geoObject: GeocoderGeoObject, addressMode: AddressMode): string {
+  if (addressMode === 'locality') {
+    return getLocalityName(geoObject)
+  }
+
+  return geoObject.name || geoObject.description || ''
+}
+
+function MapPicker({
+  onChangeLocation,
+  onChangeAddress,
+  initialLocation,
+  addressMode = 'full',
+  onlySearchInput = false,
+}: IMapPicker) {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [center, setCenter] = useState<[number, number]>(DEFAULT_CENTER)
   const [zoom, setZoom] = useState(DEFAULT_ZOOM)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
 
   useEffect(() => {
     const parsed = parseLocation(initialLocation)
@@ -92,6 +115,59 @@ function MapPicker({ onChangeLocation, onChangeAddress, initialLocation, address
     }
   }, [zoom, center]);
 
+  const handleSearch = useCallback(async () => {
+    const query = searchQuery.trim()
+    if (!query) {
+      setSearchError('Введите адрес или название места')
+      return
+    }
+
+    setIsSearching(true)
+    setSearchError('')
+
+    try {
+      const response = await fetch(
+        `https://geocode-maps.yandex.ru/1.x/?apikey=${GEOCODER_API_KEY}&geocode=${encodeURIComponent(query)}&format=json&results=1`
+      )
+      const data = await response.json()
+      const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject as GeocoderGeoObject | undefined
+      const position = geoObject?.Point?.pos?.split(' ').map(Number)
+      const lngValue = position?.[0]
+      const latValue = position?.[1]
+
+      if (
+        !geoObject ||
+        typeof latValue !== 'number' ||
+        typeof lngValue !== 'number' ||
+        Number.isNaN(latValue) ||
+        Number.isNaN(lngValue)
+      ) {
+        setSearchError('Место не найдено')
+        return
+      }
+
+      const nextCoords = { lat: latValue, lng: lngValue }
+      const address = getAddressText(geoObject, addressMode)
+
+      setCoords(nextCoords)
+      setCenter([nextCoords.lng, nextCoords.lat])
+      setZoom(14)
+      onChangeLocation(`${nextCoords.lat.toFixed(6)}, ${nextCoords.lng.toFixed(6)}`)
+      onChangeAddress(address || 'Адрес не найден')
+    } catch {
+      setSearchError('Не удалось выполнить поиск')
+    } finally {
+      setIsSearching(false)
+    }
+  }, [addressMode, onChangeAddress, onChangeLocation, searchQuery])
+
+  const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault()
+      handleSearch()
+    }
+  }
+
   // 📍 Обратное геокодирование при изменении координат
   useEffect(() => {
     if (!coords) {
@@ -102,14 +178,12 @@ function MapPicker({ onChangeLocation, onChangeAddress, initialLocation, address
     const fetchAddress = async () => {
       try {
         const response = await fetch(
-          `https://geocode-maps.yandex.ru/1.x/?apikey=c83cc3de-70ab-47e1-8168-76d252ad4f1e&geocode=${coords.lng},${coords.lat}&format=json&results=1`
+          `https://geocode-maps.yandex.ru/1.x/?apikey=${GEOCODER_API_KEY}&geocode=${coords.lng},${coords.lat}&format=json&results=1`
         );
         const data = await response.json();
         const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject as GeocoderGeoObject | undefined;
         if (geoObject) {
-          const address = addressMode === 'locality'
-            ? getLocalityName(geoObject)
-            : geoObject.name || geoObject.description || ''
+          const address = getAddressText(geoObject, addressMode)
           onChangeAddress(address || 'Адрес не найден');
         } else {
           onChangeAddress('Адрес не найден');
@@ -159,6 +233,29 @@ function MapPicker({ onChangeLocation, onChangeAddress, initialLocation, address
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ marginBottom: 8 }}>
+        <Space.Compact style={{ width: '100%' }}>
+          <Input
+            value={searchQuery}
+            onChange={(event) => setSearchQuery(event.target.value)}
+            onKeyDown={handleSearchKeyDown}
+            placeholder="Введите адрес или название места"
+          />
+          <Button
+            type="primary"
+            onClick={handleSearch}
+            loading={isSearching}
+          >
+            Найти
+          </Button>
+        </Space.Compact>
+        {searchError && (
+          <Typography.Text type="danger" style={{ display: 'block', marginTop: 4, fontSize: 12 }}>
+            {searchError}
+          </Typography.Text>
+        )}
+      </div>
+
       {/* 🔑 Контейнер с ЯВНОЙ высотой в пикселях — обязательно! */}
       <div style={{
         borderRadius: '8px',
@@ -178,7 +275,7 @@ function MapPicker({ onChangeLocation, onChangeAddress, initialLocation, address
           <YMapDefaultSchemeLayer />
           <YMapDefaultFeaturesLayer />
 
-          <YMapListener onClick={handleMapClick} />
+          {!onlySearchInput && <YMapListener onClick={handleMapClick} />}
           <YMapListener onActionEnd={handleActionEnd} />
 
           {coords && (
