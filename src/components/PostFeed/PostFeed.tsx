@@ -118,16 +118,6 @@ const PostFeed: React.FC<PostFeedProps> = ({
                     )}
                   </Space>
                 </div>
-
-                {post.content && (
-                  <Paragraph 
-                    className="post-card-content" 
-                    ellipsis={{ rows: 3, expandable: true }}
-                    style={{ margin: 0 }}
-                  >
-                    {post.content.replace(/<[^>]*>/g, '')}
-                  </Paragraph>
-                )}
               </Space>
             </Card>
           </Col>
