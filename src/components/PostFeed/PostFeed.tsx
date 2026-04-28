@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import './PostFeed.css'
 import { API_URL } from '../../config/constants'
 
-const { Title, Text, Paragraph } = Typography
+const { Title, Text } = Typography
 
 interface PostFeedProps {
   title?: string

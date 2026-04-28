@@ -39,8 +39,6 @@ function MotoclubsMarquee() {
       scrollLeft: marqueeRef.current.scrollLeft,
       hasDragged: false,
     }
-    event.currentTarget.setPointerCapture(event.pointerId)
-    setIsDragging(true)
   }
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -50,22 +48,20 @@ function MotoclubsMarquee() {
     const deltaX = event.clientX - dragState.startX
     if (Math.abs(deltaX) > 5) {
       dragState.hasDragged = true
+      setIsDragging(true)
     }
 
     marqueeRef.current.scrollLeft = dragState.scrollLeft - deltaX
   }
 
-  const stopDragging = (event: PointerEvent<HTMLDivElement>) => {
+  const stopDragging = () => {
     if (!dragStateRef.current.isPointerDown) return
 
     dragStateRef.current.isPointerDown = false
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId)
-    }
     setIsDragging(false)
   }
 
-  const handleClick = (event: MouseEvent<HTMLDivElement>) => {
+  const handleItemClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (!dragStateRef.current.hasDragged) return
 
     event.preventDefault()
@@ -94,7 +90,7 @@ function MotoclubsMarquee() {
       onPointerMove={handlePointerMove}
       onPointerUp={stopDragging}
       onPointerCancel={stopDragging}
-      onClickCapture={handleClick}
+      onPointerLeave={stopDragging}
     >
       <div className="motoclubs-marquee__track">
         {marqueeMotoclubs.map((motoclub, index) => (
@@ -103,6 +99,7 @@ function MotoclubsMarquee() {
             to={`/motoclubs/${motoclub.id}`}
             className="motoclubs-marquee__item"
             title={motoclub.name}
+            onClick={handleItemClick}
           >
             <img src={`${API_URL}${motoclub.logo}`} alt={motoclub.name} draggable={false} />
           </Link>

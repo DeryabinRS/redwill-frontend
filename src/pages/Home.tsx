@@ -4,34 +4,37 @@ import { ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant
 import MapHeaderCanvas from '../components/MapHeaderCanvas/MapHeaderCanvas'
 import PostFeed from '../components/PostFeed'
 import MotoclubsMarquee from '@components/MotoclubsMarquee'
+import { Link } from 'react-router-dom'
 
 function Home() {
   // const { t } = useTranslation()
   const cardData = [
-    {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} /> },
-    {title: 'Мотоклубы', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} /> },
-    {title: 'Байк-посты, бары', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} /> },
-    {title: 'СТО', desc: '', icon: <ToolOutlined style={{ fontSize: 28 }} /> },
+    {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} />, link: '/calendar' },
+    {title: 'Мотоклубы', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/motoclubs' },
+    {title: 'Байк-посты, бары', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} />, link: '/bike-posts-bars' },
+    {title: 'СТО', desc: '', icon: <ToolOutlined style={{ fontSize: 28 }} />, link: '/service-stations' },
   ];
 
   const renderCard = () => cardData.map((item, index) => (
     <Col key={item.title} xs={12} lg={6} xl={4}>
-      <div className="card-stripes" style={{ height: '100%' }}>
-          <div className="stripe-bg"></div>
-          <div className="stripe-border"></div>
-          <div className="card-number">{String(index + 1).padStart(2, '0')}</div>
-          <div className="content">
-            <div className="card-switch-icon">{item.icon}</div>
-            <div>
-              <Typography.Title level={5} className="card-switch-title">
-                {item.title}
-              </Typography.Title>
-              <Typography.Paragraph className="card-switch-description">
-                {item.desc}
-              </Typography.Paragraph>
+      <Link to={item.link}>
+        <div className="card-stripes" style={{ height: '100%' }}>
+            <div className="stripe-bg"></div>
+            <div className="stripe-border"></div>
+            <div className="card-number">{String(index + 1).padStart(2, '0')}</div>
+            <div className="content">
+              <div className="card-switch-icon">{item.icon}</div>
+              <div>
+                <Typography.Title level={5} className="card-switch-title">
+                  {item.title}
+                </Typography.Title>
+                <Typography.Paragraph className="card-switch-description">
+                  {item.desc}
+                </Typography.Paragraph>
+              </div>
             </div>
-          </div>
-      </div>
+        </div>
+      </Link>
     </Col>
   ));
 
