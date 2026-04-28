@@ -2,7 +2,6 @@ import { Button, Card, Image, Input, Space, Table, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
 import { useMemo, useState } from 'react'
-import { EyeOutlined } from '@ant-design/icons'
 import { API_URL } from '@config/constants'
 import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
@@ -60,18 +59,11 @@ function Motoclubs() {
       key: 'name',
       render: (name: string, record) => (
         <Link to={`/motoclubs/${record.id}`}>
-          <Button size="small" icon={<EyeOutlined />}>
-            {name}
+          <Button size="small" type="link">
+            {name} {record.address ? `(${record.address})` : ''}
           </Button>
         </Link>
       ),
-    },
-    {
-      title: 'Адрес',
-      dataIndex: 'address',
-      key: 'address',
-      ellipsis: true,
-      render: (address?: string | null) => address || <Typography.Text type="secondary">—</Typography.Text>,
     },
     {
       title: 'Сайт',
@@ -107,6 +99,7 @@ function Motoclubs() {
 
       <Card>
         <Table<Motoclub>
+          showHeader={false}
           size="small"
           rowKey="id"
           loading={isLoading}
