@@ -40,7 +40,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const antThemeConfig = useMemo<ThemeConfig>(() => ({
     algorithm: mode === 'dark' ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
     token: {
-      colorPrimary: '#2466c2',
+      colorPrimary: '#cd2e2c',
     },
     components: {
       Layout: {

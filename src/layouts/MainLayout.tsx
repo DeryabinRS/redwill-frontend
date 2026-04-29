@@ -1,4 +1,5 @@
 import { Grid, Layout, Menu, Typography } from 'antd'
+import type { MenuProps } from 'antd'
 import { DashboardOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, PlusOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -12,6 +13,8 @@ import { SITE_NAME } from '../config/constants'
 const { Header, Content, Footer } = Layout
 
 const { useBreakpoint } = Grid;
+
+type MenuItem = Required<MenuProps>['items'][number]
 
 function MainLayout() {
 	const { t } = useTranslation()
@@ -33,26 +36,13 @@ function MainLayout() {
 
 	const hasAdminRole = userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor')
 
-	const menuItems = [
+	const menuItems: MenuItem[] = [
 		// {
 		// 	key: 'home',
 		// 	icon: <HomeOutlined />,
 		// 	label: <NavLink to="/">{t('menu.home')}</NavLink>,
 		// },
-	]
-
-	// Добавляем Dashboard для admin/editor
-	if (hasAdminRole) {
-		menuItems.push({
-			key: 'dashboard',
-			icon: <DashboardOutlined />,
-			label: <NavLink to="/dashboard">Dashboard</NavLink>,
-		})
-	}
-
-	// Добавляем меню создания сущностей для авторизованных пользователей
-	if (userIsAuthenticated) {
-		menuItems.push({
+		{
 			key: 'add',
 			icon: <PlusOutlined />,
 			label: 'Добавить',
@@ -66,10 +56,38 @@ function MainLayout() {
 					label: <NavLink to="/motoclubs/create">Мотоклуб</NavLink>,
 				},
 			],
+		}
+	]
+
+	// Добавляем Dashboard для admin/editor
+	if (hasAdminRole) {
+		menuItems.push({
+			key: 'dashboard',
+			icon: <DashboardOutlined />,
+			label: <NavLink to="/dashboard">Dashboard</NavLink>,
 		})
 	}
 
-	const authItems = (userIsAuthenticated && userInfo)
+	// Добавляем меню создания сущностей для авторизованных пользователей
+	// if (userIsAuthenticated) {
+	// 	menuItems.push({
+	// 		key: 'add',
+	// 		icon: <PlusOutlined />,
+	// 		label: 'Добавить',
+	// 		children: [
+	// 			{
+	// 				key: 'create-post',
+	// 				label: <NavLink to="/posts/create">Событие</NavLink>,
+	// 			},
+	// 			{
+	// 				key: 'create-motoclub',
+	// 				label: <NavLink to="/motoclubs/create">Мотоклуб</NavLink>,
+	// 			},
+	// 		],
+	// 	})
+	// }
+
+	const authItems: MenuItem[] = (userIsAuthenticated && userInfo)
 		? [
 			{
 				key: 'profile',
@@ -97,7 +115,7 @@ function MainLayout() {
 
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
-			<Header style={{ padding: 0, height: '100%' }}>
+			<Header style={{ padding: 0, height: '100%', borderBottom: '1px solid #2f2e2e' }}>
 				<div className="container" style={{ display: 'flex', alignItems: 'center', gap: 24, height: '100%' }}>
 					<Typography.Title level={2} style={{ margin: 0 }}>
 							<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>

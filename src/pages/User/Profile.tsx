@@ -2,6 +2,7 @@ import { Card, Descriptions, Spin, Typography } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
 import UserPosts from './Posts'
+import UserMotoclubs from './Motoclubs'
 
 function Profile() {
   const { t } = useTranslation()
@@ -37,6 +38,7 @@ function Profile() {
       </Card>
 
       <UserPosts />
+      <UserMotoclubs />
     </div>
   )
 }

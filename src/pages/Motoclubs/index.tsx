@@ -1,5 +1,6 @@
 import { Button, Card, Image, Input, Space, Table, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
+import { ShopOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
@@ -83,13 +84,22 @@ function Motoclubs() {
 
   return (
     <div className="container" style={{ padding: '8px 0' }}>
+      <div className="title_page">
+        <div>
+          <Typography.Text className="events-calendar-eyebrow">
+            сообщество
+          </Typography.Text>
+          <Typography.Title level={1} className="events-calendar-title">
+            Мотоклубы
+          </Typography.Title>
+          <Typography.Paragraph className="events-calendar-description">
+            Карта и список мотоклубов сообщества.
+          </Typography.Paragraph>
+        </div>
+        <ShopOutlined className="title_page__icon" />
+      </div>
+
       <Card style={{ marginBottom: 16 }}>
-        <Typography.Title level={2} style={{ marginTop: 0 }}>
-          Мотоклубы
-        </Typography.Title>
-        <Typography.Paragraph>
-          Карта и список мотоклубов сообщества.
-        </Typography.Paragraph>
         {mapMarkers.length > 0 ? (
           <MapView markers={mapMarkers} height={520} zoom={4} />
         ) : (

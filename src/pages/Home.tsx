@@ -1,17 +1,20 @@
+import { Link, useNavigate } from 'react-router-dom'
 import { Col, Row, Typography } from 'antd'
-import { ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
+import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
 // import { useTranslation } from 'react-i18next'
 import MapHeaderCanvas from '../components/MapHeaderCanvas/MapHeaderCanvas'
 import PostFeed from '../components/PostFeed'
 import MotoclubsMarquee from '@components/MotoclubsMarquee'
-import { Link } from 'react-router-dom'
+import ThemeButton from '@components/UI/Buttons/ThemeButton'
 
 function Home() {
   // const { t } = useTranslation()
+  const navigate = useNavigate()
   const cardData = [
     {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} />, link: '/calendar' },
-    {title: 'Мотоклубы', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/motoclubs' },
-    {title: 'Байк-посты, бары', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} />, link: '/bike-posts-bars' },
+    {title: 'Мотоклубы', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} />, link: '/motoclubs' },
+    {title: 'Мото-бары', desc: '', icon: <CoffeeOutlined style={{ fontSize: 28 }} />, link: '/bars' },
+    {title: 'Байк-посты', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/bike-posts-bars' },
     {title: 'СТО', desc: '', icon: <ToolOutlined style={{ fontSize: 28 }} />, link: '/service-stations' },
   ];
 
@@ -40,7 +43,7 @@ function Home() {
 
   return (
     <>
-      <section className="section section__header" style={{ padding: '8px 0' }}>
+      <section className="section section__header" style={{ padding: '16px 0' }}>
         <MapHeaderCanvas />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="route-tile-panel">
@@ -51,14 +54,27 @@ function Home() {
         </div>
       </section>
 
-      <section className="section" style={{ padding: '30px 0', marginTop: -100 }}>
+      <section className="section section__events" style={{ padding: '30px 0' }}>
         <div className="container">
-          <PostFeed title="Ближайшие события" />
+          <div className="events_header" style={{ marginTop: -80, zIndex: 1 }}>
+            <Typography.Title level={2} className="events_title">
+              Ближайшие события
+            </Typography.Title>
+          </div>
+            <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/posts/create')}>
+              Добавить событие
+            </ThemeButton>
+          <PostFeed />
         </div>
       </section>
 
       <section className="section motoclubs" style={{ padding: '30px 0' }}>
-        <MotoclubsMarquee />
+        <div className="container" style={{ marginBottom: 20 }}>
+          <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/motoclubs/create')}>
+            Добавить мотоклуб
+          </ThemeButton>
+        </div>
+          <MotoclubsMarquee />
       </section>
     </>
   )

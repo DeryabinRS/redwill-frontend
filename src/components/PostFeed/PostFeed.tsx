@@ -4,15 +4,13 @@ import { useGetPostListQuery } from '../../features/post/postSlice'
 import PostCard from './PostCard'
 import './PostFeed.css'
 
-const { Title, Text } = Typography
+const { Text } = Typography
 
 interface PostFeedProps {
-  title?: string
   initialPage?: number
 }
 
 const PostFeed: React.FC<PostFeedProps> = ({
-  title = 'Будущие мероприятия',
   initialPage = 1,
 }) => {
   const [currentPage, setCurrentPage] = useState(initialPage)
@@ -40,12 +38,6 @@ const PostFeed: React.FC<PostFeedProps> = ({
 
   return (
     <div className="post-feed">
-      <div className="post-feed-header">
-        <Title level={2} className="post-feed-title">
-          {title}
-        </Title>
-      </div>
-
       <Row gutter={[16, 16]}>
         {posts.map((post, index) => (
           <Col

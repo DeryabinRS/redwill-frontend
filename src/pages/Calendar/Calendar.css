@@ -2,65 +2,6 @@
   padding: 8px 0 56px;
 }
 
-.events-calendar-hero {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-  padding: 16px;
-  overflow: hidden;
-  border-radius: 8px;
-  background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.03) 32%, transparent),
-    linear-gradient(160deg, rgba(35, 35, 39, 0.94), rgba(10, 10, 12, 0.92));
-  border: 1px solid rgba(255, 255, 255, 0.11);
-  box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.32),
-    0 1px 0 rgba(255, 255, 255, 0.1) inset;
-}
-
-.events-calendar-hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(120deg, transparent 0 55%, rgba(205, 46, 44, 0.72) 55% 58%, transparent 58% 100%),
-    radial-gradient(circle at 85% 18%, rgba(205, 46, 44, 0.22), transparent 34%),
-    radial-gradient(circle at 10% 110%, rgba(255, 255, 255, 0.1), transparent 36%);
-  pointer-events: none;
-}
-
-.events-calendar-hero > * {
-  position: relative;
-  z-index: 1;
-}
-
-.events-calendar-eyebrow {
-  color: var(--theme-color);
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.events-calendar-title {
-  margin: 4px 0 6px !important;
-  color: #f5f5f5 !important;
-  text-transform: uppercase;
-}
-
-.events-calendar-description {
-  max-width: 520px;
-  margin: 0 !important;
-  color: #a5a5a5 !important;
-}
-
-.events-calendar-hero__icon {
-  font-size: 72px;
-  color: rgba(205, 46, 44, 0.62);
-}
-
 .events-calendar-layout {
   align-items: start;
 }
@@ -157,14 +98,6 @@
 @media (max-width: 575px) {
   .events-calendar-page {
     padding-top: 18px;
-  }
-
-  .events-calendar-hero {
-    padding: 22px;
-  }
-
-  .events-calendar-hero__icon {
-    display: none;
   }
 
   .events-calendar-header {

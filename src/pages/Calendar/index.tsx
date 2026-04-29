@@ -89,7 +89,7 @@ function CalendarPage() {
   return (
     <section className="section events-calendar-page">
       <div className="container">
-        <div className="events-calendar-hero">
+        <div className="title_page">
           <div>
             <Typography.Text className="events-calendar-eyebrow">
               мероприятия
@@ -101,7 +101,7 @@ function CalendarPage() {
               События мотосообщества на выбранный месяц.
             </Typography.Paragraph>
           </div>
-          <CalendarOutlined className="events-calendar-hero__icon" />
+          <CalendarOutlined className="title_page__icon" />
         </div>
 
         <Row className="events-calendar-layout" gutter={[8, 8]} align="top">
