@@ -25,7 +25,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     if (saved === 'light' || saved === 'dark') {
       return saved
     }
-    return 'light'
+    return 'dark'
   })
 
   const setTheme = useCallback((newMode: ThemeMode) => {

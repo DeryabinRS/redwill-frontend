@@ -95,6 +95,13 @@ type GetPostListResponse = {
   prev_page_url: string | null
 }
 
+type GetPostListArgs = {
+  pagination?: { page?: number, per_page?: number }
+  post_category_ids?: number | number[]
+  min_start_date?: string
+  max_start_date?: string
+}
+
 export const postApi = createApi({
   reducerPath: 'postApi',
   tagTypes: ['Posts', 'Post', 'UserPosts'],
@@ -114,18 +121,15 @@ export const postApi = createApi({
       query: () => ({ url: '/post-categories', method: 'GET' }),
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
-    getPostList: builder.query<GetPostListResponse, { 
-      pagination?: { page?: number, per_page?: number };
-      post_category_ids?: number | number[];
-    }>({
-      query: ({ pagination, post_category_ids }) => ({ 
+    getPostList: builder.query<GetPostListResponse, GetPostListArgs>({
+      query: ({ pagination, post_category_ids, min_start_date, max_start_date }) => ({ 
         url: '/posts', 
         params: { 
           page: pagination?.page, 
           per_page: pagination?.per_page || 10, 
           post_category_ids,
-          min_start_date: dayjs().format('YYYY-MM-DD'),
-          // max_start_date: '2026-05-01',
+          min_start_date: min_start_date ?? dayjs().format('YYYY-MM-DD'),
+          max_start_date,
         },
       }),
       transformResponse: (response: { 

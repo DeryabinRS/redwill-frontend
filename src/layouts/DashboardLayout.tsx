@@ -14,8 +14,8 @@ import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
-import LanguageSwitcher from '../components/LanguageSwitcher'
-import ThemeSwitcher from '../components/ThemeSwitcher'
+// import LanguageSwitcher from '../components/LanguageSwitcher'
+// import ThemeSwitcher from '../components/ThemeSwitcher'
 import { SITE_NAME } from '../config/constants'
 
 const { Header, Sider, Content, Footer } = Layout
@@ -191,8 +191,8 @@ function DashboardLayout() {
           </div>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <ThemeSwitcher />
-            <LanguageSwitcher />
+            {/* <ThemeSwitcher />
+            <LanguageSwitcher /> */}
           </div>
         </Header>
         

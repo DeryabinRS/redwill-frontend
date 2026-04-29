@@ -20,6 +20,7 @@ import Users from './pages/Dashboard/Users/Users'
 import User from './pages/Dashboard/Users/User'
 import AddPost from './pages/Posts/AddPost'
 import Post from './pages/Posts/Post'
+import CalendarPage from './pages/Calendar'
 import DashboardPosts from './pages/Dashboard/Posts/Posts'
 import DashboardAddPost from './pages/Dashboard/Posts/AddPost'
 import DashboardUpdatePost from './pages/Dashboard/Posts/EditPost'
@@ -63,6 +64,7 @@ function AppContent() {
               }
             />
             <Route path="/posts/:post" element={<Post />} />
+            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/motoclubs" element={<Motoclubs />} />
             <Route
               path="/motoclubs/create"

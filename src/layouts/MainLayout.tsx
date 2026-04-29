@@ -6,8 +6,8 @@ import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
 import { SITE_NAME } from '../config/constants'
-import LanguageSwitcher from '../components/LanguageSwitcher'
-import ThemeSwitcher from '../components/ThemeSwitcher'
+// import LanguageSwitcher from '../components/LanguageSwitcher'
+// import ThemeSwitcher from '../components/ThemeSwitcher'
 
 const { Header, Content, Footer } = Layout
 
@@ -123,8 +123,8 @@ function MainLayout() {
 						items={authItems}
 					/>
 					)}
-					<ThemeSwitcher />
-					<LanguageSwitcher />
+					{/* <ThemeSwitcher />
+					<LanguageSwitcher /> */}
 				</div>
 			</Header>
 			<Content>
