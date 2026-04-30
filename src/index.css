@@ -302,18 +302,22 @@ a:hover {
       box-shadow:
         0 16px 30px rgba(224, 8, 4, 0.26),
         0 1px 0 rgba(255, 255, 255, 0.24) inset;
-      color: #adadad;  
+      color: #f3f3f3;  
       background:
-        linear-gradient(135deg, rgba(100, 100, 100, 0.95), rgba(172, 24, 24, 0.82));
+        linear-gradient(135deg, rgba(100, 100, 100, 0.95), #eb1b1b);
     }
     .card-switch-title {
       margin: 0 !important;
-      color: #a5a5a5 !important;
+      color: #bdbdbd !important;
       text-align: left;
       font-size: 14px !important;
       line-height: 1.15 !important;
       letter-spacing: 0.02em;
       text-transform: uppercase;
+    }
+
+    &:hover .card-switch-title {
+      color: #f3f3f3 !important;
     }
     
     .card-switch-description {
