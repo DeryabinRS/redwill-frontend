@@ -41,6 +41,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     algorithm: mode === 'dark' ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
     token: {
       colorPrimary: '#cd2e2c',
+      colorLink: '#ff8b8a',
+      colorLinkHover: '#e34a48',
+      colorLinkActive: '#a91f1d',
     },
     components: {
       Layout: {

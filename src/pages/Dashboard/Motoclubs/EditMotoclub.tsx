@@ -34,6 +34,7 @@ function EditMotoclub() {
   const [logoForm] = Form.useForm()
   const [previewLogo, setPreviewLogo] = useState('')
   const [pendingLogo, setPendingLogo] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [updateMotoclub, { isLoading: isUpdating }] = useUpdateMotoclubMutation()
   const [uploadMotoclubLogo, { isLoading: isUploadingLogo }] = useUploadMotoclubLogoMutation()
 
@@ -72,6 +73,11 @@ function EditMotoclub() {
 
   const appendString = (formData: FormData, key: keyof FormValues, value?: string) => {
     if (value) formData.append(key, sanitizeInput(value))
+  }
+
+  const handleAddressSearch = () => {
+    const address = form.getFieldValue('address')?.trim() || ''
+    setSearchQuery((current) => current.trim() === address ? `${address} ` : address)
   }
 
   const onLogoSubmit = async () => {
@@ -256,27 +262,40 @@ function EditMotoclub() {
                 </Form.Item>
               </Space>
 
+              <Form.Item
+                name="address"
+                label="Город"
+                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+              >
+                <Space.Compact style={{ width: '100%' }}>
+                  <Input
+                    placeholder="Город мотоклуба"
+                    onPressEnter={(event) => {
+                      event.preventDefault()
+                      handleAddressSearch()
+                    }}
+                  />
+                  <Button
+                    type="primary"
+                    htmlType="button"
+                    onClick={handleAddressSearch}
+                  >
+                    Найти
+                  </Button>
+                </Space.Compact>
+              </Form.Item>
+
               <MapPicker
-                // addressMode="locality"
+                searchValue={searchQuery}
+                showSearchInput={false}
                 initialLocation={motoclubData.location || undefined}
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
-                }}
-                onChangeAddress={(addr: string) => {
-                  form.setFieldValue('address', addr)
                 }}
               />
 
               <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
                 <Input readOnly placeholder="Кликните по карте, чтобы получить координаты..." />
-              </Form.Item>
-
-              <Form.Item
-                name="address"
-                label="Адрес"
-                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
-              >
-                <Input placeholder="Адрес мотоклуба" />
               </Form.Item>
             </Col>
           </Row>

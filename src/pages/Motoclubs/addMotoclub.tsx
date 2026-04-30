@@ -188,19 +188,15 @@ function AddMotoclub() {
                 </Button>
                 </Space.Compact>
               </Form.Item>
+
               <MapPicker
                 searchValue={searchQuery}
                 showSearchInput={false}
-                // onlySearchInput={true}
-                // addressMode="locality"
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
                 }}
-                // onChangeAddress={(addr: string) => {
-                //   form.setFieldValue('address', addr)
-                // }}
               />
-
+              
               <Form.Item
                 name="location"
                 label="Координаты"

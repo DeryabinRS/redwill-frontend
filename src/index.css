@@ -3,6 +3,13 @@
   --theme-color: #cd2e2c;
 }
 
+a {
+  color: #ff8b8a;
+}
+a:hover {
+  color: #e34a48;
+}
+
 .container {
   max-width: var(--container-max);
   margin: 0 auto;
