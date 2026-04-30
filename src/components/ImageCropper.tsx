@@ -184,7 +184,7 @@ function ImageCropper({
             accept=".jpg,.jpeg,.png"
           >
             {isLoading ? <Spin size="small" /> : (
-              <button style={{ border: 0, background: 'none', padding: 0 }}>
+              <button type="button" style={{ border: 0, background: 'none', padding: 0 }}>
                 <PlusOutlined />
                 <div style={{ marginTop: 8 }}>Загрузить</div>
               </button>

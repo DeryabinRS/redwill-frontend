@@ -1,33 +1,29 @@
 import { useState } from 'react'
-import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Space, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
-import { useCreateMotoclubMutation } from '../../features/motoclub/motoclubSlice'
+import { useCreateMotobarMutation } from '../../features/motobar/motobarSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
-import dayjs from 'dayjs'
 
 type FormValues = {
   name: string
   desc?: string
-  birthday?: string
-  logo?: File
   website?: string
-  phone?: string
-  email?: string
+  logo?: File
   address: string
   location: string
+  phone?: string
 }
 
-function AddMotoclub() {
+function AddMotobar() {
   const [form] = Form.useForm<FormValues>()
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [logo, setLogo] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
-  const [createMotoclub, { isLoading }] = useCreateMotoclubMutation()
-  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/motoclubs'
+  const [createMotobar, { isLoading }] = useCreateMotobarMutation()
+  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motobars' : '/motobars'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
@@ -35,44 +31,37 @@ function AddMotoclub() {
     if (value) formData.append(key, sanitizeInput(value))
   }
 
-  const handleAddressSearch = () => {
-    const address = form.getFieldValue('address')?.trim() || ''
-    setSearchQuery((current) => current.trim() === address ? `${address} ` : address)
-  }
-
   const onSubmit = async (values: FormValues) => {
     try {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
-      appendString(formData, 'birthday', values.birthday ? dayjs(values.birthday).format('YYYY-MM-DD') : undefined)
       appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
-      appendString(formData, 'email', values.email)
       formData.append('address', sanitizeInput(values.address))
       formData.append('location', sanitizeInput(values.location))
 
       if (logo && logo.startsWith('data:image')) {
-        const file = await base64ToFile(logo, `motoclub_${Date.now()}.jpg`)
+        const file = await base64ToFile(logo, `motobar_${Date.now()}.jpg`)
         if (file) formData.append('logo', file)
       }
 
-      await createMotoclub(formData).unwrap()
-      message.success('Мотоклуб создан и отправлен на модерацию')
+      await createMotobar(formData).unwrap()
+      message.success('Мото-бар создан и отправлен на модерацию')
       navigate(backPath)
     } catch {
-      message.error('Не удалось создать мотоклуб')
+      message.error('Не удалось создать мото-бар')
     }
   }
 
   return (
     <div className="container">
-      <Typography.Title level={2}>Добавить мотоклуб</Typography.Title>
+      <Typography.Title level={2}>Добавить мото-бар</Typography.Title>
       <Card>
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
-              <Form.Item 
+              <Form.Item
                 name="logo"
                 label="Логотип (JPG, PNG)"
                 rules={[
@@ -94,12 +83,12 @@ function AddMotoclub() {
                 name="name"
                 label="Название"
                 rules={[
-                  { required: true, message: 'Введите название мотоклуба' },
+                  { required: true, message: 'Введите название мото-бара' },
                   { max: 255, message: 'Максимум 255 символов' },
                   { pattern: noScriptPattern, message: 'Недопустимые символы' },
                 ]}
               >
-                <Input placeholder="Название мотоклуба" />
+                <Input placeholder="Название мото-бара" />
               </Form.Item>
 
               <Form.Item
@@ -116,12 +105,8 @@ function AddMotoclub() {
                   showCount={{
                     formatter: ({ count, maxLength }) => `${(maxLength || 500) - count} осталось`,
                   }}
-                  placeholder="Краткое описание мотоклуба"
+                  placeholder="Краткое описание мото-бара"
                 />
-              </Form.Item>
-
-              <Form.Item name="birthday" label="День рождения клуба">
-                <DatePicker />
               </Form.Item>
 
               <Row gutter={16}>
@@ -139,21 +124,6 @@ function AddMotoclub() {
                 </Col>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="email"
-                    label="Email"
-                    rules={[
-                      { type: 'email', message: 'Введите корректный email' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="club@example.com" />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Row gutter={16}>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="phone"
                     label="Телефон"
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
@@ -162,43 +132,17 @@ function AddMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item
-                name="address"
-                label="Город"
-                rules={[
-                  { required: true, message: 'Выберите адрес через поиск' },
-                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                ]}
-              >
-                <Space.Compact style={{ width: '100%' }}>
-                <Input
-                  placeholder="Город мотоклуба"
-                  onPressEnter={(event) => {
-                    event.preventDefault()
-                    handleAddressSearch()
-                  }}
-                />
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  onClick={handleAddressSearch}
-                  // loading={isSearching}
-                >
-                  Найти
-                </Button>
-                </Space.Compact>
-              </Form.Item>
+
+              <div>Чтобы получить координаты и название места, введите адрес или название заведения в поле поиска</div>
               <MapPicker
-                searchValue={searchQuery}
-                showSearchInput={false}
                 // onlySearchInput={true}
-                // addressMode="locality"
+                // addressMode="full"
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
                 }}
-                // onChangeAddress={(addr: string) => {
-                //   form.setFieldValue('address', addr)
-                // }}
+                onChangeAddress={(addr: string) => {
+                  form.setFieldValue('address', addr)
+                }}
               />
 
               <Form.Item
@@ -207,7 +151,18 @@ function AddMotoclub() {
                 style={{ marginTop: 8, marginBottom: 8 }}
                 rules={[{ required: true, message: 'Выберите место через поиск' }]}
               >
-                <Input readOnly placeholder="Координаты будут получены автоматически" />
+                <Input readOnly placeholder="Введите место в поиске, чтобы получить координаты..." />
+              </Form.Item>
+
+              <Form.Item
+                name="address"
+                label="Адрес"
+                rules={[
+                  { required: true, message: 'Выберите адрес через поиск' },
+                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                ]}
+              >
+                <Input placeholder="Адрес мото-бара" />
               </Form.Item>
             </Col>
           </Row>
@@ -226,4 +181,4 @@ function AddMotoclub() {
   )
 }
 
-export default AddMotoclub
+export default AddMotobar

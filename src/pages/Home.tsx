@@ -13,7 +13,7 @@ function Home() {
   const cardData = [
     {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} />, link: '/calendar' },
     {title: 'Мотоклубы', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} />, link: '/motoclubs' },
-    {title: 'Мото-бары', desc: '', icon: <CoffeeOutlined style={{ fontSize: 28 }} />, link: '/bars' },
+    {title: 'Мото-бары', desc: '', icon: <CoffeeOutlined style={{ fontSize: 28 }} />, link: '/motobars' },
     {title: 'Байк-посты', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/bike-posts-bars' },
     {title: 'СТО', desc: '', icon: <ToolOutlined style={{ fontSize: 28 }} />, link: '/service-stations' },
   ];
@@ -72,6 +72,9 @@ function Home() {
         <div className="container" style={{ marginBottom: 20 }}>
           <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/motoclubs/create')}>
             Добавить мотоклуб
+          </ThemeButton>
+          <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/motobars/create')}>
+            Добавить мото-бар
           </ThemeButton>
         </div>
           <MotoclubsMarquee />

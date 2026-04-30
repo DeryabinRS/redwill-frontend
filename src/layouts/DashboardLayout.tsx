@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Layout, Menu, Typography, Drawer, Button } from 'antd'
 import { 
   DashboardOutlined, 
+  CoffeeOutlined,
   MenuOutlined, 
   UserOutlined, 
   FileTextOutlined,
@@ -75,6 +76,11 @@ function DashboardLayout() {
       key: 'motoclubs',
       icon: <TeamOutlined />,
       label: <NavLink to="/dashboard/motoclubs" onClick={handleMenuClick}>Мотоклубы</NavLink>,
+    },
+    {
+      key: 'motobars',
+      icon: <CoffeeOutlined />,
+      label: <NavLink to="/dashboard/motobars" onClick={handleMenuClick}>Мотобары</NavLink>,
     },
     {
       key: 'settings',

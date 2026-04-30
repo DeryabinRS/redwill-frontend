@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
 import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
+import UserMotobars from './Motobars'
 
 function Profile() {
   const { t } = useTranslation()
@@ -39,6 +40,7 @@ function Profile() {
 
       <UserPosts />
       <UserMotoclubs />
+      <UserMotobars />
     </div>
   )
 }

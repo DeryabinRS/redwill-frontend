@@ -16,10 +16,12 @@ export type AddressMode = 'full' | 'locality';
 
 export interface IMapPicker {
   onChangeLocation: (val: string) => void; 
-  onChangeAddress: (val: string) => void;
+  onChangeAddress?: (val: string) => void;
   initialLocation?: string;
   addressMode?: AddressMode;
   onlySearchInput?: boolean;
+  showSearchInput?: boolean;
+  searchValue?: string;
 }
 
 type GeocoderAddressComponent = {
@@ -38,6 +40,23 @@ type GeocoderGeoObject = {
       Address?: {
         Components?: GeocoderAddressComponent[]
       }
+      AddressDetails?: {
+        Country: {
+          CountryName: string
+          AdministrativeArea: {
+            AdministrativeAreaName: string
+            SubAdministrativeArea: {
+              Locality: {
+                LocalityName?: string
+                DependentLocality?: {
+                  DependentLocalityName?: string
+                }
+              }
+            }
+          }
+        }
+      }
+      text?: string
     }
   }
 }
@@ -49,22 +68,8 @@ function parseLocation(location?: string) {
   return { lat: latValue, lng: lngValue }
 }
 
-function getLocalityName(geoObject: GeocoderGeoObject): string {
-  const components = geoObject.metaDataProperty?.GeocoderMetaData?.Address?.Components || []
-  return (
-    components.find((component) => component.kind === 'locality')?.name ||
-    components.find((component) => component.kind === 'province')?.name ||
-    components.find((component) => component.kind === 'area')?.name ||
-    ''
-  )
-}
-
-function getAddressText(geoObject: GeocoderGeoObject, addressMode: AddressMode): string {
-  if (addressMode === 'locality') {
-    return getLocalityName(geoObject)
-  }
-
-  return geoObject.name || geoObject.description || ''
+function getAddressText(geoObject: GeocoderGeoObject): string {
+  return geoObject.metaDataProperty?.GeocoderMetaData?.text || '';
 }
 
 function MapPicker({
@@ -73,6 +78,8 @@ function MapPicker({
   initialLocation,
   addressMode = 'full',
   onlySearchInput = false,
+  showSearchInput = true,
+  searchValue,
 }: IMapPicker) {
   const { isReady, error, reactify } = useYmaps3();
   const [coords, setCoords] = useState<{ lat: number; lng: number } | null>(null);
@@ -96,7 +103,7 @@ function MapPicker({
       setCoords({ lat, lng });
       setCenter([lng, lat])
       onChangeLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
-      onChangeAddress('Поиск адреса...');
+      onChangeAddress?.('Поиск адреса...');
     }
   }, [onChangeAddress, onChangeLocation]);
 
@@ -115,8 +122,8 @@ function MapPicker({
     }
   }, [zoom, center]);
 
-  const handleSearch = useCallback(async () => {
-    const query = searchQuery.trim()
+  const runSearch = useCallback(async (value: string) => {
+    const query = value.trim()
     if (!query) {
       setSearchError('Введите адрес или название места')
       return
@@ -147,19 +154,31 @@ function MapPicker({
       }
 
       const nextCoords = { lat: latValue, lng: lngValue }
-      const address = getAddressText(geoObject, addressMode)
+      const address = getAddressText(geoObject)
 
       setCoords(nextCoords)
       setCenter([nextCoords.lng, nextCoords.lat])
       setZoom(14)
       onChangeLocation(`${nextCoords.lat.toFixed(6)}, ${nextCoords.lng.toFixed(6)}`)
-      onChangeAddress(address || 'Адрес не найден')
+      onChangeAddress?.(address || 'Адрес не найден')
     } catch {
       setSearchError('Не удалось выполнить поиск')
     } finally {
       setIsSearching(false)
     }
-  }, [addressMode, onChangeAddress, onChangeLocation, searchQuery])
+  }, [onChangeAddress, onChangeLocation])
+
+  const handleSearch = useCallback(() => {
+    runSearch(searchQuery)
+  }, [runSearch, searchQuery])
+
+  useEffect(() => {
+    const query = searchValue?.trim()
+    if (!query) return
+
+    setSearchQuery(query)
+    runSearch(query)
+  }, [runSearch, searchValue])
 
   const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
@@ -171,7 +190,7 @@ function MapPicker({
   // 📍 Обратное геокодирование при изменении координат
   useEffect(() => {
     if (!coords) {
-      onChangeAddress('');
+      onChangeAddress?.('');
       return;
     }
 
@@ -183,13 +202,13 @@ function MapPicker({
         const data = await response.json();
         const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject as GeocoderGeoObject | undefined;
         if (geoObject) {
-          const address = getAddressText(geoObject, addressMode)
-          onChangeAddress(address || 'Адрес не найден');
+          const address = getAddressText(geoObject)
+          onChangeAddress?.(address || 'Адрес не найден');
         } else {
-          onChangeAddress('Адрес не найден');
+          onChangeAddress?.('Адрес не найден');
         }
       } catch {
-        onChangeAddress('Ошибка при определении адреса');
+        onChangeAddress?.('Ошибка при определении адреса');
       }
     };
 
@@ -233,6 +252,7 @@ function MapPicker({
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif' }}>
+      {showSearchInput && (
       <div style={{ marginBottom: 8 }}>
         <Space.Compact style={{ width: '100%' }}>
           <Input
@@ -255,7 +275,7 @@ function MapPicker({
           </Typography.Text>
         )}
       </div>
-
+      )}
       {/* 🔑 Контейнер с ЯВНОЙ высотой в пикселях — обязательно! */}
       <div style={{
         borderRadius: '8px',

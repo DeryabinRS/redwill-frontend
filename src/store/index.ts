@@ -3,6 +3,7 @@ import { authApi } from '../features/auth/authSlice'
 import { userApi } from '../features/user/userSlice'
 import { postApi } from '../features/post/postSlice'
 import { motoclubApi } from '../features/motoclub/motoclubSlice'
+import { motobarApi } from '../features/motobar/motobarSlice'
 
 const appSlice = createSlice({
   name: 'app',
@@ -23,10 +24,17 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [postApi.reducerPath]: postApi.reducer,
     [motoclubApi.reducerPath]: motoclubApi.reducer,
+    [motobarApi.reducerPath]: motobarApi.reducer,
   },
   devTools: import.meta.env.DEV,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authApi.middleware, userApi.middleware, postApi.middleware, motoclubApi.middleware),
+    getDefaultMiddleware().concat(
+      authApi.middleware,
+      userApi.middleware,
+      postApi.middleware,
+      motoclubApi.middleware,
+      motobarApi.middleware,
+    ),
 })
 
 export type RootState = ReturnType<typeof store.getState>

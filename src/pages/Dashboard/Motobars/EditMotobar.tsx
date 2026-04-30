@@ -1,88 +1,83 @@
-import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import dayjs from 'dayjs'
 import ImageCropper from '@components/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import { API_URL } from '@config/constants'
 import { base64ToFile, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import {
-  useGetDashboardMotoclubQuery,
-  useUpdateMotoclubMutation,
-  useUploadMotoclubLogoMutation,
-} from '@features/motoclub/motoclubSlice'
+  useGetDashboardMotobarQuery,
+  useUpdateMotobarMutation,
+  useUploadMotobarLogoMutation,
+} from '@features/motobar/motobarSlice'
 
 type FormValues = {
   name: string
   desc?: string
-  birthday?: dayjs.Dayjs
   website?: string
-  phone?: string
-  email?: string
   address?: string
   location?: string
+  phone?: string
   publication_status: boolean
   moderation_status: number
 }
 
-function EditMotoclub() {
+function EditMotobar() {
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
-  const { motoclub } = useParams<{ motoclub: string }>()
+  const { motobar } = useParams<{ motobar: string }>()
   const [form] = Form.useForm<FormValues>()
   const [logoForm] = Form.useForm()
   const [previewLogo, setPreviewLogo] = useState('')
   const [pendingLogo, setPendingLogo] = useState('')
-  const [updateMotoclub, { isLoading: isUpdating }] = useUpdateMotoclubMutation()
-  const [uploadMotoclubLogo, { isLoading: isUploadingLogo }] = useUploadMotoclubLogoMutation()
+  const [updateMotobar, { isLoading: isUpdating }] = useUpdateMotobarMutation()
+  const [uploadMotobarLogo, { isLoading: isUploadingLogo }] = useUploadMotobarLogoMutation()
 
   const cropperValue = pendingLogo || previewLogo
   const hasNewLogoToUpload = Boolean(pendingLogo && pendingLogo.startsWith('data:image'))
 
   const {
-    data: motoclubData,
+    data: motobarData,
     isLoading,
     isError,
-  } = useGetDashboardMotoclubQuery(motoclub as string, {
-    skip: !motoclub,
+  } = useGetDashboardMotobarQuery(motobar as string, {
+    skip: !motobar,
   })
 
   useEffect(() => {
-    if (!motoclubData) return
+    if (!motobarData) return
 
     form.setFieldsValue({
-      name: motoclubData.name,
-      desc: motoclubData.desc || '',
-      birthday: motoclubData.birthday ? dayjs(motoclubData.birthday) : undefined,
-      website: motoclubData.website || '',
-      phone: motoclubData.phone || '',
-      email: motoclubData.email || '',
-      address: motoclubData.address || '',
-      location: motoclubData.location || '',
-      publication_status: Boolean(motoclubData.publication_status),
-      moderation_status: motoclubData.moderation_status ?? 0,
+      name: motobarData.name,
+      desc: motobarData.desc || '',
+      website: motobarData.website || '',
+      address: motobarData.address || '',
+      location: motobarData.location || '',
+      phone: motobarData.phone || '',
+      publication_status: Boolean(motobarData.publication_status),
+      moderation_status: motobarData.moderation_status ?? 0,
     })
 
-    if (motoclubData.logo) {
-      setPreviewLogo(`${API_URL}${motoclubData.logo}`)
+    if (motobarData.logo) {
+      setPreviewLogo(`${API_URL}${motobarData.logo}`)
       setPendingLogo('')
     }
-  }, [form, motoclubData])
+  }, [form, motobarData])
 
   const appendString = (formData: FormData, key: keyof FormValues, value?: string) => {
     if (value) formData.append(key, sanitizeInput(value))
   }
 
   const onLogoSubmit = async () => {
-    if (!motoclub) return
+    if (!motobar) return
     if (!hasNewLogoToUpload) {
       message.warning('Выберите новый логотип')
       return
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, `motoclub_${Date.now()}.jpg`)
+      const file = await base64ToFile(pendingLogo, `motobar_${Date.now()}.jpg`)
       if (!file) {
         message.error('Не удалось подготовить файл')
         return
@@ -90,7 +85,7 @@ function EditMotoclub() {
 
       const formData = new FormData()
       formData.append('logo', file)
-      const result = await uploadMotoclubLogo({ motoclub, payload: formData }).unwrap()
+      const result = await uploadMotobarLogo({ motobar, payload: formData }).unwrap()
 
       message.success('Логотип обновлен')
       if (result.logo) {
@@ -103,39 +98,37 @@ function EditMotoclub() {
   }
 
   const onSubmit = async (values: FormValues) => {
-    if (!motoclub) return
+    if (!motobar) return
 
     try {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
-      if (values.birthday) formData.append('birthday', values.birthday.format('YYYY-MM-DD'))
       appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
-      appendString(formData, 'email', values.email)
       appendString(formData, 'address', values.address)
       appendString(formData, 'location', values.location)
       formData.append('publication_status', values.publication_status ? '1' : '0')
       formData.append('moderation_status', String(values.moderation_status))
 
-      await updateMotoclub({ motoclub, payload: formData }).unwrap()
-      message.success('Мотоклуб обновлен')
-      navigate('/dashboard/motoclubs')
+      await updateMotobar({ motobar, payload: formData }).unwrap()
+      message.success('Мото-бар обновлен')
+      navigate('/dashboard/motobars')
     } catch {
-      message.error('Не удалось обновить мотоклуб')
+      message.error('Не удалось обновить мото-бар')
     }
   }
 
-  if (!motoclub) {
-    return <Typography.Text type="danger">Некорректный ID мотоклуба</Typography.Text>
+  if (!motobar) {
+    return <Typography.Text type="danger">Некорректный ID мото-бара</Typography.Text>
   }
 
   if (isLoading) {
     return <Skeleton active paragraph={{ rows: 8 }} />
   }
 
-  if (isError || !motoclubData) {
-    return <Typography.Text type="danger">Мотоклуб не найден</Typography.Text>
+  if (isError || !motobarData) {
+    return <Typography.Text type="danger">Мото-бар не найден</Typography.Text>
   }
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
@@ -167,12 +160,12 @@ function EditMotoclub() {
 
   return (
     <div>
-      <Link to="/dashboard/motoclubs">
+      <Link to="/dashboard/motobars">
         <Button icon={<ArrowLeftOutlined />} style={{ marginBottom: 16 }}>
-          К списку мотоклубов
+          К списку мото-баров
         </Button>
       </Link>
-      <Typography.Title level={4}>Редактировать мотоклуб</Typography.Title>
+      <Typography.Title level={4}>Редактировать мото-бар</Typography.Title>
       <Card size="small">
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>
@@ -185,12 +178,12 @@ function EditMotoclub() {
                 name="name"
                 label="Название"
                 rules={[
-                  { required: true, message: 'Введите название мотоклуба' },
+                  { required: true, message: 'Введите название мото-бара' },
                   { max: 255, message: 'Максимум 255 символов' },
                   { pattern: noScriptPattern, message: 'Недопустимые символы' },
                 ]}
               >
-                <Input placeholder="Название мотоклуба" />
+                <Input placeholder="Название мото-бара" />
               </Form.Item>
 
               <Form.Item
@@ -198,11 +191,7 @@ function EditMotoclub() {
                 label="Описание"
                 rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
               >
-                <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
-              </Form.Item>
-
-              <Form.Item name="birthday" label="День рождения клуба">
-                <DatePicker />
+                <Input.TextArea rows={4} placeholder="Краткое описание мото-бара" />
               </Form.Item>
 
               <Row gutter={16}>
@@ -218,21 +207,6 @@ function EditMotoclub() {
                     <Input placeholder="https://example.com" />
                   </Form.Item>
                 </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
-                    name="email"
-                    label="Email"
-                    rules={[
-                      { type: 'email', message: 'Введите корректный email' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="club@example.com" />
-                  </Form.Item>
-                </Col>
-              </Row>
-
-              <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="phone"
@@ -257,8 +231,7 @@ function EditMotoclub() {
               </Space>
 
               <MapPicker
-                // addressMode="locality"
-                initialLocation={motoclubData.location || undefined}
+                initialLocation={motobarData.location || undefined}
                 onChangeLocation={(loc: string) => {
                   form.setFieldValue('location', loc)
                 }}
@@ -276,7 +249,7 @@ function EditMotoclub() {
                 label="Адрес"
                 rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
               >
-                <Input placeholder="Адрес мотоклуба" />
+                <Input placeholder="Адрес мото-бара" />
               </Form.Item>
             </Col>
           </Row>
@@ -285,7 +258,7 @@ function EditMotoclub() {
             <Button type="primary" htmlType="submit" loading={isUpdating}>
               Сохранить
             </Button>
-            <Button onClick={() => navigate('/dashboard/motoclubs')}>
+            <Button onClick={() => navigate('/dashboard/motobars')}>
               Отмена
             </Button>
           </Space>
@@ -295,4 +268,4 @@ function EditMotoclub() {
   )
 }
 
-export default EditMotoclub
+export default EditMotobar

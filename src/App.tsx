@@ -26,13 +26,16 @@ import DashboardAddPost from './pages/Dashboard/Posts/AddPost'
 import DashboardUpdatePost from './pages/Dashboard/Posts/EditPost'
 import DashboardMotoclubs from './pages/Dashboard/Motoclubs/Motoclubs'
 import DashboardEditMotoclub from './pages/Dashboard/Motoclubs/EditMotoclub'
+import DashboardMotobars from './pages/Dashboard/Motobars/Motobars'
+import DashboardEditMotobar from './pages/Dashboard/Motobars/EditMotobar'
 import Motoclubs from './pages/Motoclubs'
 import Motoclub from './pages/Motoclubs/Motoclub'
 import AddMotoclub from './pages/Motoclubs/addMotoclub'
+import Motobars from './pages/Motobars'
+import Motobar from './pages/Motobars/Motobar'
+import AddMotobar from './pages/Motobars/AddMotobar'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
-
-import './App.css'
 
 function AppContent() {
   const { antThemeConfig } = useTheme()
@@ -75,6 +78,16 @@ function AppContent() {
               }
             />
             <Route path="/motoclubs/:motoclub" element={<Motoclub />} />
+            <Route path="/motobars" element={<Motobars />} />
+            <Route
+              path="/motobars/create"
+              element={
+                <ProtectedRoute>
+                  <AddMotobar />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/motobars/:motobar" element={<Motobar />} />
           </Route>
           
           {/* Dashboard с боковым меню */}
@@ -96,6 +109,9 @@ function AppContent() {
             <Route path="motoclubs" element={<DashboardMotoclubs />} />
             <Route path="motoclubs/create" element={<AddMotoclub />} />
             <Route path="motoclubs/:motoclub/edit" element={<DashboardEditMotoclub />} />
+            <Route path="motobars" element={<DashboardMotobars />} />
+            <Route path="motobars/create" element={<AddMotobar />} />
+            <Route path="motobars/:motobar/edit" element={<DashboardEditMotobar />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>
