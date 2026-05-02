@@ -99,7 +99,7 @@ function Motobars() {
         <CoffeeOutlined className="title_page__icon" />
       </div>
 
-      <Card style={{ marginBottom: 16 }}>
+      <Card style={{ marginBottom: 8 }}>
         {mapMarkers.length > 0 ? (
           <MapView markers={mapMarkers} height={520} zoom={4} />
         ) : (
