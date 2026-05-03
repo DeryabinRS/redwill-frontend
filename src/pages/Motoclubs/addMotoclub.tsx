@@ -27,7 +27,7 @@ function AddMotoclub() {
   const [logo, setLogo] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [createMotoclub, { isLoading }] = useCreateMotoclubMutation()
-  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/motoclubs'
+  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/profile'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 

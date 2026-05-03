@@ -31,6 +31,7 @@ export type UserInfo = {
   middle_name: string
   login: string
   email: string
+  baned: number
   roles: string[]
   created_at?: string
   updated_at?: string
@@ -55,6 +56,7 @@ type GetUserResponse = {
 
 export const userApi = createApi({
   reducerPath: 'userApi',
+  tagTypes: ['Users', 'User'],
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL || '/api',
     credentials: 'include',
@@ -76,10 +78,21 @@ export const userApi = createApi({
     getAllUsers: builder.query<UsersListResponse, void>({
       query: () => ({ url: '/users', method: 'GET' }),
       transformResponse: (response: GetAllUsersResponse) => response.data_user_list,
+      providesTags: ['Users'],
     }),
     getUser: builder.query<UserInfo, number>({
       query: (id) => ({ url: `/users/${id}`, method: 'GET' }),
       transformResponse: (response: GetUserResponse) => response.data,
+      providesTags: (_result, _error, id) => [{ type: 'User', id }],
+    }),
+    updateUserBaned: builder.mutation<{ id: number; baned: number }, { id: number; baned: number }>({
+      query: ({ id, baned }) => ({
+        url: `/users/${id}/baned`,
+        method: 'PATCH',
+        body: { baned },
+      }),
+      transformResponse: (response: { data: { id: number; baned: number } }) => response.data,
+      invalidatesTags: (_result, _error, { id }) => ['Users', { type: 'User', id }],
     }),
   }),
 })
@@ -97,4 +110,5 @@ export const {
   useLazyGetAllUsersQuery,
   useGetUserQuery,
   useLazyGetUserQuery,
+  useUpdateUserBanedMutation,
 } = userApi

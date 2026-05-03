@@ -23,7 +23,7 @@ function AddServiceStation() {
   const { pathname } = useLocation()
   const [logo, setLogo] = useState('')
   const [createServiceStation, { isLoading }] = useCreateServiceStationMutation()
-  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/service-stations' : '/service-stations'
+  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/service-stations' : '/profile'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 

@@ -49,7 +49,16 @@ function Login() {
   if (error && 'status' in error && error.status === 403) {
     const err = error as FetchBaseQueryError
     const subTitle = (err.data as { message?: string } | undefined)?.message || 'Не удалось войти'
-    return <Result status="error" title="Не удалось войти" subTitle={subTitle} extra={<Link to="/resend-verification">Отправить письмо повторно</Link>} />
+    const isBlockedUser = subTitle.toLowerCase().includes('заблокирован')
+
+    return (
+      <Result
+        status="error"
+        title="Не удалось войти"
+        subTitle={subTitle}
+        extra={isBlockedUser ? null : <Link to="/resend-verification">Отправить письмо повторно</Link>}
+      />
+    )
   }
 
   return (

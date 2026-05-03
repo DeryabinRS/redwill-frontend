@@ -77,7 +77,7 @@ function AddPost() {
 			// 📡 Отправка через RTK Query (formData: true в postSlice.ts обработает это)
 			// const created = await createPost(formData).unwrap()
 			await createPost(formData).unwrap()
-			message.success('Пост успешно создан')
+			message.success('Пост успешно создан и будет опубликован после модерации')
 			navigate('/profile')
 		} catch (error) {
 			console.error('Create post error:', error)

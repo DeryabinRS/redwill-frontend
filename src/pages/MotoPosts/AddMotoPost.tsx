@@ -23,7 +23,7 @@ function AddMotoPost() {
   const { pathname } = useLocation()
   const [logo, setLogo] = useState('')
   const [createMotoPost, { isLoading }] = useCreateMotoPostMutation()
-  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/moto-posts' : '/moto-posts'
+  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/moto-posts' : '/profile'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 

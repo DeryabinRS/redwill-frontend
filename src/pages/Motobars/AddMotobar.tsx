@@ -23,7 +23,7 @@ function AddMotobar() {
   const { pathname } = useLocation()
   const [logo, setLogo] = useState('')
   const [createMotobar, { isLoading }] = useCreateMotobarMutation()
-  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motobars' : '/motobars'
+  const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motobars' : '/profile'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 

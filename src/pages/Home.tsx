@@ -98,7 +98,7 @@ function Home() {
     },
     {
       title: 'Мото-посты',
-      description: 'Полезные точки на маршрутах и в городе.',
+      description: 'Ночлег и отдых на маршрутах.',
       link: '/moto-posts',
       createLink: '/moto-posts/create',
       icon: <ShopOutlined />,

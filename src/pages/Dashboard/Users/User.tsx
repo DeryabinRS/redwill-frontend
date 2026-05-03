@@ -46,6 +46,9 @@ function User() {
             <Descriptions.Item label="Имя">{user.first_name}</Descriptions.Item>
             <Descriptions.Item label="Отчество">{user.middle_name}</Descriptions.Item>
             <Descriptions.Item label="Email">{user.email}</Descriptions.Item>
+            <Descriptions.Item label="Статус">
+              {user.baned === 1 ? <Tag color="red">Заблокирован</Tag> : <Tag color="green">Активен</Tag>}
+            </Descriptions.Item>
             <Descriptions.Item label="Роли">
               <Space>
                 {user.roles.map(role => (

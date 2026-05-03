@@ -1,10 +1,27 @@
-import { Table, Typography, Tag, Space, Card } from 'antd'
+import { App as AntdApp, Card, Space, Switch, Table, Tag, Typography } from 'antd'
 import { UserOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import { useGetAllUsersQuery, type UserInfo } from '../../../features/user/userSlice'
+import {
+  useGetAllUsersQuery,
+  useGetUserInfoQuery,
+  useUpdateUserBanedMutation,
+  type UserInfo,
+} from '../../../features/user/userSlice'
 
 function Users() {
+  const { message } = AntdApp.useApp()
   const { data: usersData, isLoading } = useGetAllUsersQuery()
+  const { data: currentUser } = useGetUserInfoQuery()
+  const [updateUserBaned, { isLoading: isUpdatingBaned }] = useUpdateUserBanedMutation()
+
+  const handleBanedChange = async (user: UserInfo, checked: boolean) => {
+    try {
+      await updateUserBaned({ id: user.id, baned: checked ? 1 : 0 }).unwrap()
+      message.success(checked ? 'Пользователь заблокирован' : 'Пользователь разблокирован')
+    } catch {
+      message.error('Не удалось изменить статус блокировки')
+    }
+  }
 
   const columns = [
     {
@@ -14,17 +31,9 @@ function Users() {
       width: 60,
     },
     {
-      title: 'Ф.И.О.',
-      dataIndex: 'name',
-      key: 'name',
-      render: (_: undefined, record: UserInfo) => (
-        <Space>
-          <UserOutlined />
-          <Link to={`/dashboard/users/${record.id}`}>
-            {`${record.last_name} ${record.first_name} ${record?.middle_name || ''}`}
-          </Link>
-        </Space>
-      ),
+      title: 'Login',
+      dataIndex: 'login',
+      key: 'login',
     },
     {
       title: 'Email',
@@ -46,6 +55,30 @@ function Users() {
             </Tag>
           ))}
         </Space>
+      ),
+    },
+    {
+      title: 'Статус',
+      dataIndex: 'baned',
+      key: 'baned',
+      width: 130,
+      render: (baned: number) => (
+        baned === 1 ? <Tag color="red">Заблокирован</Tag> : <Tag color="green">Активен</Tag>
+      ),
+    },
+    {
+      title: 'Блокировка',
+      key: 'actions',
+      width: 150,
+      render: (_: undefined, record: UserInfo) => (
+        <Switch
+          checked={record.baned === 1}
+          checkedChildren="baned"
+          unCheckedChildren="active"
+          disabled={record.id === currentUser?.id || isUpdatingBaned}
+          loading={isUpdatingBaned}
+          onChange={(checked) => handleBanedChange(record, checked)}
+        />
       ),
     },
   ]
