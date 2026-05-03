@@ -37,11 +37,11 @@ function MainLayout() {
 	const hasAdminRole = userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor')
 
 	const menuItems: MenuItem[] = [
-		// {
-		// 	key: 'home',
-		// 	icon: <HomeOutlined />,
-		// 	label: <NavLink to="/">{t('menu.home')}</NavLink>,
-		// },
+		{
+			key: 'about',
+			// icon: <HomeOutlined />,
+			label: <NavLink to="/about">О проекте</NavLink>,
+		},
 		{
 			key: 'add',
 			icon: <PlusOutlined />,

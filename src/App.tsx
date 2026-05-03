@@ -8,6 +8,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import AppInitializer from './components/AppInitializer'
 import Home from './pages/Home'
+import About from './pages/About'
 import Login from './pages/Auth/Login'
 import Register from './pages/Auth/Register'
 import VerifyEmail from './pages/Auth/VerifyEmail'
@@ -57,6 +58,7 @@ function AppContent() {
           <Route element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Navigate to="/" replace />} />
+            <Route path="/about" element={<About />} />
             <Route
               path="/profile"
               element={
