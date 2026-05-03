@@ -9,8 +9,8 @@
   font-weight: 700;
   letter-spacing: 0.02em;
   background:
-    linear-gradient(140deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.04) 34%, transparent),
-    linear-gradient(160deg, rgba(35, 35, 39, 0.96), rgba(112, 22, 22, 0.9));
+  linear-gradient(140deg, rgb(255 255 255 / 0%), rgb(133 97 97 / 4%) 34%, transparent), 
+  linear-gradient(160deg, rgb(83 20 20 / 96%), rgba(112, 22, 22, 0.9));
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow:
     0 18px 34px rgba(0, 0, 0, 0.28),

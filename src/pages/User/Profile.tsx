@@ -4,6 +4,8 @@ import { useGetUserInfoQuery } from '@features/user/userSlice'
 import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
 import UserMotobars from './Motobars'
+import UserMotoPosts from './MotoPosts'
+import UserServiceStations from './ServiceStations'
 
 function Profile() {
   const { t } = useTranslation()
@@ -41,6 +43,8 @@ function Profile() {
       <UserPosts />
       <UserMotoclubs />
       <UserMotobars />
+      <UserMotoPosts />
+      <UserServiceStations />
     </div>
   )
 }

@@ -327,72 +327,150 @@ a:hover {
     }
 }
 
-.motoclubs-marquee {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 8px 0;
-  cursor: grab;
-  scrollbar-width: none;
-  touch-action: pan-y;
-  overscroll-behavior-x: contain;
-  user-select: none;
+.home-resources-section {
+  position: relative;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(205, 46, 44, 0.14), transparent 30%),
+    linear-gradient(180deg, rgba(15, 15, 18, 0.96), rgba(8, 8, 10, 0.98));
 }
 
-.motoclubs-marquee::-webkit-scrollbar {
-  display: none;
+.home-resource-card {
+  position: relative;
+  height: 100%;
+  padding: 16px;
+  overflow: hidden;
+  border-radius: 14px;
+  background:
+    linear-gradient(140deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.025) 35%, transparent),
+    linear-gradient(160deg, rgba(36, 36, 40, 0.96), rgba(10, 10, 12, 0.95));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.32),
+    0 1px 0 rgba(255, 255, 255, 0.1) inset;
 }
 
-.motoclubs-marquee--dragging {
-  cursor: grabbing;
+.home-resource-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0 62%, rgba(205, 46, 44, 0.44) 62% 64%, transparent 64% 100%),
+    radial-gradient(circle at 86% 14%, rgba(205, 46, 44, 0.22), transparent 34%);
+  pointer-events: none;
 }
 
-.motoclubs-marquee__track {
+.home-resource-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.home-resource-card__header {
   display: flex;
-  width: max-content;
-  gap: 24px;
-  animation: motoclubs-marquee 45s linear infinite;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
-.motoclubs-marquee:hover .motoclubs-marquee__track {
-  animation-play-state: paused;
+.home-resource-card__eyebrow {
+  color: var(--theme-color);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-.motoclubs-marquee--dragging .motoclubs-marquee__track {
-  animation-play-state: paused;
+.home-resource-card__title {
+  margin: 4px 0 6px !important;
+  color: #f5f5f5 !important;
+  text-transform: uppercase;
 }
 
-.motoclubs-marquee__item {
+.home-resource-card__description {
+  margin: 0 !important;
+  color: #a5a5a5 !important;
+}
+
+.home-resource-card__icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 150px;
-  height: 150px;
-  flex: 0 0 150px;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid rgba(49, 49, 49, 0.973);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-  -webkit-user-drag: none;
+  width: 54px;
+  height: 54px;
+  flex: 0 0 54px;
+  border-radius: 14px;
+  color: #f5f5f5;
+  font-size: 28px;
+  background: linear-gradient(135deg, rgba(100, 100, 100, 0.9), rgba(205, 46, 44, 0.78));
+  box-shadow: 0 16px 30px rgba(205, 46, 44, 0.18);
 }
 
-.motoclubs-marquee__item img {
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+.home-resource-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.home-resource-gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.home-resource-gallery__item {
+  position: relative;
   display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transform: translateY(0);
+  transition:
+    transform 0.22s ease,
+    border-color 0.22s ease,
+    box-shadow 0.22s ease;
 }
 
-@keyframes motoclubs-marquee {
-  from {
-    transform: translateX(0);
-  }
+.home-resource-gallery__item:hover {
+  transform: translateY(-4px);
+  border-color: rgba(205, 46, 44, 0.62);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
+}
 
-  to {
-    transform: translateX(calc(-50% - 12px));
-  }
+.home-resource-gallery__item img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.22s ease;
+}
+
+.home-resource-gallery__item:hover img {
+  transform: scale(1.08);
+}
+
+.home-resource-gallery__item span {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 18px 8px 8px;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.2;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, 0.82));
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.home-resource-gallery__item:hover span {
+  opacity: 1;
+}
+
+.home-resource-card__empty {
+  grid-column: 1 / -1;
+  color: #a5a5a5;
 }
 
 @media (max-width: 575px) {

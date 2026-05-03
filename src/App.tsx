@@ -34,6 +34,16 @@ import AddMotoclub from './pages/Motoclubs/addMotoclub'
 import Motobars from './pages/Motobars'
 import Motobar from './pages/Motobars/Motobar'
 import AddMotobar from './pages/Motobars/AddMotobar'
+import MotoPosts from './pages/MotoPosts'
+import MotoPost from './pages/MotoPosts/MotoPost'
+import AddMotoPost from './pages/MotoPosts/AddMotoPost'
+import DashboardMotoPosts from './pages/Dashboard/MotoPosts/MotoPosts'
+import DashboardEditMotoPost from './pages/Dashboard/MotoPosts/EditMotoPost'
+import ServiceStations from './pages/ServiceStations'
+import ServiceStation from './pages/ServiceStations/ServiceStation'
+import AddServiceStation from './pages/ServiceStations/AddServiceStation'
+import DashboardServiceStations from './pages/Dashboard/ServiceStations/ServiceStations'
+import DashboardEditServiceStation from './pages/Dashboard/ServiceStations/EditServiceStation'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -88,6 +98,26 @@ function AppContent() {
               }
             />
             <Route path="/motobars/:motobar" element={<Motobar />} />
+            <Route path="/moto-posts" element={<MotoPosts />} />
+            <Route
+              path="/moto-posts/create"
+              element={
+                <ProtectedRoute>
+                  <AddMotoPost />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/moto-posts/:motoPost" element={<MotoPost />} />
+            <Route path="/service-stations" element={<ServiceStations />} />
+            <Route
+              path="/service-stations/create"
+              element={
+                <ProtectedRoute>
+                  <AddServiceStation />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/service-stations/:serviceStation" element={<ServiceStation />} />
           </Route>
           
           {/* Dashboard с боковым меню */}
@@ -112,6 +142,12 @@ function AppContent() {
             <Route path="motobars" element={<DashboardMotobars />} />
             <Route path="motobars/create" element={<AddMotobar />} />
             <Route path="motobars/:motobar/edit" element={<DashboardEditMotobar />} />
+            <Route path="moto-posts" element={<DashboardMotoPosts />} />
+            <Route path="moto-posts/create" element={<AddMotoPost />} />
+            <Route path="moto-posts/:motoPost/edit" element={<DashboardEditMotoPost />} />
+            <Route path="service-stations" element={<DashboardServiceStations />} />
+            <Route path="service-stations/create" element={<AddServiceStation />} />
+            <Route path="service-stations/:serviceStation/edit" element={<DashboardEditServiceStation />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>

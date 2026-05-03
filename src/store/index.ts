@@ -4,6 +4,8 @@ import { userApi } from '../features/user/userSlice'
 import { postApi } from '../features/post/postSlice'
 import { motoclubApi } from '../features/motoclub/motoclubSlice'
 import { motobarApi } from '../features/motobar/motobarSlice'
+import { motoPostApi } from '../features/motoPost/motoPostSlice'
+import { serviceStationApi } from '../features/serviceStation/serviceStationSlice'
 
 const appSlice = createSlice({
   name: 'app',
@@ -25,6 +27,8 @@ export const store = configureStore({
     [postApi.reducerPath]: postApi.reducer,
     [motoclubApi.reducerPath]: motoclubApi.reducer,
     [motobarApi.reducerPath]: motobarApi.reducer,
+    [motoPostApi.reducerPath]: motoPostApi.reducer,
+    [serviceStationApi.reducerPath]: serviceStationApi.reducer,
   },
   devTools: import.meta.env.DEV,
   middleware: (getDefaultMiddleware) =>
@@ -34,6 +38,8 @@ export const store = configureStore({
       postApi.middleware,
       motoclubApi.middleware,
       motobarApi.middleware,
+      motoPostApi.middleware,
+      serviceStationApi.middleware,
     ),
 })
 

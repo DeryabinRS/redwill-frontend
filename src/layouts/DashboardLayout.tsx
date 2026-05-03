@@ -6,7 +6,9 @@ import {
   MenuOutlined, 
   UserOutlined, 
   FileTextOutlined,
+  ShopOutlined,
   TeamOutlined,
+  ToolOutlined,
   SettingOutlined,
   LogoutOutlined 
 } from '@ant-design/icons'
@@ -81,6 +83,16 @@ function DashboardLayout() {
       key: 'motobars',
       icon: <CoffeeOutlined />,
       label: <NavLink to="/dashboard/motobars" onClick={handleMenuClick}>Мотобары</NavLink>,
+    },
+    {
+      key: 'moto-posts',
+      icon: <ShopOutlined />,
+      label: <NavLink to="/dashboard/moto-posts" onClick={handleMenuClick}>Мото-посты</NavLink>,
+    },
+    {
+      key: 'service-stations',
+      icon: <ToolOutlined />,
+      label: <NavLink to="/dashboard/service-stations" onClick={handleMenuClick}>СТО</NavLink>,
     },
     {
       key: 'settings',

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Col, Typography, Button, Row, Spin } from 'antd'
+import { useMemo } from 'react'
+import { Col, Typography, Row, Spin } from 'antd'
 import { useGetPostListQuery } from '../../features/post/postSlice'
 import PostCard from './PostCard'
 import './PostFeed.css'
@@ -13,12 +13,27 @@ interface PostFeedProps {
 const PostFeed: React.FC<PostFeedProps> = ({
   initialPage = 1,
 }) => {
-  const [currentPage, setCurrentPage] = useState(initialPage)
-  const { data, isLoading, isFetching, error } = useGetPostListQuery({ pagination: { page: currentPage }, post_category_ids: 2 });
+  const { data, isLoading, isFetching, error } = useGetPostListQuery({
+    pagination: { page: initialPage, per_page: 12 },
+    post_category_ids: 2,
+  })
 
-  const handleLoadMore = () => {
-    setCurrentPage(prev => prev + 1)
-  }
+  const posts = useMemo(() => {
+    const source = data?.data || []
+
+    if (!Array.isArray(source)) {
+      return []
+    }
+
+    return [...source]
+      .sort((a, b) => {
+        const first = `${a.date_start || ''} ${a.time_start || ''}`
+        const second = `${b.date_start || ''} ${b.time_start || ''}`
+
+        return first.localeCompare(second)
+      })
+      .slice(0, 12)
+  }, [data?.data])
 
   if (error) {
     return (
@@ -26,14 +41,6 @@ const PostFeed: React.FC<PostFeedProps> = ({
         <Text type="danger">Ошибка загрузки мероприятий</Text>
       </div>
     )
-  }
-
-  const posts = data?.data || []
-  const hasNextPage = data?.next_page_url !== null
-
-  // Ensure posts is an array before rendering
-  if (!Array.isArray(posts)) {
-    return null
   }
 
   return (
@@ -57,20 +64,6 @@ const PostFeed: React.FC<PostFeedProps> = ({
 
       {isFetching && (
         <Spin />
-      )}
-
-      {!isLoading && hasNextPage && (
-        <div className="post-feed-load-more">
-          <Button 
-            type="text"
-            size="large"
-            onClick={handleLoadMore}
-            loading={isFetching}
-            className="load-more-button"
-          >
-            Загрузить ещё
-          </Button>
-        </div>
       )}
 
       {!isLoading && posts.length === 0 && !error && (

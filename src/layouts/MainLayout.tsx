@@ -59,6 +59,14 @@ function MainLayout() {
 					key: 'create-motobar',
 					label: <NavLink to="/motobars/create">Мотобар</NavLink>,
 				},
+				{
+					key: 'create-moto-post',
+					label: <NavLink to="/moto-posts/create">Мото-пост</NavLink>,
+				},
+				{
+					key: 'create-service-station',
+					label: <NavLink to="/service-stations/create">СТО</NavLink>,
+				},
 			],
 		}
 	]
