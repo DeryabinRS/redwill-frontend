@@ -474,10 +474,6 @@ a:hover {
 }
 
 @media (max-width: 575px) {
-  .title_page {
-    padding: 22px;
-  }
-
   .title_page__icon {
     display: none;
   }

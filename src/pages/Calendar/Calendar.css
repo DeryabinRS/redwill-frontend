@@ -94,20 +94,3 @@
   margin-top: 4px !important;
   text-transform: capitalize;
 }
-
-@media (max-width: 575px) {
-  .events-calendar-page {
-    padding-top: 18px;
-  }
-
-  .events-calendar-header {
-    flex-wrap: wrap;
-  }
-
-  .events-calendar-header__title {
-    order: -1;
-    width: 100%;
-    text-align: center;
-  }
-
-}
