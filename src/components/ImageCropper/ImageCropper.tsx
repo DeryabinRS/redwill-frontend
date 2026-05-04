@@ -90,9 +90,9 @@ function ImageCropper({
   }, [value, isCropping])
 
   const beforeUpload = (file: File) => {
-    const allowedTypes = ['image/jpeg', 'image/png']
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
     if (!allowedTypes.includes(file.type)) {
-      messageApi.error('Допустимые форматы: JPG, JPEG, PNG')
+      messageApi.error('Допустимые форматы: JPG, JPEG, PNG, WebP')
       return false
     }
 
@@ -177,9 +177,7 @@ function ImageCropper({
       outputHeight,
     )
 
-    const dataUrl = sourceIsPng
-      ? canvas.toDataURL('image/png')
-      : canvas.toDataURL('image/jpeg', 0.9)
+    const dataUrl = canvas.toDataURL('image/webp', 0.92)
     setImgSrc(dataUrl)
     onChange?.(dataUrl)
     setIsCropping(false)
@@ -196,7 +194,7 @@ function ImageCropper({
             listType="picture-card"
             beforeUpload={beforeUpload}
             showUploadList={false}
-            accept=".jpg,.jpeg,.png"
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
           >
             {isLoading ? <Spin size="small" /> : (
               <button type="button" style={{ border: 0, background: 'none', padding: 0 }}>

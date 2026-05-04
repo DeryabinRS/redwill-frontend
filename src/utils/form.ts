@@ -15,10 +15,9 @@ export const publicationStatusOptions = [
 	{ value: 1, label: 'Опубликован' },
 ];
 
-/** Имя файла с расширением jpg/png по data URL (Laravel mimes: jpg,jpeg,png не принимает .webp в имени при несовпадении содержимого). */
-export function logoDataUrlToFileName(prefix: string, dataUrl: string): string {
-	const ext = dataUrl.startsWith('data:image/png') ? 'png' : 'jpg'
-	return `${prefix}_${Date.now()}.${ext}`
+/** Имя файла для загрузки логотипа после ImageCropper (всегда WebP). */
+export function logoDataUrlToFileName(prefix: string): string {
+	return `${prefix}_${Date.now()}.webp`
 }
 
 export const base64ToFile = async (base64: string, fileName: string): Promise<File | null> => {

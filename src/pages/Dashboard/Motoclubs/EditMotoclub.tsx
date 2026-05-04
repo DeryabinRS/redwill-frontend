@@ -87,7 +87,7 @@ function EditMotoclub() {
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('motoclub', pendingLogo))
+      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('motoclub'))
       if (!file) {
         message.error('Не удалось подготовить файл')
         return

@@ -76,7 +76,7 @@ function EditMotobar() {
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('motobar', pendingLogo))
+      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('motobar'))
       if (!file) {
         message.error('Не удалось подготовить файл')
         return

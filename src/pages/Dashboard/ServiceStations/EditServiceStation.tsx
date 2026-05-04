@@ -76,7 +76,7 @@ function EditServiceStation() {
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('service_station', pendingLogo))
+      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('service_station'))
       if (!file) {
         message.error('Не удалось подготовить файл')
         return
