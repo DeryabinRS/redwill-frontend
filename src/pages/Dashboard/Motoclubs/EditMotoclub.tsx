@@ -88,7 +88,7 @@ function EditMotoclub() {
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, `motoclub_${Date.now()}.jpg`)
+      const file = await base64ToFile(pendingLogo, `motoclub_${Date.now()}.webp`)
       if (!file) {
         message.error('Не удалось подготовить файл')
         return

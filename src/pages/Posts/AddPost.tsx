@@ -68,7 +68,7 @@ function AddPost() {
 			
 			// 🖼️ Конвертация base64 → File
 			if (image && image.startsWith('data:image')) {
-				const file = await base64ToFile(image, `post_${Date.now()}.jpg`)
+				const file = await base64ToFile(image, `post_${Date.now()}.webp`)
 				if (file) {
 					formData.append('image', file)
 				}

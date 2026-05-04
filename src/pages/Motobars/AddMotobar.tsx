@@ -42,7 +42,7 @@ function AddMotobar() {
       formData.append('location', sanitizeInput(values.location))
 
       if (logo && logo.startsWith('data:image')) {
-        const file = await base64ToFile(logo, `motobar_${Date.now()}.jpg`)
+        const file = await base64ToFile(logo, `motobar_${Date.now()}.webp`)
         if (file) formData.append('logo', file)
       }
 

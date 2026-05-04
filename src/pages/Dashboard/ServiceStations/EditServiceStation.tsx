@@ -77,7 +77,7 @@ function EditServiceStation() {
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, `service_station_${Date.now()}.jpg`)
+      const file = await base64ToFile(pendingLogo, `service_station_${Date.now()}.webp`)
       if (!file) {
         message.error('Не удалось подготовить файл')
         return

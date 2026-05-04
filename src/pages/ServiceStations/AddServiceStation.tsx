@@ -42,7 +42,7 @@ function AddServiceStation() {
       formData.append('location', sanitizeInput(values.location))
 
       if (logo && logo.startsWith('data:image')) {
-        const file = await base64ToFile(logo, `service_station_${Date.now()}.jpg`)
+        const file = await base64ToFile(logo, `service_station_${Date.now()}.webp`)
         if (file) formData.append('logo', file)
       }
 

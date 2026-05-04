@@ -58,7 +58,7 @@ function AddPost() {
       if (values.time_start) formData.append('time_start', values.time_start.format('HH:mm'))
       if (values.time_end) formData.append('time_end', values.time_end.format('HH:mm'))
       if (image && image.startsWith('data:image')) {
-        const file = await base64ToFile(image, `post_${Date.now()}.jpg`)
+        const file = await base64ToFile(image, `post_${Date.now()}.webp`)
         if (file) formData.append('image', file)
       }
 
