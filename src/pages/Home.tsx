@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Col, Row, Skeleton, Space, Typography } from 'antd'
 import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
 // import { useTranslation } from 'react-i18next'
-import MapHeaderCanvas from '../components/MapHeaderCanvas/MapHeaderCanvas'
+import HeaderAnimation from '../components/HeaderAnimation/HeaderAnimation'
 import PostFeed from '../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
 import { API_URL } from '@config/constants'
@@ -174,7 +174,7 @@ function Home() {
   return (
     <>
       <section className="section section__header" style={{ padding: '16px 0' }}>
-        <MapHeaderCanvas />
+        <HeaderAnimation />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="route-tile-panel">
             <Row gutter={[12, 12]}>

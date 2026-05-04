@@ -80,25 +80,6 @@ function MainLayout() {
 		})
 	}
 
-	// Добавляем меню создания сущностей для авторизованных пользователей
-	// if (userIsAuthenticated) {
-	// 	menuItems.push({
-	// 		key: 'add',
-	// 		icon: <PlusOutlined />,
-	// 		label: 'Добавить',
-	// 		children: [
-	// 			{
-	// 				key: 'create-post',
-	// 				label: <NavLink to="/posts/create">Событие</NavLink>,
-	// 			},
-	// 			{
-	// 				key: 'create-motoclub',
-	// 				label: <NavLink to="/motoclubs/create">Мотоклуб</NavLink>,
-	// 			},
-	// 		],
-	// 	})
-	// }
-
 	const authItems: MenuItem[] = (userIsAuthenticated && userInfo)
 		? [
 			{
@@ -132,7 +113,7 @@ function MainLayout() {
 					<Typography.Title level={2} style={{ margin: 0 }}>
 							<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
 								<div style={{ display: 'flex', alignItems: 'center' }}>
-									<img width={80} src='/public/img/logo.svg' /> 
+									<img width={80} src='/img/logo.svg' /> 
 									{md && <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>}
 								</div>
 							</Link>

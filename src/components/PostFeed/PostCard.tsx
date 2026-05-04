@@ -1,5 +1,5 @@
 import { Card, Space, Typography } from 'antd'
-import { CalendarOutlined, EnvironmentOutlined, UserOutlined } from '@ant-design/icons'
+import { CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import type { Post } from '../../features/post/postSlice'
@@ -58,15 +58,6 @@ function PostCard({ post }: PostCardProps) {
               <div className="post-card-location">
                 <EnvironmentOutlined className="post-card-icon" />
                 <Text type="secondary">{post.location}</Text>
-              </div>
-            )}
-
-            {post.profile && (
-              <div className="post-card-author">
-                <UserOutlined className="post-card-icon" />
-                <Text type="secondary">
-                  {post.profile.first_name} {post.profile.last_name}
-                </Text>
               </div>
             )}
           </Space>
