@@ -1,0 +1,87 @@
+/* react-image-crop: слой затемнения — отдельный svg; скрываем целиком */
+.image-cropper .ReactCrop__crop-mask {
+  display: none !important;
+}
+
+/* Прозрачные области PNG: нейтральная «шахматка», а не фон тёмной темы */
+.image-cropper-crop-surface {
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+  background: repeating-conic-gradient(#ebebeb 0% 25%, #ffffff 0% 50%) 50% / 14px 14px;
+}
+
+.image-cropper-crop-surface img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+/* Зона выбора файла без Ant Design picture-card (там в dark-теме тёмная подложка) */
+.image-cropper-file-label {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 160px;
+  margin-top: -16px;
+  padding: 16px;
+  border: 1px dashed rgba(127, 127, 127, 0.45);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease;
+}
+
+.image-cropper-file-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 0;
+}
+
+.image-cropper-file-label:hover {
+  border-color: rgba(127, 127, 127, 0.7);
+}
+
+.image-cropper-file-label__text {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Превью после обрезки: светлая «паспарту», чтобы не было тёмной «ямы» цвета фона формы */
+.image-cropper-preview-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.image-cropper-preview {
+  line-height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 100%;
+  width: fit-content;
+  background: #fff;
+  border: 1px solid var(--image-cropper-preview-border, rgba(0, 0, 0, 0.06));
+  box-sizing: border-box;
+}
+
+.image-cropper-preview__img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+}

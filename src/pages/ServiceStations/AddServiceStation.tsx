@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { App as AntdApp, Button, Card, Col, Form, Input, Row, Space, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
-import ImageCropper from '../../components/ImageCropper'
+import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
 import { useCreateServiceStationMutation } from '../../features/serviceStation/serviceStationSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'

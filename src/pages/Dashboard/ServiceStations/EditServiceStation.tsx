@@ -2,7 +2,7 @@ import { App as AntdApp, Button, Card, Col, Form, Input, Row, Select, Skeleton, 
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import ImageCropper from '@components/ImageCropper'
+import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import { API_URL } from '@config/constants'
 import { base64ToFile, moderationStatusOptions, sanitizeInput } from '@utils/form'

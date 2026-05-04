@@ -5,7 +5,7 @@ import {
 } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs'
-import ImageCropper from '../../components/ImageCropper';
+import ImageCropper from '../../components/ImageCropper/ImageCropper';
 import { useCreatePostMutation } from '../../features/post/postSlice';
 import { useGetDashboardMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
 import MapPicker from '../../components/YandexMapV3/MapPicker';

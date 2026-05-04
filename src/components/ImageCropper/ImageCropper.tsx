@@ -3,6 +3,7 @@ import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from
 import { Button, Segmented, Space, message, Upload, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import 'react-image-crop/dist/ReactCrop.css'
+import './ImageCropper.css'
 
 type Orientation = 'portrait' | 'landscape'
 
@@ -81,10 +82,11 @@ function ImageCropper({
     setCompletedCrop(undefined)
   }, [isCropping, imgSrc, aspect])
 
-  // Синхронизируем превью при асинхронном обновлении value (например, при загрузке данных поста)
+  // Синхронизация с value из формы/родителя; не затирать превью при value === undefined
   useEffect(() => {
     if (isCropping) return
-    setImgSrc(value || '')
+    if (value === undefined || value === null) return
+    setImgSrc(value)
   }, [value, isCropping])
 
   const beforeUpload = (file: File) => {
@@ -152,6 +154,17 @@ function ImageCropper({
     const cropX = completedCrop.x * scaleX
     const cropY = completedCrop.y * scaleY
 
+    const sourceIsPng =
+      /^data:image\/png/i.test(image.currentSrc || '') ||
+      /^data:image\/png/i.test(imgSrc)
+
+    if (sourceIsPng) {
+      ctx.clearRect(0, 0, outputWidth, outputHeight)
+    } else {
+      ctx.fillStyle = '#ffffff'
+      ctx.fillRect(0, 0, outputWidth, outputHeight)
+    }
+
     ctx.drawImage(
       image,
       cropX,
@@ -164,17 +177,19 @@ function ImageCropper({
       outputHeight,
     )
 
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.9)
+    const dataUrl = sourceIsPng
+      ? canvas.toDataURL('image/png')
+      : canvas.toDataURL('image/jpeg', 0.9)
     setImgSrc(dataUrl)
     onChange?.(dataUrl)
     setIsCropping(false)
-  }, [completedCrop, orientation, onChange, outputSize])
+  }, [completedCrop, orientation, onChange, outputSize, imgSrc])
 
   if (!isCropping) {
     return (
       <>
         {contextHolder}
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
         {!imgSrc && (
           <Upload
             style={{ width: '100%', height: 250, marginTop: -16 }}
@@ -212,7 +227,7 @@ function ImageCropper({
   return (
     <>
       {contextHolder}
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
       {showOrientationSwitch && (
         <Segmented
           options={[
@@ -231,13 +246,15 @@ function ImageCropper({
           onComplete={(c) => setCompletedCrop(c)}
           aspect={aspect}
         >
-          <img
-            ref={imgRef}
-            alt="Crop me"
-            src={imgSrc}
-            onLoad={onImageLoad}
-            style={{ maxWidth: '100%' }}
-          />
+          <div className="image-cropper-crop-surface">
+            <img
+              ref={imgRef}
+              alt="Crop me"
+              src={imgSrc}
+              onLoad={onImageLoad}
+              style={{ maxWidth: '100%' }}
+            />
+          </div>
         </ReactCrop>
       </div>
 

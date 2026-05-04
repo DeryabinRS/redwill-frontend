@@ -423,8 +423,6 @@ a:hover {
   aspect-ratio: 1;
   overflow: hidden;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.08);
   transform: translateY(0);
   transition:
     transform 0.22s ease,
@@ -434,8 +432,6 @@ a:hover {
 
 .home-resource-gallery__item:hover {
   transform: translateY(-4px);
-  border-color: rgba(205, 46, 44, 0.62);
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.35);
 }
 
 .home-resource-gallery__item img {
