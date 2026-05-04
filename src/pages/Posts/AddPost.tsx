@@ -13,9 +13,7 @@ import { base64ToFile, sanitizeInput } from '../../utils/form';
 
 const { Title } = Typography;
 
-type Orientation = 'portrait' | 'landscape';
-
-interface FormValues {
+type FormValues = {
 	title: string
 	post_category_id: number
 	location?: string
@@ -33,7 +31,6 @@ function AddPost() {
 	const [form] = Form.useForm()
 	const { message } = AntdApp.useApp()
 	const navigate = useNavigate()
-	const [orientation, setOrientation] = useState<Orientation>('portrait')
 	const [image, setImage] = useState('')
 	
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
@@ -109,10 +106,10 @@ function AddPost() {
 								]}
 							>
 								<ImageCropper
+									postImageMode
 									value={image}
 									onChange={setImage}
-									orientation={orientation}
-									onOrientationChange={setOrientation}
+									showOrientationSwitch={false}
 								/>
 							</Form.Item>
 						</Col>

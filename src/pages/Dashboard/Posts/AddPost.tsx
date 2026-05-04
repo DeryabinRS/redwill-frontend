@@ -29,7 +29,6 @@ function AddPost() {
   const navigate = useNavigate()
   const [form] = Form.useForm<FormValues>()
   const [image, setImage] = useState('')
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait')
   const [createPost, { isLoading }] = useCreatePostMutation()
   const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
     pagination: { page: 1, per_page: 100 },
@@ -96,10 +95,10 @@ function AddPost() {
                 required
               >
                 <ImageCropper
+                  postImageMode
                   value={image}
                   onChange={setImage}
-                  orientation={orientation}
-                  onOrientationChange={setOrientation}
+                  showOrientationSwitch={false}
                 />
               </Form.Item>
             </Col>

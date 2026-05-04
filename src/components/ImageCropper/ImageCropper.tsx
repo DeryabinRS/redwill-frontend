@@ -4,6 +4,7 @@ import { Button, Segmented, Space, message, Upload, Spin } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import 'react-image-crop/dist/ReactCrop.css'
 import './ImageCropper.css'
+import { resizeDataUrlForPost } from '../../utils/postImage'
 
 type Orientation = 'portrait' | 'landscape'
 
@@ -20,6 +21,8 @@ export interface ImageCropperProps {
   aspectRatio?: number
   outputSize?: OutputSize
   showOrientationSwitch?: boolean
+  /** Без книжной/альбомной и без ручной обрезки: после выбора файла — масштаб под правила поста (1000px). */
+  postImageMode?: boolean
 }
 
 /** Обрезка через canvas возможна только для локального data URL (новый файл), не для URL с сервера */
@@ -51,6 +54,7 @@ function ImageCropper({
   aspectRatio,
   outputSize,
   showOrientationSwitch = true,
+  postImageMode = false,
 }: ImageCropperProps) {
   const [messageApi, contextHolder] = message.useMessage()
   const [imgSrc, setImgSrc] = useState(value || '')
@@ -100,7 +104,22 @@ function ImageCropper({
 
     const reader = new FileReader()
     reader.onload = () => {
-      setImgSrc(reader.result?.toString() || '')
+      const raw = reader.result?.toString() || ''
+      if (postImageMode) {
+        void resizeDataUrlForPost(raw)
+          .then((resized) => {
+            setImgSrc(resized)
+            onChange?.(resized)
+          })
+          .catch(() => {
+            messageApi.error('Не удалось обработать изображение')
+          })
+          .finally(() => {
+            setIsLoading(false)
+          })
+        return
+      }
+      setImgSrc(raw)
       setIsCropping(true)
       setCrop(undefined)
       setIsLoading(false)
@@ -208,7 +227,7 @@ function ImageCropper({
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <img src={imgSrc} alt="Preview" style={{ maxWidth: '100%' }} />
             <Space style={{ marginTop: 8 }}>
-              {isCroppableDataUrl(imgSrc) && (
+              {isCroppableDataUrl(imgSrc) && !postImageMode && (
                 <Button size="small" onClick={() => setIsCropping(true)}>
                   Обрезать
                 </Button>
@@ -226,7 +245,7 @@ function ImageCropper({
     <>
       {contextHolder}
       <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
-      {showOrientationSwitch && (
+      {showOrientationSwitch && !postImageMode && (
         <Segmented
           options={[
             { label: 'Книжная (3:4)', value: 'portrait' },

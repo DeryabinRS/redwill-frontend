@@ -16,6 +16,7 @@ function PostCard({ post }: PostCardProps) {
 
   return (
     <Card
+      size="small"
       className="post-card"
       hoverable
       onClick={() => navigate(`/posts/${post.id}`)}

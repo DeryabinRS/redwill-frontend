@@ -30,10 +30,8 @@ function UpdatePost() {
   const { post } = useParams<{ post: string }>()
   const navigate = useNavigate()
   const [form] = Form.useForm<FormValues>()
-  const [imageForm] = Form.useForm()
   const [previewUrl, setPreviewUrl] = useState('')
   const [pendingImage, setPendingImage] = useState('')
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait')
   const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
   const [uploadPostImage, { isLoading: isUploadingImage }] = useUploadPostImageMutation()
   const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
@@ -148,29 +146,32 @@ function UpdatePost() {
     return <Typography.Text type="danger">Пост не найден</Typography.Text>
   }
 
-  const renderImageForm = () => (
-    <Form form={imageForm} layout="vertical" onFinish={onImageSubmit}>
-        <Form.Item label="Обложка (JPG, PNG)">
-          <ImageCropper
-            value={cropperValue}
-            onChange={(v) => {
-              if (v.startsWith('data:image')) setPendingImage(v)
-              else setPendingImage('')
-            }}
-            orientation={orientation}
-            onOrientationChange={setOrientation}
-          />
-        </Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          loading={isUploadingImage}
-          disabled={!hasNewImageToUpload || isUploadingImage}
-        >
-          Обновить изображение
-        </Button>
-    </Form>
-  );
+  const renderImageSection = () => (
+    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+      <Typography.Text strong>Обложка (JPG, PNG)</Typography.Text>
+      <ImageCropper
+        postImageMode
+        value={cropperValue}
+        onChange={(v) => {
+          if (v.startsWith('data:image')) setPendingImage(v)
+          else {
+            setPendingImage('')
+            if (!v) setPreviewUrl('')
+          }
+        }}
+        showOrientationSwitch={false}
+      />
+      <Button
+        type="primary"
+        htmlType="button"
+        loading={isUploadingImage}
+        disabled={!hasNewImageToUpload || isUploadingImage}
+        onClick={() => void onImageSubmit()}
+      >
+        Обновить изображение
+      </Button>
+    </Space>
+  )
   
   return (
     <div>
@@ -184,7 +185,7 @@ function UpdatePost() {
       <Card size="small">
         <Row gutter={16}>
           <Col xs={24} md={8} lg={8} xl={6}>
-            {renderImageForm()}
+            {renderImageSection()}
           </Col>
           <Col xs={24} md={16} lg={16} xl={18}>
             <Form form={form} layout="vertical" onFinish={onSubmit}>
