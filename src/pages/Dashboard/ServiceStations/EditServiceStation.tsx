@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import { API_URL } from '@config/constants'
-import { base64ToFile, moderationStatusOptions, sanitizeInput } from '@utils/form'
+import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import {
   useGetDashboardServiceStationQuery,
   useUpdateServiceStationMutation,
@@ -28,7 +28,6 @@ function EditServiceStation() {
   const navigate = useNavigate()
   const { serviceStation } = useParams<{ serviceStation: string }>()
   const [form] = Form.useForm<FormValues>()
-  const [logoForm] = Form.useForm()
   const [previewLogo, setPreviewLogo] = useState('')
   const [pendingLogo, setPendingLogo] = useState('')
   const [updateServiceStation, { isLoading: isUpdating }] = useUpdateServiceStationMutation()
@@ -77,7 +76,7 @@ function EditServiceStation() {
     }
 
     try {
-      const file = await base64ToFile(pendingLogo, `service_station_${Date.now()}.webp`)
+      const file = await base64ToFile(pendingLogo, logoDataUrlToFileName('service_station', pendingLogo))
       if (!file) {
         message.error('Не удалось подготовить файл')
         return
@@ -89,7 +88,8 @@ function EditServiceStation() {
 
       message.success('Логотип обновлен')
       if (result.logo) {
-        setPreviewLogo(`${API_URL}${result.logo}`)
+        const path = result.logo.includes('?') ? result.logo : `${result.logo}?v=${Date.now()}`
+        setPreviewLogo(`${API_URL}${path}`)
       }
       setPendingLogo('')
     } catch {
@@ -133,29 +133,32 @@ function EditServiceStation() {
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
-  const renderLogoForm = () => (
-    <Form form={logoForm} layout="vertical" onFinish={onLogoSubmit}>
-      <Form.Item label="Логотип (JPG, PNG)">
-        <ImageCropper
-          value={cropperValue}
-          onChange={(value) => {
-            if (value.startsWith('data:image')) setPendingLogo(value)
-            else setPendingLogo('')
-          }}
-          aspectRatio={1}
-          outputSize={{ width: 500, height: 500 }}
-          showOrientationSwitch={false}
-        />
-      </Form.Item>
+  const renderLogoSection = () => (
+    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+      <Typography.Text strong>Логотип (JPG, PNG)</Typography.Text>
+      <ImageCropper
+        value={cropperValue}
+        onChange={(value) => {
+          if (value.startsWith('data:image')) setPendingLogo(value)
+          else {
+            setPendingLogo('')
+            if (!value) setPreviewLogo('')
+          }
+        }}
+        aspectRatio={1}
+        outputSize={{ width: 500, height: 500 }}
+        showOrientationSwitch={false}
+      />
       <Button
         type="primary"
-        htmlType="submit"
+        htmlType="button"
         loading={isUploadingLogo}
         disabled={!hasNewLogoToUpload || isUploadingLogo}
+        onClick={() => void onLogoSubmit()}
       >
         Обновить логотип
       </Button>
-    </Form>
+    </Space>
   )
 
   return (
@@ -170,7 +173,7 @@ function EditServiceStation() {
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
-              {renderLogoForm()}
+              {renderLogoSection()}
             </Col>
 
             <Col xs={24} md={16}>
