@@ -22,7 +22,7 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
       onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
       cover={
         motoclub.logo ? (
-          <div className="post-card-image-container" style={{ height: 160 }}>
+          <div className="post-card-image-container" style={{ height: 160, marginTop: 8 }}>
             <img
               src={`${API_URL}${motoclub.logo}`}
               alt={motoclub.name}
@@ -135,7 +135,7 @@ function Motoclubs() {
         <ShopOutlined className="title_page__icon" />
       </div>
 
-      <Card style={{ marginBottom: 16 }}>
+      <Card style={{ marginBottom: 8 }}>
         {mapMarkers.length > 0 ? (
           <MapView markers={mapMarkers} height={520} zoom={4} />
         ) : (

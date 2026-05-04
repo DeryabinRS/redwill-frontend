@@ -35,6 +35,7 @@ type ServiceStationListResponse = {
 
 type GetServiceStationListArgs = {
   pagination?: { page?: number; per_page?: number }
+  search?: string
 }
 
 export const serviceStationApi = createApi({
@@ -66,6 +67,7 @@ export const serviceStationApi = createApi({
         params: {
           page: args?.pagination?.page,
           per_page: args?.pagination?.per_page || 40,
+          search: args?.search?.trim() || undefined,
         },
       }),
       transformResponse: (response: {
