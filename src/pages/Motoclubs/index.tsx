@@ -26,9 +26,8 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
             <img
               src={`${API_URL}${motoclub.logo}`}
               alt={motoclub.name}
-              className="post-card-image"
               loading="lazy"
-              style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)' }}
+              style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)', width: '100%', height: '100%' }}
             />
           </div>
         ) : (
@@ -39,7 +38,7 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
       }
     >
       <Space direction="vertical" size="small" style={{ width: '100%' }}>
-        <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: '16px', lineHeight: 1.2 }}>
+        <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: '15px', lineHeight: 1.2 }}>
           {motoclub.name}
         </Title>
         <div className="post-card-meta">
