@@ -421,7 +421,6 @@ a:hover {
   position: relative;
   display: block;
   aspect-ratio: 1;
-  overflow: hidden;
   border-radius: 10px;
   transform: translateY(0);
   transition:
@@ -443,14 +442,14 @@ a:hover {
 }
 
 .home-resource-gallery__item:hover img {
-  transform: scale(1.08);
+  transform: scale(1.04);
 }
 
 .home-resource-gallery__item span {
   position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  right: -4px;
+  bottom: -4px;
+  left: -4px;
   padding: 18px 8px 8px;
   color: #fff;
   font-size: 12px;
