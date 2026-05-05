@@ -53,15 +53,22 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
               </div>
             )}
             {motoclub.website && (
-              <TypographyLink
-                href={motoclub.website}
-                target="_blank"
-                rel="noreferrer"
-                onClick={(event) => event.stopPropagation()}
-              >
-                <GlobalOutlined style={{ marginRight: 6 }} />
-                {motoclub.website.replace(/^https?:\/\//i, '')}
-              </TypographyLink>
+              <div className="post-card-location" style={{ minWidth: 0, width: '100%' }}>
+                <GlobalOutlined className="post-card-icon" />
+                <TypographyLink
+                  href={motoclub.website}
+                  target="_blank"
+                  rel="noreferrer"
+                  ellipsis
+                  onClick={(event) => event.stopPropagation()}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                  }}
+                >
+                  {motoclub.website.replace(/^https?:\/\//i, '')}
+                </TypographyLink>
+              </div>
             )}
           </Space>
         </div>
