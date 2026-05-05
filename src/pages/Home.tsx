@@ -136,14 +136,14 @@ function Home() {
           </div>
         </div>
 
-        <div className="home-resource-card__actions">
+        <Space.Compact style={{ marginBottom: 16 }}>
           <ThemeButton onClick={() => navigate(block.link)}>
             Смотреть все
           </ThemeButton>
           <ThemeButton icon={<PlusOutlined />} onClick={() => navigate(block.createLink)}>
             Добавить
           </ThemeButton>
-        </div>
+        </Space.Compact>
 
         {block.isLoading ? (
           <Skeleton active paragraph={{ rows: 4 }} />
