@@ -201,7 +201,7 @@ function EditServiceStation() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="website"
-                    label="Сайт"
+                    label="Ссылка"
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },

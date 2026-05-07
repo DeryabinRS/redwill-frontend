@@ -154,10 +154,6 @@ function Post() {
                               alt={motoclub.name}
                               style={{
                                 width: 80,
-                                height: 80,
-                                borderRadius: '50%',
-                                objectFit: 'cover',
-                                border: '1px solid #e2e8f0',
                               }}
                             />
                           ) : (
