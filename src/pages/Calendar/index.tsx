@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
-import { Button, Calendar, Card, Col, Empty, Row, Spin, Typography } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { Button, Calendar, Card, Col, Empty, Row, Space, Spin, Typography } from 'antd'
 import type { CalendarProps } from 'antd'
-import { CalendarOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons'
+import { CalendarOutlined, LeftOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons'
 import dayjs, { type Dayjs } from 'dayjs'
 import 'dayjs/locale/ru'
 import { useGetPostListQuery, type Post } from '../../features/post/postSlice'
 import PostCard from '../../components/PostFeed/PostCard'
+import PostFeed from '../../components/PostFeed'
+import ThemeButton from '@components/UI/Buttons/ThemeButton'
 import './Calendar.css'
 
 dayjs.locale('ru')
@@ -20,6 +23,7 @@ function isPostActiveOnDate(post: Post, date: Dayjs) {
 }
 
 function CalendarPage() {
+  const navigate = useNavigate()
   const [calendarDate, setCalendarDate] = useState(() => dayjs())
   const [selectedDate, setSelectedDate] = useState(() => dayjs())
 
@@ -87,112 +91,128 @@ function CalendarPage() {
   }
 
   return (
-    <section className="section events-calendar-page">
-      <div className="container">
-        <div className="title_page">
-          <div>
-            <Typography.Text className="events-calendar-eyebrow">
-              мероприятия
-            </Typography.Text>
-            <Typography.Title level={1} className="events-calendar-title">
-              Календарь
-            </Typography.Title>
-            <Typography.Paragraph className="events-calendar-description">
-              События мотосообщества на выбранный месяц.
-            </Typography.Paragraph>
-          </div>
-          <CalendarOutlined className="title_page__icon" />
-        </div>
-
-        <Row className="events-calendar-layout" gutter={[8, 8]} align="top">
-          <Col xs={24} lg={8}>
-            <Card className="events-calendar-card" size="small">
-              <Calendar
-                value={calendarDate}
-                fullscreen
-                onSelect={(date) => {
-                  setCalendarDate(date)
-                  setSelectedDate(date)
-                }}
-                onPanelChange={(date) => {
-                  setCalendarDate(date)
-                  setSelectedDate(date.startOf('month'))
-                }}
-                fullCellRender={fullCellRender}
-                headerRender={({ value }) => (
-                  <>
-                    <Typography.Text className="events-calendar-day-card__label">
-                      {value.format('MMMM YYYY')}
-                    </Typography.Text>
-                    <div className="events-calendar-header">
-                      <Button
-                        type="text"
-                        icon={<LeftOutlined />}
-                        onClick={() => changeMonth(-1)}
-                      />
-                      <Button
-                        type="text"
-                        onClick={() => {
-                          const today = dayjs()
-                          setCalendarDate(today)
-                          setSelectedDate(today)
-                        }}
-                      >
-                        Сегодня
-                      </Button>
-                      <Button
-                        type="text"
-                        icon={<RightOutlined />}
-                        onClick={() => changeMonth(1)}
-                      />
-                    </div>
-                  </>
-                )}
-              />
-
-              {isFetching && (
-                <div className="events-calendar-loading">
-                  <Spin />
-                </div>
-              )}
-            </Card>
-          </Col>
-
-          <Col xs={24} lg={16}>
-            <Card className="events-calendar-day-card" size="small">
-              <Typography.Text className="events-calendar-day-card__label">
-                выбранная дата
+    <>
+      <section className="section events-calendar-page">
+        <div className="container">
+          <div className="title_page">
+            <div>
+              <Typography.Text className="events-calendar-eyebrow">
+                мероприятия
               </Typography.Text>
-              <Typography.Title level={3} className="events-calendar-day-card__title">
-                {selectedDate.format('D MMMM YYYY')}
+              <Typography.Title level={1} className="events-calendar-title">
+                Календарь
               </Typography.Title>
+              <Typography.Paragraph className="events-calendar-description">
+                События мотосообщества на выбранный месяц.
+              </Typography.Paragraph>
+            </div>
+            <CalendarOutlined className="title_page__icon" />
+          </div>
 
-              {error && (
-                <Typography.Text type="danger">
-                  Ошибка загрузки мероприятий
+          <Row className="events-calendar-layout" gutter={[8, 8]} align="top">
+            <Col xs={24} lg={8}>
+              <Card className="events-calendar-card" size="small">
+                <Calendar
+                  value={calendarDate}
+                  fullscreen
+                  onSelect={(date) => {
+                    setCalendarDate(date)
+                    setSelectedDate(date)
+                  }}
+                  onPanelChange={(date) => {
+                    setCalendarDate(date)
+                    setSelectedDate(date.startOf('month'))
+                  }}
+                  fullCellRender={fullCellRender}
+                  headerRender={({ value }) => (
+                    <>
+                      <Typography.Text className="events-calendar-day-card__label">
+                        {value.format('MMMM YYYY')}
+                      </Typography.Text>
+                      <div className="events-calendar-header">
+                        <Button
+                          type="text"
+                          icon={<LeftOutlined />}
+                          onClick={() => changeMonth(-1)}
+                        />
+                        <Button
+                          type="text"
+                          onClick={() => {
+                            const today = dayjs()
+                            setCalendarDate(today)
+                            setSelectedDate(today)
+                          }}
+                        >
+                          Сегодня
+                        </Button>
+                        <Button
+                          type="text"
+                          icon={<RightOutlined />}
+                          onClick={() => changeMonth(1)}
+                        />
+                      </div>
+                    </>
+                  )}
+                />
+
+                {isFetching && (
+                  <div className="events-calendar-loading">
+                    <Spin />
+                  </div>
+                )}
+              </Card>
+            </Col>
+
+            <Col xs={24} lg={16}>
+              <Card className="events-calendar-day-card" size="small">
+                <Typography.Text className="events-calendar-day-card__label">
+                  выбранная дата
                 </Typography.Text>
-              )}
+                <Typography.Title level={3} className="events-calendar-day-card__title">
+                  {selectedDate.format('D MMMM YYYY')}
+                </Typography.Title>
 
-              {!error && isLoading && <Spin />}
+                {error && (
+                  <Typography.Text type="danger">
+                    Ошибка загрузки мероприятий
+                  </Typography.Text>
+                )}
 
-              {!error && !isLoading && selectedDatePosts.length === 0 && (
-                <Empty description="На этот день мероприятий нет" />
-              )}
+                {!error && isLoading && <Spin />}
 
-              {!error && !isLoading && selectedDatePosts.length > 0 && (
-                <Row className="events-calendar-list" gutter={[12, 12]}>
-                  {selectedDatePosts.map((post) => (
-                    <Col key={post.id} xs={24} md={12} xl={8}>
-                      <PostCard post={post} />
-                    </Col>
-                  ))}
-                </Row>
-              )}
-            </Card>
-          </Col>
-        </Row>
-      </div>
-    </section>
+                {!error && !isLoading && selectedDatePosts.length === 0 && (
+                  <Empty description="На этот день мероприятий нет" />
+                )}
+
+                {!error && !isLoading && selectedDatePosts.length > 0 && (
+                  <Row className="events-calendar-list" gutter={[12, 12]}>
+                    {selectedDatePosts.map((post) => (
+                      <Col key={post.id} xs={24} md={12} xl={8}>
+                        <PostCard post={post} />
+                      </Col>
+                    ))}
+                  </Row>
+                )}
+              </Card>
+            </Col>
+          </Row>
+        </div>
+      </section>
+
+      <section className="section section__events">
+        <div className="container" style={{ paddingTop: 10 }}>
+          <Typography.Title level={3} style={{ marginBottom: 20 }}>
+            Ближайшие события
+          </Typography.Title>
+          <Space.Compact>
+            <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/posts/create')}>
+              Добавить событие
+            </ThemeButton>
+          </Space.Compact>
+          <PostFeed />
+        </div>
+      </section>
+    </>
   )
 }
 

@@ -10,6 +10,7 @@ import 'antd/dist/reset.css'
 import './index.css'
 import './i18n'
 import App from './App.tsx'
+import ScrollToTop from './components/ScrollToTop'
 import { Provider } from 'react-redux'
 import { store } from './store'
 
@@ -24,6 +25,7 @@ createRoot(document.getElementById('root')!).render(
       <ConfigProvider locale={getAntdLocale()}>
         <AntdApp>
           <BrowserRouter>
+            <ScrollToTop />
             <App />
           </BrowserRouter>
         </AntdApp>
