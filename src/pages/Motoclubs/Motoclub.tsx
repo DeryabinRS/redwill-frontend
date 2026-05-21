@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
 import MapView from '@components/YandexMapV3/MapView'
+import PostFeed from '@components/PostFeed/PostFeed'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -110,6 +111,17 @@ function Motoclub() {
             </Space>
           </Col>
         </Row>
+      </Card>
+
+      <Card style={{ marginTop: 16 }}>
+        <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
+          Ближайшие мероприятия мотоклуба
+        </Title>
+        <PostFeed
+          motoclubId={motoclubData.id}
+          perPage={6}
+          emptyText="У этого мотоклуба пока нет запланированных мероприятий"
+        />
       </Card>
     </div>
   )
