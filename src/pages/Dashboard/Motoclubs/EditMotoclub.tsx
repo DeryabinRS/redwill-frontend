@@ -8,13 +8,16 @@ import MapPicker from '@components/YandexMapV3/MapPicker'
 import { API_URL } from '@config/constants'
 import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import {
+  useGetDashboardMotoclubListQuery,
   useGetDashboardMotoclubQuery,
   useUpdateMotoclubMutation,
   useUploadMotoclubLogoMutation,
+  type Motoclub,
 } from '@features/motoclub/motoclubSlice'
 
 type FormValues = {
   name: string
+  parent_id?: number | null
   desc?: string
   birthday?: dayjs.Dayjs
   website?: string
@@ -47,12 +50,22 @@ function EditMotoclub() {
   } = useGetDashboardMotoclubQuery(motoclub as string, {
     skip: !motoclub,
   })
+  const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
+  const parentOptions = (motoclubsData?.data || [])
+    .filter((item: Motoclub) => String(item.id) !== String(motoclub))
+    .map((item: Motoclub) => ({
+      value: item.id,
+      label: item.address ? `${item.name} (${item.address})` : item.name,
+    }))
 
   useEffect(() => {
     if (!motoclubData) return
 
     form.setFieldsValue({
       name: motoclubData.name,
+      parent_id: motoclubData.parent_id ?? null,
       desc: motoclubData.desc || '',
       birthday: motoclubData.birthday ? dayjs(motoclubData.birthday) : undefined,
       website: motoclubData.website || '',
@@ -114,6 +127,7 @@ function EditMotoclub() {
     try {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
+      formData.append('parent_id', values.parent_id ? String(values.parent_id) : '')
       appendString(formData, 'desc', values.desc)
       if (values.birthday) formData.append('birthday', values.birthday.format('YYYY-MM-DD'))
       appendString(formData, 'website', values.website)
@@ -200,6 +214,17 @@ function EditMotoclub() {
                 ]}
               >
                 <Input placeholder="Название мотоклуба" />
+              </Form.Item>
+
+              <Form.Item name="parent_id" label="Родительский мотоклуб (необязательно)">
+                <Select
+                  allowClear
+                  showSearch
+                  optionFilterProp="label"
+                  loading={isLoadingMotoclubs}
+                  options={parentOptions}
+                  placeholder="Не выбран"
+                />
               </Form.Item>
 
               <Form.Item

@@ -4,6 +4,7 @@ import { getAuthToken } from '../../utils/auth'
 
 export type Motoclub = {
   id: number
+  parent_id: number | null
   name: string
   desc: string | null
   birthday: string | null
@@ -20,6 +21,8 @@ export type Motoclub = {
   publication_status: number
   created_at: string
   updated_at: string
+  parent?: Pick<Motoclub, 'id' | 'name' | 'logo'> | null
+  children?: Pick<Motoclub, 'id' | 'name' | 'logo' | 'parent_id'>[]
 }
 
 type CreateMotoclubResponse = {

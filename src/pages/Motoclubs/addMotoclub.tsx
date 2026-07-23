@@ -1,14 +1,19 @@
 import { useState } from 'react'
-import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Space, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Space, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
-import { useCreateMotoclubMutation } from '../../features/motoclub/motoclubSlice'
+import {
+  useCreateMotoclubMutation,
+  useGetMotoclubListQuery,
+  type Motoclub,
+} from '../../features/motoclub/motoclubSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
 import dayjs from 'dayjs'
 
 type FormValues = {
   name: string
+  parent_id?: number
   desc?: string
   birthday?: string
   logo?: File
@@ -27,6 +32,13 @@ function AddMotoclub() {
   const [logo, setLogo] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [createMotoclub, { isLoading }] = useCreateMotoclubMutation()
+  const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetMotoclubListQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
+  const parentOptions = (motoclubsData?.data || []).map((motoclub: Motoclub) => ({
+    value: motoclub.id,
+    label: motoclub.address ? `${motoclub.name} (${motoclub.address})` : motoclub.name,
+  }))
   const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/profile'
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
@@ -44,6 +56,7 @@ function AddMotoclub() {
     try {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
+      if (values.parent_id) formData.append('parent_id', String(values.parent_id))
       appendString(formData, 'desc', values.desc)
       appendString(formData, 'birthday', values.birthday ? dayjs(values.birthday).format('YYYY-MM-DD') : undefined)
       appendString(formData, 'website', values.website)
@@ -100,6 +113,17 @@ function AddMotoclub() {
                 ]}
               >
                 <Input placeholder="Название мотоклуба" />
+              </Form.Item>
+
+              <Form.Item name="parent_id" label="Родительский мотоклуб (необязательно)">
+                <Select
+                  allowClear
+                  showSearch
+                  optionFilterProp="label"
+                  loading={isLoadingMotoclubs}
+                  options={parentOptions}
+                  placeholder="Не выбран"
+                />
               </Form.Item>
 
               <Form.Item
