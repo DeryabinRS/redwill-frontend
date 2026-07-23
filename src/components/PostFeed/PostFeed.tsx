@@ -8,14 +8,21 @@ const { Text } = Typography
 
 interface PostFeedProps {
   initialPage?: number
+  motoclubId?: number
+  perPage?: number
+  emptyText?: string
 }
 
 const PostFeed: React.FC<PostFeedProps> = ({
   initialPage = 1,
+  motoclubId,
+  perPage = 12,
+  emptyText = 'Мероприятия пока не добавлены',
 }) => {
   const { data, isLoading, isFetching, error } = useGetPostListQuery({
-    pagination: { page: initialPage, per_page: 12 },
+    pagination: { page: initialPage, per_page: perPage },
     post_category_ids: 2,
+    motoclub_ids: motoclubId,
   })
 
   const posts = useMemo(() => {
@@ -32,8 +39,8 @@ const PostFeed: React.FC<PostFeedProps> = ({
 
         return first.localeCompare(second)
       })
-      .slice(0, 12)
-  }, [data?.data])
+      .slice(0, perPage)
+  }, [data?.data, perPage])
 
   if (error) {
     return (
@@ -68,7 +75,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
 
       {!isLoading && posts.length === 0 && !error && (
         <div className="post-feed-empty">
-          <Text type="secondary">Мероприятия пока не добавлены</Text>
+          <Text type="secondary">{emptyText}</Text>
         </div>
       )}
     </div>

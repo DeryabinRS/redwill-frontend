@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, type KeyboardEvent } from 'react';
 import { Button, Input, Space, Typography } from 'antd';
 import { useYmaps3 } from '../../hooks/useYmaps3';
+import { parseLocationCoordinates, parseSearchCoordinates } from '@utils/mapLocation';
 
 const DEFAULT_CENTER: [number, number] = [50.618423, 55.751244]; // [lng, lat]
 const DEFAULT_ZOOM = 4
@@ -61,13 +62,6 @@ type GeocoderGeoObject = {
   }
 }
 
-function parseLocation(location?: string) {
-  if (!location) return null
-  const [latValue, lngValue] = location.split(',').map((part) => Number(part.trim()))
-  if (Number.isNaN(latValue) || Number.isNaN(lngValue)) return null
-  return { lat: latValue, lng: lngValue }
-}
-
 function getAddressText(geoObject: GeocoderGeoObject): string {
   return geoObject.metaDataProperty?.GeocoderMetaData?.text || '';
 }
@@ -90,7 +84,7 @@ function MapPicker({
   const [searchError, setSearchError] = useState('')
 
   useEffect(() => {
-    const parsed = parseLocation(initialLocation)
+    const parsed = parseLocationCoordinates(initialLocation)
     if (!parsed) return
     setCoords(parsed)
     setCenter([parsed.lng, parsed.lat])
@@ -125,12 +119,23 @@ function MapPicker({
   const runSearch = useCallback(async (value: string) => {
     const query = value.trim()
     if (!query) {
-      setSearchError('Введите адрес или название места')
+      setSearchError('Введите адрес, название места или координаты')
       return
     }
 
     setIsSearching(true)
     setSearchError('')
+
+    const coordsFromQuery = parseSearchCoordinates(query)
+    if (coordsFromQuery) {
+      setCoords(coordsFromQuery)
+      setCenter([coordsFromQuery.lng, coordsFromQuery.lat])
+      setZoom(14)
+      onChangeLocation(`${coordsFromQuery.lat.toFixed(6)}, ${coordsFromQuery.lng.toFixed(6)}`)
+      onChangeAddress?.('Поиск адреса...')
+      setIsSearching(false)
+      return
+    }
 
     try {
       const response = await fetch(
@@ -259,7 +264,7 @@ function MapPicker({
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             onKeyDown={handleSearchKeyDown}
-            placeholder="Введите адрес или название места"
+            placeholder="Адрес, место или координаты (широта, долгота)"
           />
           <Button
             type="primary"
