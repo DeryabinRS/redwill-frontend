@@ -21,6 +21,7 @@ type FormValues = {
   desc?: string
   birthday?: dayjs.Dayjs
   website?: string
+  social_link?: string
   phone?: string
   email?: string
   address?: string
@@ -69,6 +70,7 @@ function EditMotoclub() {
       desc: motoclubData.desc || '',
       birthday: motoclubData.birthday ? dayjs(motoclubData.birthday) : undefined,
       website: motoclubData.website || '',
+      social_link: motoclubData.social_link || '',
       phone: motoclubData.phone || '',
       email: motoclubData.email || '',
       address: motoclubData.address || '',
@@ -131,6 +133,7 @@ function EditMotoclub() {
       appendString(formData, 'desc', values.desc)
       if (values.birthday) formData.append('birthday', values.birthday.format('YYYY-MM-DD'))
       appendString(formData, 'website', values.website)
+      appendString(formData, 'social_link', values.social_link)
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
       appendString(formData, 'address', values.address)
@@ -267,6 +270,18 @@ function EditMotoclub() {
               </Row>
 
               <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="social_link"
+                    label="Ссылка на соц. сеть"
+                    rules={[
+                      { type: 'url', message: 'Введите корректный URL' },
+                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                    ]}
+                  >
+                    <Input placeholder="https://vk.com/..." />
+                  </Form.Item>
+                </Col>
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="phone"

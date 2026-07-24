@@ -9,7 +9,7 @@ import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text, Link: TypographyLink } = Typography
 
-const PAGE_SIZE_OPTIONS = [24, 50, 100] as const
+const PAGE_SIZE_OPTIONS = [100, 200, 500] as const
 
 function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
   const navigate = useNavigate()
@@ -80,7 +80,7 @@ function Motoclubs() {
   const [searchInput, setSearchInput] = useState('')
   const search = useDeferredValue(searchInput.trim())
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState<number>(24)
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZE_OPTIONS[0])
 
   useEffect(() => {
     setPage(1)
@@ -96,7 +96,7 @@ function Motoclubs() {
 
   const mapListArgs = useMemo(
     () => ({
-      pagination: { page: 1, per_page: 500 },
+      // pagination: { page: 1, per_page: 500 },
       search: search || undefined,
     }),
     [search],

@@ -10,6 +10,7 @@ export type Motoclub = {
   birthday: string | null
   logo: string | null
   website: string | null
+  social_link: string | null
   phone: string | null
   email: string | null
   address: string | null
@@ -74,7 +75,7 @@ export const motoclubApi = createApi({
         url: '/motoclubs',
         params: {
           page: args?.pagination?.page,
-          per_page: args?.pagination?.per_page || 40,
+          per_page: args?.pagination?.per_page,
           search: args?.search?.trim() || undefined,
         },
       }),

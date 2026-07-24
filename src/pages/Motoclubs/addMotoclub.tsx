@@ -18,6 +18,7 @@ type FormValues = {
   birthday?: string
   logo?: File
   website?: string
+  social_link?: string
   phone?: string
   email?: string
   address: string
@@ -60,6 +61,7 @@ function AddMotoclub() {
       appendString(formData, 'desc', values.desc)
       appendString(formData, 'birthday', values.birthday ? dayjs(values.birthday).format('YYYY-MM-DD') : undefined)
       appendString(formData, 'website', values.website)
+      appendString(formData, 'social_link', values.social_link)
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
       formData.append('address', sanitizeInput(values.address))
@@ -152,7 +154,7 @@ function AddMotoclub() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="website"
-                    label="Ссылка"
+                    label="Сайт"
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -176,6 +178,18 @@ function AddMotoclub() {
               </Row>
 
               <Row gutter={16}>
+                <Col xs={24} md={12}>
+                  <Form.Item
+                    name="social_link"
+                    label="Ссылка на соц. сеть"
+                    rules={[
+                      { type: 'url', message: 'Введите корректный URL' },
+                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                    ]}
+                  >
+                    <Input placeholder="https://vk.ru/..." />
+                  </Form.Item>
+                </Col>
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="phone"

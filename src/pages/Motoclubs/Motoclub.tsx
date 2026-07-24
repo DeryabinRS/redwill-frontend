@@ -133,6 +133,15 @@ function Motoclub() {
                   </Space>
                 )}
 
+                {motoclubData.social_link && (
+                  <Space size={8}>
+                    <GlobalOutlined />
+                    <a href={motoclubData.social_link} target="_blank" rel="noreferrer">
+                      {motoclubData.social_link}
+                    </a>
+                  </Space>
+                )}
+
                 {motoclubData.phone && (
                   <Space size={8}>
                     <PhoneOutlined />
