@@ -245,14 +245,14 @@ function EditMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="website"
-                    label="Ссылка"
+                    name="social_link"
+                    label="Ссылка на соц. сеть"
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
                     ]}
                   >
-                    <Input placeholder="https://example.com" />
+                    <Input placeholder="https://vk.com/..." />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
@@ -272,14 +272,14 @@ function EditMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="social_link"
-                    label="Ссылка на соц. сеть"
+                    name="website"
+                    label="Сайт"
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
                     ]}
                   >
-                    <Input placeholder="https://vk.com/..." />
+                    <Input placeholder="https://example.com" />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>

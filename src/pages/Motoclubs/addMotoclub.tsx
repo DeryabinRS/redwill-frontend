@@ -153,14 +153,14 @@ function AddMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="website"
-                    label="Сайт"
+                    name="social_link"
+                    label="Ссылка на соц. сеть"
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
                     ]}
                   >
-                    <Input placeholder="https://example.com" />
+                    <Input placeholder="https://vk.ru/..." />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
@@ -180,14 +180,14 @@ function AddMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="social_link"
-                    label="Ссылка на соц. сеть"
+                    name="website"
+                    label="Сайт"
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
                     ]}
                   >
-                    <Input placeholder="https://vk.ru/..." />
+                    <Input placeholder="https://example.com" />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
