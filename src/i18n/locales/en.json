@@ -42,6 +42,14 @@
     "lastName": "Last Name",
     "email": "Email",
     "roles": "Roles",
+    "avatar": "Avatar",
+    "avatarSave": "Save avatar",
+    "avatarUpdated": "Avatar updated",
+    "avatarUpdateError": "Failed to update avatar",
+    "avatarSelectWarning": "Select a new avatar",
+    "avatarPrepareError": "Failed to prepare the file",
+    "avatarDeleted": "Avatar deleted",
+    "avatarDeleteError": "Failed to delete avatar",
     "loadError": "Failed to load user data"
   }
 }

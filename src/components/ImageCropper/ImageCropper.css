@@ -3,10 +3,27 @@
   display: none !important;
 }
 
+.image-cropper-crop-wrap {
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.image-cropper-crop-wrap .ReactCrop {
+  max-width: 100%;
+  display: block;
+}
+
+.image-cropper-crop-wrap .ReactCrop__child-wrapper {
+  max-width: 100%;
+}
+
 /* Прозрачные области PNG: нейтральная «шахматка», а не фон тёмной темы */
 .image-cropper-crop-surface {
-  display: inline-block;
+  display: block;
   max-width: 100%;
+  width: 100%;
   line-height: 0;
   background: repeating-conic-gradient(#ebebeb 0% 25%, #ffffff 0% 50%) 50% / 14px 14px;
 }
@@ -14,6 +31,7 @@
 .image-cropper-crop-surface img {
   display: block;
   max-width: 100%;
+  width: 100%;
   height: auto;
   vertical-align: top;
 }

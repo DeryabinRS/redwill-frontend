@@ -30,12 +30,13 @@ function isCroppableDataUrl(src: string): boolean {
   return src.startsWith('data:image/')
 }
 
-function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number) {
+/** Максимальная область с заданным aspect — на всю ширину/высоту изображения. */
+function fullAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number): Crop {
   return centerCrop(
     makeAspectCrop(
       {
         unit: '%',
-        width: 90,
+        width: 100,
       },
       aspect,
       mediaWidth,
@@ -46,7 +47,30 @@ function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: numbe
   )
 }
 
-function ImageCropper({
+function percentCropToPixel(crop: Crop, mediaWidth: number, mediaHeight: number): PixelCrop {
+  const isPercent = crop.unit === '%'
+  return {
+    unit: 'px',
+    x: isPercent ? (crop.x / 100) * mediaWidth : crop.x,
+    y: isPercent ? (crop.y / 100) * mediaHeight : crop.y,
+    width: isPercent ? (crop.width / 100) * mediaWidth : crop.width,
+    height: isPercent ? (crop.height / 100) * mediaHeight : crop.height,
+  }
+}
+
+function applyFullImageCrop(
+  mediaWidth: number,
+  mediaHeight: number,
+  aspect: number,
+  setCrop: (crop: Crop) => void,
+  setCompletedCrop: (crop: PixelCrop) => void,
+) {
+  const nextCrop = fullAspectCrop(mediaWidth, mediaHeight, aspect)
+  setCrop(nextCrop)
+  setCompletedCrop(percentCropToPixel(nextCrop, mediaWidth, mediaHeight))
+}
+
+export default function ImageCropper({
   value,
   onChange,
   orientation = 'portrait',
@@ -72,8 +96,7 @@ function ImageCropper({
   useEffect(() => {
     if (!isCropping || !imgRef.current?.complete) return
     const { width, height } = imgRef.current
-    setCrop(centerAspectCrop(width, height, aspect))
-    setCompletedCrop(undefined)
+    applyFullImageCrop(width, height, aspect, setCrop, setCompletedCrop)
   }, [aspect, isCropping])
 
   // При входе в обрезку картинка часто уже в кэше — onLoad не вызывается, без этого нет рамки crop
@@ -82,8 +105,7 @@ function ImageCropper({
     const img = imgRef.current
     if (!img?.complete || !img.naturalWidth) return
     const { width, height } = img
-    setCrop(centerAspectCrop(width, height, aspect))
-    setCompletedCrop(undefined)
+    applyFullImageCrop(width, height, aspect, setCrop, setCompletedCrop)
   }, [isCropping, imgSrc, aspect])
 
   // Синхронизация с value из формы/родителя; не затирать превью при value === undefined
@@ -131,7 +153,7 @@ function ImageCropper({
 
   const onImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
     const { width, height } = e.currentTarget
-    setCrop(centerAspectCrop(width, height, aspect))
+    applyFullImageCrop(width, height, aspect, setCrop, setCompletedCrop)
   }, [aspect])
 
   const getCroppedImage = useCallback(() => {
@@ -256,7 +278,7 @@ function ImageCropper({
         />
       )}
       
-      <div style={{ maxHeight: '100%', maxWidth: 400, overflow: 'auto' }}>
+      <div className="image-cropper-crop-wrap">
         <ReactCrop
           crop={crop}
           onChange={(c) => setCrop(c)}
@@ -269,7 +291,6 @@ function ImageCropper({
               alt="Crop me"
               src={imgSrc}
               onLoad={onImageLoad}
-              style={{ maxWidth: '100%' }}
             />
           </div>
         </ReactCrop>
@@ -292,5 +313,3 @@ function ImageCropper({
     </>
   )
 }
-
-export default ImageCropper

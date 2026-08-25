@@ -31,6 +31,7 @@ export type UserInfo = {
   middle_name: string
   login: string
   email: string
+  avatar?: string | null
   baned: number
   roles: string[]
   created_at?: string
@@ -74,6 +75,24 @@ export const userApi = createApi({
     getUserInfo: builder.query<UserInfo, void>({
       query: () => ({ url: '/user/info', method: 'GET' }),
       transformResponse: (response: GetUserInfoResponse) => response.data,
+      providesTags: ['User'],
+    }),
+    uploadUserAvatar: builder.mutation<{ id: number; avatar: string | null }, FormData>({
+      query: (payload) => ({
+        url: '/user/avatar',
+        method: 'POST',
+        body: payload,
+      }),
+      transformResponse: (response: { data: { id: number; avatar: string | null } }) => response.data,
+      invalidatesTags: ['User'],
+    }),
+    deleteUserAvatar: builder.mutation<{ id: number; avatar: string | null }, void>({
+      query: () => ({
+        url: '/user/avatar',
+        method: 'DELETE',
+      }),
+      transformResponse: (response: { data: { id: number; avatar: string | null } }) => response.data,
+      invalidatesTags: ['User'],
     }),
     getAllUsers: builder.query<UsersListResponse, void>({
       query: () => ({ url: '/users', method: 'GET' }),
@@ -111,4 +130,6 @@ export const {
   useGetUserQuery,
   useLazyGetUserQuery,
   useUpdateUserBanedMutation,
+  useUploadUserAvatarMutation,
+  useDeleteUserAvatarMutation,
 } = userApi

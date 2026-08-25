@@ -37,6 +37,14 @@
     "lastName": "Фамилия",
     "email": "Email",
     "roles": "Роли",
+    "avatar": "Аватар",
+    "avatarSave": "Сохранить аватар",
+    "avatarUpdated": "Аватар обновлён",
+    "avatarUpdateError": "Не удалось обновить аватар",
+    "avatarSelectWarning": "Выберите новый аватар",
+    "avatarPrepareError": "Не удалось подготовить файл",
+    "avatarDeleted": "Аватар удалён",
+    "avatarDeleteError": "Не удалось удалить аватар",
     "loadError": "Не удалось загрузить данные пользователя"
   }
 }
