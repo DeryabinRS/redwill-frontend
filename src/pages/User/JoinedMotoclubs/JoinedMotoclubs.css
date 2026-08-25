@@ -1,0 +1,70 @@
+.joined-motoclubs-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.joined-motoclub-tile {
+  position: relative;
+  width: 88px;
+  height: 88px;
+  border-radius: 8px;
+  overflow: visible;
+  cursor: pointer;
+  background: rgba(127, 127, 127, 0.12);
+  border: 1px solid rgba(127, 127, 127, 0.25);
+  box-sizing: border-box;
+}
+
+.joined-motoclub-tile__logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.joined-motoclub-tile__placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 6px;
+  box-sizing: border-box;
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.2;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.joined-motoclub-tile__remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #ff4d4f;
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.joined-motoclub-tile__remove:hover {
+  background: #ff7875;
+}
+
+.joined-motoclub-tile__remove:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

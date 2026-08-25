@@ -49,7 +49,7 @@ type GetMotoclubListArgs = {
 
 export const motoclubApi = createApi({
   reducerPath: 'motoclubApi',
-  tagTypes: ['Motoclubs', 'Motoclub'],
+  tagTypes: ['Motoclubs', 'Motoclub', 'JoinedMotoclubs'],
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL || '/api',
     credentials: 'include',
@@ -102,6 +102,37 @@ export const motoclubApi = createApi({
         data: MotoclubListResponse
       }) => response.data,
       providesTags: ['Motoclubs'],
+    }),
+    getJoinedMotoclubs: builder.query<MotoclubListResponse, GetMotoclubListArgs | void>({
+      query: (args) => ({
+        url: '/user/joined-motoclubs',
+        params: {
+          page: args?.pagination?.page,
+          per_page: args?.pagination?.per_page || 10,
+        },
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: MotoclubListResponse
+      }) => response.data,
+      providesTags: ['JoinedMotoclubs'],
+    }),
+    joinMotoclub: builder.mutation<Motoclub, string | number>({
+      query: (motoclub) => ({
+        url: `/motoclubs/${motoclub}/join`,
+        method: 'POST',
+      }),
+      transformResponse: (response: CreateMotoclubResponse) => response.data,
+      invalidatesTags: ['JoinedMotoclubs'],
+    }),
+    leaveMotoclub: builder.mutation<void, string | number>({
+      query: (motoclub) => ({
+        url: `/motoclubs/${motoclub}/leave`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['JoinedMotoclubs'],
     }),
     getDashboardMotoclubList: builder.query<MotoclubListResponse, GetMotoclubListArgs | void>({
       query: (args) => ({
@@ -178,6 +209,9 @@ export const {
   useGetMotoclubQuery,
   useGetMotoclubListQuery,
   useGetUserMotoclubsQuery,
+  useGetJoinedMotoclubsQuery,
+  useJoinMotoclubMutation,
+  useLeaveMotoclubMutation,
   useGetDashboardMotoclubQuery,
   useUpdateMotoclubMutation,
   useUploadMotoclubLogoMutation,

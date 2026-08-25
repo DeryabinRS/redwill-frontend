@@ -11,6 +11,7 @@ import {
 import { base64ToFile, logoDataUrlToFileName } from '@utils/form'
 import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
+import UserJoinedMotoclubs from './JoinedMotoclubs'
 import UserMotobars from './Motobars'
 import UserMotoPosts from './MotoPosts'
 import UserServiceStations from './ServiceStations'
@@ -153,6 +154,7 @@ function Profile() {
                   {userInfo.email}
                 </Typography.Title>
               </div>
+              <UserJoinedMotoclubs />
             </Space>
           </Col>
         </Row>
