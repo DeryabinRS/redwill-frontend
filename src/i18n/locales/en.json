@@ -50,6 +50,11 @@
     "avatarPrepareError": "Failed to prepare the file",
     "avatarDeleted": "Avatar deleted",
     "avatarDeleteError": "Failed to delete avatar",
+    "motoclub": "Motoclub:",
+    "motoclubEmpty": "You are not a member of any motoclub yet",
+    "motoclubRemove": "Remove motoclub",
+    "motoclubLeft": "You left the motoclub",
+    "motoclubLeaveError": "Failed to leave the motoclub",
     "loadError": "Failed to load user data"
   }
 }

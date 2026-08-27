@@ -2,6 +2,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { API_URL } from '../../config/constants'
 import { getAuthToken } from '../../utils/auth'
 
+export type MotoclubMember = {
+  id: number
+  login: string
+  avatar: string | null
+}
+
 export type Motoclub = {
   id: number
   parent_id: number | null
@@ -24,6 +30,9 @@ export type Motoclub = {
   updated_at: string
   parent?: Pick<Motoclub, 'id' | 'name' | 'logo'> | null
   children?: Pick<Motoclub, 'id' | 'name' | 'logo' | 'parent_id'>[]
+  members?: MotoclubMember[]
+  verified_members_count?: number
+  pending_members_count?: number
 }
 
 type CreateMotoclubResponse = {
@@ -103,6 +112,14 @@ export const motoclubApi = createApi({
       }) => response.data,
       providesTags: ['Motoclubs'],
     }),
+    getUserMotoclub: builder.query<Motoclub, string | number>({
+      query: (motoclub) => ({
+        url: `/user/motoclubs/${motoclub}`,
+        method: 'GET',
+      }),
+      transformResponse: (response: CreateMotoclubResponse) => response.data,
+      providesTags: (_result, _error, motoclub) => [{ type: 'Motoclub', id: motoclub }],
+    }),
     getJoinedMotoclubs: builder.query<MotoclubListResponse, GetMotoclubListArgs | void>({
       query: (args) => ({
         url: '/user/joined-motoclubs',
@@ -125,14 +142,20 @@ export const motoclubApi = createApi({
         method: 'POST',
       }),
       transformResponse: (response: CreateMotoclubResponse) => response.data,
-      invalidatesTags: ['JoinedMotoclubs'],
+      invalidatesTags: (_result, _error, motoclub) => [
+        'JoinedMotoclubs',
+        { type: 'Motoclub', id: motoclub },
+      ],
     }),
     leaveMotoclub: builder.mutation<void, string | number>({
       query: (motoclub) => ({
         url: `/motoclubs/${motoclub}/leave`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['JoinedMotoclubs'],
+      invalidatesTags: (_result, _error, motoclub) => [
+        'JoinedMotoclubs',
+        { type: 'Motoclub', id: motoclub },
+      ],
     }),
     getDashboardMotoclubList: builder.query<MotoclubListResponse, GetMotoclubListArgs | void>({
       query: (args) => ({
@@ -209,6 +232,7 @@ export const {
   useGetMotoclubQuery,
   useGetMotoclubListQuery,
   useGetUserMotoclubsQuery,
+  useGetUserMotoclubQuery,
   useGetJoinedMotoclubsQuery,
   useJoinMotoclubMutation,
   useLeaveMotoclubMutation,

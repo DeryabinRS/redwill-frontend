@@ -197,6 +197,69 @@ function Motoclub() {
           emptyText="У этого мотоклуба пока нет запланированных мероприятий"
         />
       </Card>
+
+      <Card style={{ marginTop: 16 }}>
+        <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
+          Участники мотоклуба
+        </Title>
+        {(motoclubData.members?.length ?? 0) === 0 ? (
+          <Text type="secondary">Пока нет участников</Text>
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 12,
+            }}
+          >
+            {motoclubData.members?.map((member) => {
+              const avatarSrc = member.avatar ? `${API_URL}${member.avatar}` : null
+
+              return (
+                <Card
+                  key={member.id}
+                  size="small"
+                  styles={{ body: { padding: '8px 10px', textAlign: 'center' } }}
+                  style={{ width: 120, overflow: 'hidden' }}
+                  cover={
+                    avatarSrc ? (
+                      <img
+                        src={avatarSrc}
+                        alt={member.login}
+                        style={{
+                          width: '100%',
+                          aspectRatio: '1 / 1',
+                          objectFit: 'cover',
+                          display: 'block',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: '100%',
+                          aspectRatio: '1 / 1',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: 'rgba(127, 127, 127, 0.15)',
+                          fontWeight: 600,
+                          fontSize: 22,
+                        }}
+                      >
+                        {member.login.slice(0, 1).toUpperCase()}
+                      </div>
+                    )
+                  }
+                >
+                  <Text ellipsis style={{ display: 'block', width: '100%' }}>
+                    {member.login}
+                  </Text>
+                </Card>
+              )
+            })}
+          </div>
+        )}
+      </Card>
     </div>
   )
 }

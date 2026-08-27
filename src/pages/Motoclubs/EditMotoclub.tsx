@@ -1,15 +1,18 @@
 import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import { API_URL } from '@config/constants'
 import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
+import { useGetUserInfoQuery } from '@features/user/userSlice'
 import {
   useGetDashboardMotoclubListQuery,
   useGetDashboardMotoclubQuery,
+  useGetMotoclubListQuery,
+  useGetUserMotoclubQuery,
   useUpdateMotoclubMutation,
   useUploadMotoclubLogoMutation,
   type Motoclub,
@@ -26,13 +29,14 @@ type FormValues = {
   email?: string
   address?: string
   location?: string
-  publication_status: boolean
-  moderation_status: number
+  publication_status?: boolean
+  moderation_status?: number
 }
 
 function EditMotoclub() {
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
+  const { pathname } = useLocation()
   const { motoclub } = useParams<{ motoclub: string }>()
   const [form] = Form.useForm<FormValues>()
   const [previewLogo, setPreviewLogo] = useState('')
@@ -40,20 +44,40 @@ function EditMotoclub() {
   const [searchQuery, setSearchQuery] = useState('')
   const [updateMotoclub, { isLoading: isUpdating }] = useUpdateMotoclubMutation()
   const [uploadMotoclubLogo, { isLoading: isUploadingLogo }] = useUploadMotoclubLogoMutation()
+  const { data: userInfo } = useGetUserInfoQuery()
+
+  const isDashboard = pathname.startsWith('/dashboard')
+  const isStaff = Boolean(userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor'))
+  const showModerationFields = isStaff
+  const backPath = isDashboard ? '/dashboard/motoclubs' : '/profile'
+  const backLabel = isDashboard ? 'К списку мотоклубов' : 'К профилю'
 
   const cropperValue = pendingLogo || previewLogo
   const hasNewLogoToUpload = Boolean(pendingLogo && pendingLogo.startsWith('data:image'))
 
-  const {
-    data: motoclubData,
-    isLoading,
-    isError,
-  } = useGetDashboardMotoclubQuery(motoclub as string, {
-    skip: !motoclub,
+  const dashboardQuery = useGetDashboardMotoclubQuery(motoclub as string, {
+    skip: !motoclub || !isDashboard,
   })
-  const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
-    pagination: { page: 1, per_page: 100 },
+  const userQuery = useGetUserMotoclubQuery(motoclub as string, {
+    skip: !motoclub || isDashboard,
   })
+
+  const motoclubData = isDashboard ? dashboardQuery.data : userQuery.data
+  const isLoading = isDashboard ? dashboardQuery.isLoading : userQuery.isLoading
+  const isError = isDashboard ? dashboardQuery.isError : userQuery.isError
+
+  const dashboardListQuery = useGetDashboardMotoclubListQuery(
+    { pagination: { page: 1, per_page: 100 } },
+    { skip: !isDashboard },
+  )
+  const publicListQuery = useGetMotoclubListQuery(
+    { pagination: { page: 1, per_page: 100 } },
+    { skip: isDashboard },
+  )
+
+  const motoclubsData = isDashboard ? dashboardListQuery.data : publicListQuery.data
+  const isLoadingMotoclubs = isDashboard ? dashboardListQuery.isLoading : publicListQuery.isLoading
+
   const parentOptions = (motoclubsData?.data || [])
     .filter((item: Motoclub) => String(item.id) !== String(motoclub))
     .map((item: Motoclub) => ({
@@ -75,15 +99,22 @@ function EditMotoclub() {
       email: motoclubData.email || '',
       address: motoclubData.address || '',
       location: motoclubData.location || '',
-      publication_status: Boolean(motoclubData.publication_status),
-      moderation_status: motoclubData.moderation_status ?? 0,
+      ...(showModerationFields
+        ? {
+            publication_status: Boolean(motoclubData.publication_status),
+            moderation_status: motoclubData.moderation_status ?? 0,
+          }
+        : {}),
     })
 
     if (motoclubData.logo) {
       setPreviewLogo(`${API_URL}${motoclubData.logo}`)
       setPendingLogo('')
+    } else {
+      setPreviewLogo('')
+      setPendingLogo('')
     }
-  }, [form, motoclubData])
+  }, [form, motoclubData, showModerationFields])
 
   const appendString = (formData: FormData, key: keyof FormValues, value?: string) => {
     if (value) formData.append(key, sanitizeInput(value))
@@ -91,7 +122,7 @@ function EditMotoclub() {
 
   const handleAddressSearch = () => {
     const address = form.getFieldValue('address')?.trim() || ''
-    setSearchQuery((current) => current.trim() === address ? `${address} ` : address)
+    setSearchQuery((current) => (current.trim() === address ? `${address} ` : address))
   }
 
   const onLogoSubmit = async () => {
@@ -138,64 +169,61 @@ function EditMotoclub() {
       appendString(formData, 'email', values.email)
       appendString(formData, 'address', values.address)
       appendString(formData, 'location', values.location)
-      formData.append('publication_status', values.publication_status ? '1' : '0')
-      formData.append('moderation_status', String(values.moderation_status))
+
+      if (showModerationFields) {
+        formData.append('publication_status', values.publication_status ? '1' : '0')
+        formData.append('moderation_status', String(values.moderation_status ?? 0))
+      }
 
       await updateMotoclub({ motoclub, payload: formData }).unwrap()
-      message.success('Мотоклуб обновлен')
-      navigate('/dashboard/motoclubs')
+      message.success(
+        showModerationFields
+          ? 'Мотоклуб обновлен'
+          : 'Мотоклуб обновлен и отправлен на модерацию',
+      )
+      navigate(backPath)
     } catch {
       message.error('Не удалось обновить мотоклуб')
     }
   }
 
   if (!motoclub) {
-    return <Typography.Text type="danger">Некорректный ID мотоклуба</Typography.Text>
+    return (
+      <div className={isDashboard ? undefined : 'container'} style={{ marginTop: isDashboard ? 0 : 8 }}>
+        <Typography.Text type="danger">Некорректный ID мотоклуба</Typography.Text>
+      </div>
+    )
   }
 
   if (isLoading) {
-    return <Skeleton active paragraph={{ rows: 8 }} />
+    return (
+      <div className={isDashboard ? undefined : 'container'} style={{ marginTop: isDashboard ? 0 : 8 }}>
+        {isDashboard ? (
+          <Skeleton active paragraph={{ rows: 8 }} />
+        ) : (
+          <Card>
+            <Skeleton active paragraph={{ rows: 8 }} />
+          </Card>
+        )}
+      </div>
+    )
   }
 
   if (isError || !motoclubData) {
-    return <Typography.Text type="danger">Мотоклуб не найден</Typography.Text>
+    return (
+      <div className={isDashboard ? undefined : 'container'} style={{ marginTop: isDashboard ? 0 : 8 }}>
+        <Typography.Text type="danger">Мотоклуб не найден</Typography.Text>
+      </div>
+    )
   }
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
-  const renderLogoSection = () => (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-      <Typography.Text strong>Логотип (JPG, PNG)</Typography.Text>
-      <ImageCropper
-        value={cropperValue}
-        onChange={(value) => {
-          if (value.startsWith('data:image')) setPendingLogo(value)
-          else {
-            setPendingLogo('')
-            if (!value) setPreviewLogo('')
-          }
-        }}
-        aspectRatio={1}
-        outputSize={{ width: 500, height: 500 }}
-        showOrientationSwitch={false}
-      />
-      <Button
-        type="primary"
-        htmlType="button"
-        loading={isUploadingLogo}
-        disabled={!hasNewLogoToUpload || isUploadingLogo}
-        onClick={() => void onLogoSubmit()}
-      >
-        Обновить логотип
-      </Button>
-    </Space>
-  )
-
   return (
-    <div>
-      <Link to="/dashboard/motoclubs">
+    <div className={isDashboard ? undefined : 'container'} style={{ marginTop: isDashboard ? 0 : 8 }}>
+      <Link to={backPath}>
         <Button icon={<ArrowLeftOutlined />} style={{ marginBottom: 16 }}>
-          К списку мотоклубов
+          {backLabel}
         </Button>
       </Link>
       <Typography.Title level={4}>Редактировать мотоклуб</Typography.Title>
@@ -203,7 +231,31 @@ function EditMotoclub() {
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
-              {renderLogoSection()}
+              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                <Typography.Text strong>Логотип (JPG, PNG)</Typography.Text>
+                <ImageCropper
+                  value={cropperValue}
+                  onChange={(value) => {
+                    if (value.startsWith('data:image')) setPendingLogo(value)
+                    else {
+                      setPendingLogo('')
+                      if (!value) setPreviewLogo('')
+                    }
+                  }}
+                  aspectRatio={1}
+                  outputSize={{ width: 500, height: 500 }}
+                  showOrientationSwitch={false}
+                />
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  loading={isUploadingLogo}
+                  disabled={!hasNewLogoToUpload || isUploadingLogo}
+                  onClick={() => void onLogoSubmit()}
+                >
+                  Обновить логотип
+                </Button>
+              </Space>
             </Col>
 
             <Col xs={24} md={16}>
@@ -233,9 +285,19 @@ function EditMotoclub() {
               <Form.Item
                 name="desc"
                 label="Описание"
-                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
+                rules={[
+                  { max: 500, message: 'Максимум 500 символов' },
+                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                ]}
               >
-                <Input.TextArea rows={4} placeholder="Краткое описание мотоклуба" />
+                <Input.TextArea
+                  rows={4}
+                  maxLength={500}
+                  showCount={{
+                    formatter: ({ count, maxLength }) => `${(maxLength || 500) - count} осталось`,
+                  }}
+                  placeholder="Краткое описание мотоклуба"
+                />
               </Form.Item>
 
               <Form.Item name="birthday" label="День рождения клуба">
@@ -252,7 +314,7 @@ function EditMotoclub() {
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
                     ]}
                   >
-                    <Input placeholder="https://vk.com/..." />
+                    <Input placeholder="https://vk.ru/..." />
                   </Form.Item>
                 </Col>
                 <Col xs={24} md={12}>
@@ -293,36 +355,38 @@ function EditMotoclub() {
                 </Col>
               </Row>
 
-              <Space size="large" style={{ width: '100%' }}>
-                <Form.Item name="publication_status" label="Публикация" valuePropName="checked">
-                  <Switch checkedChildren="Опубликован" unCheckedChildren="Не опубликован" />
-                </Form.Item>
-                <Form.Item name="moderation_status" label="Модерация">
-                  <Select
-                    style={{ minWidth: 220 }}
-                    options={moderationStatusOptions}
-                  />
-                </Form.Item>
-              </Space>
+              {showModerationFields && (
+                <Space size="large" style={{ width: '100%' }}>
+                  <Form.Item name="publication_status" label="Публикация" valuePropName="checked">
+                    <Switch checkedChildren="Опубликован" unCheckedChildren="Не опубликован" />
+                  </Form.Item>
+                  <Form.Item name="moderation_status" label="Модерация">
+                    <Select style={{ minWidth: 220 }} options={moderationStatusOptions} />
+                  </Form.Item>
+                </Space>
+              )}
 
-              <Form.Item
-                name="address"
-                label="Город"
-                rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
-              >
+              <Form.Item label="Город" required={!showModerationFields}>
                 <Space.Compact style={{ width: '100%' }}>
-                  <Input
-                    placeholder="Город мотоклуба"
-                    onPressEnter={(event) => {
-                      event.preventDefault()
-                      handleAddressSearch()
-                    }}
-                  />
-                  <Button
-                    type="primary"
-                    htmlType="button"
-                    onClick={handleAddressSearch}
+                  <Form.Item
+                    name="address"
+                    noStyle
+                    rules={[
+                      ...(showModerationFields
+                        ? []
+                        : [{ required: true, message: 'Укажите город' }]),
+                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                    ]}
                   >
+                    <Input
+                      placeholder="Город мотоклуба"
+                      onPressEnter={(event) => {
+                        event.preventDefault()
+                        handleAddressSearch()
+                      }}
+                    />
+                  </Form.Item>
+                  <Button type="primary" htmlType="button" onClick={handleAddressSearch}>
                     Найти
                   </Button>
                 </Space.Compact>
@@ -337,7 +401,16 @@ function EditMotoclub() {
                 }}
               />
 
-              <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
+              <Form.Item
+                name="location"
+                label="Координаты"
+                style={{ marginTop: 8, marginBottom: 8 }}
+                rules={
+                  showModerationFields
+                    ? undefined
+                    : [{ required: true, message: 'Выберите место на карте' }]
+                }
+              >
                 <Input readOnly placeholder="Кликните по карте, чтобы получить координаты..." />
               </Form.Item>
             </Col>
@@ -347,9 +420,7 @@ function EditMotoclub() {
             <Button type="primary" htmlType="submit" loading={isUpdating}>
               Сохранить
             </Button>
-            <Button onClick={() => navigate('/dashboard/motoclubs')}>
-              Отмена
-            </Button>
+            <Button onClick={() => navigate(backPath)}>Отмена</Button>
           </Space>
         </Form>
       </Card>

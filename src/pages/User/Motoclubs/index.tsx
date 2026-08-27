@@ -1,16 +1,22 @@
-import { Button, Card, Space, Table, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Popconfirm, Space, Table, Tag, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import { EyeFilled } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { DeleteOutlined, EditOutlined, EyeFilled } from '@ant-design/icons'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import dayjs from 'dayjs'
-import { useGetUserMotoclubsQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
+import {
+  useDeleteMotoclubMutation,
+  useGetUserMotoclubsQuery,
+  type Motoclub,
+} from '@features/motoclub/motoclubSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function UserMotoclubs() {
+  const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 })
   const { data: motoclubsData, isLoading: motoclubsLoading } = useGetUserMotoclubsQuery({ pagination })
+  const [deleteMotoclub, { isLoading: isDeleting }] = useDeleteMotoclubMutation()
 
   const handleTableChange = (tablePagination: TablePaginationConfig) => {
     setPagination({
@@ -19,8 +25,31 @@ function UserMotoclubs() {
     })
   }
 
+  const handleDeleteMotoclub = async (motoclubId: number) => {
+    try {
+      await deleteMotoclub(motoclubId).unwrap()
+      message.success('Мотоклуб удален')
+    } catch {
+      message.error('Не удалось удалить мотоклуб')
+    }
+  }
+
   const columns: ColumnsType<Motoclub> = [
     { title: 'Название', dataIndex: 'name', key: 'name' },
+    {
+      title: 'Участники',
+      dataIndex: 'verified_members_count',
+      key: 'verified_members_count',
+      width: 110,
+      render: (value?: number) => value ?? 0,
+    },
+    {
+      title: 'Заявки',
+      dataIndex: 'pending_members_count',
+      key: 'pending_members_count',
+      width: 100,
+      render: (value?: number) => value ?? 0,
+    },
     {
       title: 'Дата',
       dataIndex: 'created_at',
@@ -50,7 +79,7 @@ function UserMotoclubs() {
     {
       title: '',
       key: 'actions',
-      width: 30,
+      width: 120,
       render: (_value, record) => (
         <Space size="small" wrap>
           <Button
@@ -59,6 +88,19 @@ function UserMotoclubs() {
             size="small"
             onClick={() => navigate(`/motoclubs/${record.id}`)}
           />
+          <Link to={`/motoclubs/${record.id}/edit`}>
+            <Button icon={<EditOutlined />} size="small" />
+          </Link>
+          <Popconfirm
+            title="Удалить мотоклуб?"
+            description="Действие нельзя отменить"
+            okText="Удалить"
+            cancelText="Отмена"
+            okButtonProps={{ danger: true, loading: isDeleting }}
+            onConfirm={() => void handleDeleteMotoclub(record.id)}
+          >
+            <Button danger icon={<DeleteOutlined />} size="small" />
+          </Popconfirm>
         </Space>
       ),
     },

@@ -26,12 +26,12 @@ import DashboardPosts from './pages/Dashboard/Posts/Posts'
 import DashboardAddPost from './pages/Dashboard/Posts/AddPost'
 import DashboardUpdatePost from './pages/Dashboard/Posts/EditPost'
 import DashboardMotoclubs from './pages/Dashboard/Motoclubs/Motoclubs'
-import DashboardEditMotoclub from './pages/Dashboard/Motoclubs/EditMotoclub'
 import DashboardMotobars from './pages/Dashboard/Motobars/Motobars'
 import DashboardEditMotobar from './pages/Dashboard/Motobars/EditMotobar'
 import Motoclubs from './pages/Motoclubs'
 import Motoclub from './pages/Motoclubs/Motoclub'
 import AddMotoclub from './pages/Motoclubs/addMotoclub'
+import EditMotoclub from './pages/Motoclubs/EditMotoclub'
 import Motobars from './pages/Motobars'
 import Motobar from './pages/Motobars/Motobar'
 import AddMotobar from './pages/Motobars/AddMotobar'
@@ -89,6 +89,14 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/motoclubs/:motoclub/edit"
+              element={
+                <ProtectedRoute>
+                  <EditMotoclub />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/motoclubs/:motoclub" element={<Motoclub />} />
             <Route path="/motobars" element={<Motobars />} />
             <Route
@@ -140,7 +148,7 @@ function AppContent() {
             <Route path="posts/:post" element={<DashboardUpdatePost />} />
             <Route path="motoclubs" element={<DashboardMotoclubs />} />
             <Route path="motoclubs/create" element={<AddMotoclub />} />
-            <Route path="motoclubs/:motoclub/edit" element={<DashboardEditMotoclub />} />
+            <Route path="motoclubs/:motoclub/edit" element={<EditMotoclub />} />
             <Route path="motobars" element={<DashboardMotobars />} />
             <Route path="motobars/create" element={<AddMotobar />} />
             <Route path="motobars/:motobar/edit" element={<DashboardEditMotobar />} />

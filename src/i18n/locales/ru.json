@@ -45,6 +45,11 @@
     "avatarPrepareError": "Не удалось подготовить файл",
     "avatarDeleted": "Аватар удалён",
     "avatarDeleteError": "Не удалось удалить аватар",
+    "motoclub": "Мотоклуб:",
+    "motoclubEmpty": "Вы пока не состоите в мотоклубах",
+    "motoclubRemove": "Удалить мотоклуб",
+    "motoclubLeft": "Вы вышли из мотоклуба",
+    "motoclubLeaveError": "Не удалось выйти из мотоклуба",
     "loadError": "Не удалось загрузить данные пользователя"
   }
 }

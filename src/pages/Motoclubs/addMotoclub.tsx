@@ -200,30 +200,31 @@ function AddMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
-              <Form.Item
-                name="address"
-                label="Город"
-                rules={[
-                  { required: true, message: 'Выберите адрес через поиск' },
-                  { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                ]}
-              >
+              <Form.Item label="Город" required>
                 <Space.Compact style={{ width: '100%' }}>
-                <Input
-                  placeholder="Город мотоклуба"
-                  onPressEnter={(event) => {
-                    event.preventDefault()
-                    handleAddressSearch()
-                  }}
-                />
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  onClick={handleAddressSearch}
-                  // loading={isSearching}
-                >
-                  Найти
-                </Button>
+                  <Form.Item
+                    name="address"
+                    noStyle
+                    rules={[
+                      { required: true, message: 'Выберите адрес через поиск' },
+                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
+                    ]}
+                  >
+                    <Input
+                      placeholder="Город мотоклуба"
+                      onPressEnter={(event) => {
+                        event.preventDefault()
+                        handleAddressSearch()
+                      }}
+                    />
+                  </Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="button"
+                    onClick={handleAddressSearch}
+                  >
+                    Найти
+                  </Button>
                 </Space.Compact>
               </Form.Item>
 

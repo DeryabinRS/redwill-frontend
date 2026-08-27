@@ -1,24 +1,18 @@
-import { App as AntdApp, Button, Card, Select, Space, Spin, Tooltip, Typography } from 'antd'
-import { CloseOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
-import { useMemo, useState, type MouseEvent } from 'react'
-import { API_URL } from '@config/constants'
+import { App as AntdApp, Button, Select, Space } from 'antd'
+import { useMemo, useState } from 'react'
 import {
   useGetJoinedMotoclubsQuery,
   useGetMotoclubListQuery,
   useJoinMotoclubMutation,
-  useLeaveMotoclubMutation,
 } from '@features/motoclub/motoclubSlice'
-import './JoinedMotoclubs.css'
 
+/** Форма вступления в мотоклуб (список членств показывается в Profile). */
 function UserJoinedMotoclubs() {
   const { message } = AntdApp.useApp()
-  const navigate = useNavigate()
   const [selectedMotoclubId, setSelectedMotoclubId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
-  const [leavingId, setLeavingId] = useState<number | null>(null)
 
-  const { data: joinedData, isLoading: joinedLoading } = useGetJoinedMotoclubsQuery({
+  const { data: joinedData } = useGetJoinedMotoclubsQuery({
     pagination: { page: 1, per_page: 100 },
   })
   const { data: motoclubsData, isFetching: motoclubsLoading } = useGetMotoclubListQuery({
@@ -26,13 +20,10 @@ function UserJoinedMotoclubs() {
     search,
   })
   const [joinMotoclub, { isLoading: isJoining }] = useJoinMotoclubMutation()
-  const [leaveMotoclub] = useLeaveMotoclubMutation()
-
-  const joinedList = joinedData?.data || []
 
   const joinedIds = useMemo(
-    () => new Set(joinedList.map((item) => item.id)),
-    [joinedList],
+    () => new Set((joinedData?.data || []).map((item) => item.id)),
+    [joinedData],
   )
 
   const options = (motoclubsData?.data || [])
@@ -57,98 +48,30 @@ function UserJoinedMotoclubs() {
     }
   }
 
-  const onLeave = async (event: MouseEvent, motoclubId: number) => {
-    event.stopPropagation()
-    setLeavingId(motoclubId)
-    try {
-      await leaveMotoclub(motoclubId).unwrap()
-      message.success('Вы вышли из мотоклуба')
-    } catch {
-      message.error('Не удалось выйти из мотоклуба')
-    } finally {
-      setLeavingId(null)
-    }
-  }
-
   return (
-    <Card size="small" style={{ marginTop: 8 }}>
-      <Typography.Title level={4} style={{ marginTop: 0 }}>
-        Членство в мотоклубах
-      </Typography.Title>
-
-      <Space.Compact style={{ width: '100%', maxWidth: 560, marginBottom: 16 }}>
-        <Select
-          showSearch
-          allowClear
-          filterOption={false}
-          placeholder="Выберите мотоклуб"
-          style={{ width: '100%' }}
-          loading={motoclubsLoading}
-          options={options}
-          value={selectedMotoclubId}
-          onSearch={setSearch}
-          onChange={(value) => setSelectedMotoclubId(value ?? null)}
-          notFoundContent={motoclubsLoading ? 'Загрузка...' : 'Ничего не найдено'}
-        />
-        <Button
-          type="primary"
-          loading={isJoining}
-          disabled={!selectedMotoclubId || isJoining}
-          onClick={() => void onJoin()}
-        >
-          Вступить
-        </Button>
-      </Space.Compact>
-
-      {joinedLoading ? (
-        <div style={{ textAlign: 'center', padding: 24 }}>
-          <Spin />
-        </div>
-      ) : joinedList.length === 0 ? (
-        <Typography.Text type="secondary">Вы пока не состоите в мотоклубах</Typography.Text>
-      ) : (
-        <div className="joined-motoclubs-grid">
-          {joinedList.map((motoclub) => {
-            const logoSrc = motoclub.logo ? `${API_URL}${motoclub.logo}` : null
-
-            return (
-              <div
-                key={motoclub.id}
-                className="joined-motoclub-tile"
-                role="button"
-                tabIndex={0}
-                title={motoclub.name}
-                onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault()
-                    navigate(`/motoclubs/${motoclub.id}`)
-                  }
-                }}
-              >
-                {logoSrc ? (
-                  <img src={logoSrc} alt={motoclub.name} className="joined-motoclub-tile__logo" />
-                ) : (
-                  <div className="joined-motoclub-tile__placeholder">{motoclub.name}</div>
-                )}
-
-                <Tooltip title="Удалить мотоклуб">
-                  <button
-                    type="button"
-                    className="joined-motoclub-tile__remove"
-                    aria-label="Удалить мотоклуб"
-                    disabled={leavingId === motoclub.id}
-                    onClick={(event) => void onLeave(event, motoclub.id)}
-                  >
-                    <CloseOutlined />
-                  </button>
-                </Tooltip>
-              </div>
-            )
-          })}
-        </div>
-      )}
-    </Card>
+    <Space.Compact style={{ width: '100%', maxWidth: 560 }}>
+      <Select
+        showSearch
+        allowClear
+        filterOption={false}
+        placeholder="Выберите мотоклуб"
+        style={{ width: '100%' }}
+        loading={motoclubsLoading}
+        options={options}
+        value={selectedMotoclubId}
+        onSearch={setSearch}
+        onChange={(value) => setSelectedMotoclubId(value ?? null)}
+        notFoundContent={motoclubsLoading ? 'Загрузка...' : 'Ничего не найдено'}
+      />
+      <Button
+        type="primary"
+        loading={isJoining}
+        disabled={!selectedMotoclubId || isJoining}
+        onClick={() => void onJoin()}
+      >
+        Вступить
+      </Button>
+    </Space.Compact>
   )
 }
 
