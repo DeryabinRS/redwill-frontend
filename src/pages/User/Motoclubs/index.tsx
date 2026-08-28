@@ -1,7 +1,7 @@
 import { App as AntdApp, Button, Card, Popconfirm, Space, Table, Tag, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined, EyeFilled } from '@ant-design/icons'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import {
@@ -88,9 +88,12 @@ function UserMotoclubs() {
             size="small"
             onClick={() => navigate(`/motoclubs/${record.id}`)}
           />
-          <Link to={`/motoclubs/${record.id}/edit`}>
-            <Button icon={<EditOutlined />} size="small" />
-          </Link>
+          <Button
+            disabled={record.moderation_status === 0 && record.publication_status !== 1}
+            icon={<EditOutlined />}
+            size="small"
+            onClick={() => navigate(`/motoclubs/${record.id}/edit`)}
+          />
           <Popconfirm
             title="Удалить мотоклуб?"
             description="Действие нельзя отменить"

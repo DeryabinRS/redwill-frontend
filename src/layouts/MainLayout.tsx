@@ -4,8 +4,9 @@ import { DashboardOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, Ordered
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
-import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
+import { useGetUserInfoQuery } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
+import { resetClientState } from '../store/resetClientState'
 import { SITE_NAME } from '../config/constants'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
@@ -30,7 +31,7 @@ function MainLayout() {
 
 	const handleLogout = () => {
 		removeAuthToken()
-		dispatch(userApi.util.resetApiState())
+		resetClientState(dispatch)
 		navigate('/login')
 	}
 
@@ -110,11 +111,10 @@ function MainLayout() {
 		<Layout style={{ minHeight: '100vh' }}>
 			<Header style={{ padding: 0, height: '100%', borderBottom: '1px solid #2f2e2e' }}>
 				<div className="container" style={{ display: 'flex', alignItems: 'center', gap: 24, height: '100%' }}>
-					<Typography.Title level={2} style={{ margin: 0 }}>
+					<Typography.Title level={2} style={{ margin: '6px 0' }}>
 							<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
 								<div style={{ display: 'flex', alignItems: 'center' }}>
-									<img width={80} src='/img/logo.svg' /> 
-									{md && <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>}
+									<img width={80} src='/img/logo.png' /> 
 								</div>
 							</Link>
 					</Typography.Title>

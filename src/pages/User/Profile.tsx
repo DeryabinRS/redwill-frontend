@@ -18,9 +18,9 @@ import { base64ToFile, logoDataUrlToFileName } from '@utils/form'
 import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
 import UserJoinedMotoclubs from './JoinedMotoclubs'
-import UserMotobars from './Motobars'
-import UserMotoPosts from './MotoPosts'
-import UserServiceStations from './ServiceStations'
+// import UserMotobars from './Motobars'
+// import UserMotoPosts from './MotoPosts'
+// import UserServiceStations from './ServiceStations'
 import './JoinedMotoclubs/JoinedMotoclubs.css'
 
 function Profile() {
@@ -241,9 +241,9 @@ function Profile() {
 
       <UserPosts />
       <UserMotoclubs />
-      <UserMotobars />
-      <UserMotoPosts />
-      <UserServiceStations />
+      {/* <UserMotobars /> */}
+      {/* <UserMotoPosts /> */}
+      {/* <UserServiceStations /> */}
     </div>
   )
 }

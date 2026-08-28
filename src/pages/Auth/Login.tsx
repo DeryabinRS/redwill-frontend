@@ -6,6 +6,8 @@ import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { setAuthToken } from '@utils/auth'
 import { handleApiFormError } from '@utils/apiValidationErrors'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
+import { useAppDispatch } from '../../store/hooks'
+import { resetClientState } from '../../store/resetClientState'
 
 type LoginFormValues = {
   email: string
@@ -18,6 +20,7 @@ function Login() {
   const [login, { isLoading, error }] = useLoginMutation()
   const [getUserInfo] = useLazyGetUserInfoQuery()
   const navigate = useNavigate()
+  const dispatch = useAppDispatch()
   const { message } = AntdApp.useApp()
 
 
@@ -32,6 +35,7 @@ function Login() {
       const token = await executeRecaptcha('login');
 
       const response = await login({ ...values, recaptcha_token: token }).unwrap()
+      resetClientState(dispatch)
       setAuthToken(response.token)
       await getUserInfo().unwrap()
       message.success('Успешный вход')

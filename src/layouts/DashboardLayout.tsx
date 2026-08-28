@@ -15,8 +15,9 @@ import {
 import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
-import { useGetUserInfoQuery, userApi } from '../features/user/userSlice'
+import { useGetUserInfoQuery } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
+import { resetClientState } from '../store/resetClientState'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
 import { SITE_NAME } from '../config/constants'
@@ -48,7 +49,7 @@ function DashboardLayout() {
 
   const handleLogout = () => {
     removeAuthToken()
-    dispatch(userApi.util.resetApiState())
+    resetClientState(dispatch)
     navigate('/login')
   }
 
