@@ -1,4 +1,4 @@
-import type { AppDispatch } from './index'
+import type { Dispatch, UnknownAction } from '@reduxjs/toolkit'
 import { authApi } from '../features/auth/authSlice'
 import { userApi } from '../features/user/userSlice'
 import { postApi } from '../features/post/postSlice'
@@ -8,7 +8,7 @@ import { motoPostApi } from '../features/motoPost/motoPostSlice'
 import { serviceStationApi } from '../features/serviceStation/serviceStationSlice'
 
 /** Сброс кэша всех RTK Query API (при logout / смене пользователя). */
-export function resetClientState(dispatch: AppDispatch) {
+export function resetClientState(dispatch: Dispatch<UnknownAction>) {
   dispatch(authApi.util.resetApiState())
   dispatch(userApi.util.resetApiState())
   dispatch(postApi.util.resetApiState())

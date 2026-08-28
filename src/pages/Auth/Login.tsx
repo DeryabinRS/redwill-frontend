@@ -7,7 +7,7 @@ import { setAuthToken } from '@utils/auth'
 import { handleApiFormError } from '@utils/apiValidationErrors'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { useAppDispatch } from '../../store/hooks'
-import { resetClientState } from '../../store/resetClientState'
+import { resetClientState } from '../../store'
 
 type LoginFormValues = {
   email: string

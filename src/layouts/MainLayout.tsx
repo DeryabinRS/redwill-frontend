@@ -1,4 +1,4 @@
-import { Grid, Layout, Menu, Typography } from 'antd'
+import { Layout, Menu, Typography } from 'antd'
 import type { MenuProps } from 'antd'
 import { DashboardOutlined, LoginOutlined, LogoutOutlined, MoreOutlined, OrderedListOutlined, PlusOutlined, UserAddOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
@@ -6,21 +6,18 @@ import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
-import { resetClientState } from '../store/resetClientState'
+import { resetClientState } from '../store'
 import { SITE_NAME } from '../config/constants'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
 
 const { Header, Content, Footer } = Layout
 
-const { useBreakpoint } = Grid;
-
 type MenuItem = Required<MenuProps>['items'][number]
 
 function MainLayout() {
 	const { t } = useTranslation()
 	const userIsAuthenticated = isAuthenticated()
-	const { md } = useBreakpoint()
 
 	const { 
 		data: userInfo, 
