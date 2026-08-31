@@ -1,5 +1,5 @@
 import { App as AntdApp, Button, Card, Col, Row, Space, Spin, Tooltip, Typography } from 'antd'
-import { CloseOutlined } from '@ant-design/icons'
+import { CheckCircleFilled, CloseOutlined, ClockCircleFilled, CrownFilled } from '@ant-design/icons'
 import { useEffect, useState, type MouseEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -189,6 +189,20 @@ function Profile() {
                     <div className="joined-motoclubs-grid">
                       {joinedList.map((motoclub) => {
                         const logoSrc = motoclub.logo ? `${API_URL}${motoclub.logo}` : null
+                        const isOwner = motoclub.user_id != null && motoclub.user_id === userInfo.id
+                        const isClubAdmin = Number(motoclub.pivot?.is_admin) === 1
+                        const isPending = motoclub.pivot?.verified == null
+                        const membershipTitle = isPending
+                          ? t('profile.motoclubPending')
+                          : t('profile.motoclubMember')
+
+                        const canLeave =
+                          !isOwner ||
+                          (motoclub.members_count ?? 0) <= 1 ||
+                          (motoclub.admins_count ?? 0) > 1
+                        const removeTitle = canLeave
+                          ? t('profile.motoclubRemove')
+                          : t('profile.motoclubLeaveAsAdminBlocked')
 
                         return (
                           <div
@@ -215,16 +229,49 @@ function Profile() {
                               <div className="joined-motoclub-tile__placeholder">{motoclub.name}</div>
                             )}
 
-                            <Tooltip title={t('profile.motoclubRemove')}>
-                              <button
-                                type="button"
-                                className="joined-motoclub-tile__remove"
-                                aria-label={t('profile.motoclubRemove')}
-                                disabled={leavingId === motoclub.id}
-                                onClick={(event) => void onLeaveMotoclub(event, motoclub.id)}
-                              >
-                                <CloseOutlined />
-                              </button>
+                            <div className="joined-motoclub-tile__badges">
+                              <Tooltip title={membershipTitle}>
+                                <span
+                                  className={
+                                    isPending
+                                      ? 'joined-motoclub-tile__status joined-motoclub-tile__status--pending'
+                                      : 'joined-motoclub-tile__status joined-motoclub-tile__status--member'
+                                  }
+                                  aria-label={membershipTitle}
+                                >
+                                  {isPending ? <ClockCircleFilled /> : <CheckCircleFilled />}
+                                </span>
+                              </Tooltip>
+                              {isClubAdmin ? (
+                                <Tooltip title={t('profile.motoclubAdmin')}>
+                                  <span
+                                    className="joined-motoclub-tile__status joined-motoclub-tile__status--admin"
+                                    aria-label={t('profile.motoclubAdmin')}
+                                  >
+                                    <CrownFilled />
+                                  </span>
+                                </Tooltip>
+                              ) : null}
+                            </div>
+
+                            <Tooltip title={removeTitle}>
+                              <span className="joined-motoclub-tile__remove-wrap">
+                                <button
+                                  type="button"
+                                  className="joined-motoclub-tile__remove"
+                                  aria-label={removeTitle}
+                                  disabled={!canLeave || leavingId === motoclub.id}
+                                  onClick={(event) => {
+                                    if (!canLeave) {
+                                      event.stopPropagation()
+                                      return
+                                    }
+                                    void onLeaveMotoclub(event, motoclub.id)
+                                  }}
+                                >
+                                  <CloseOutlined />
+                                </button>
+                              </span>
                             </Tooltip>
                           </div>
                         )

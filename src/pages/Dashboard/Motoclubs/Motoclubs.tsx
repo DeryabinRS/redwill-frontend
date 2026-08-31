@@ -1,6 +1,6 @@
 import { App as AntdApp, Button, Card, Image, Popconfirm, Space, Table, Tag, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, PlusOutlined, TeamOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -99,9 +99,12 @@ function DashboardMotoclubs() {
     {
       title: 'Действия',
       key: 'actions',
-      width: 100,
+      width: 140,
       render: (_value, record) => (
         <Space>
+          <Link to={`/dashboard/motoclubs/${record.id}/members`}>
+            <Button icon={<TeamOutlined />} size="small" title="Участники" />
+          </Link>
           <Link to={`/dashboard/motoclubs/${record.id}/edit`}>
             <Button icon={<EditOutlined />} size="small" />
           </Link>

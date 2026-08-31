@@ -53,8 +53,12 @@
     "motoclub": "Motoclub:",
     "motoclubEmpty": "You are not a member of any motoclub yet",
     "motoclubRemove": "Remove motoclub",
+    "motoclubPending": "Application submitted",
+    "motoclubMember": "Member",
+    "motoclubAdmin": "Administrator",
     "motoclubLeft": "You left the motoclub",
     "motoclubLeaveError": "Failed to leave the motoclub",
+    "motoclubLeaveAsAdminBlocked": "Appoint another administrator in Members before leaving the club",
     "loadError": "Failed to load user data"
   }
 }

@@ -126,8 +126,8 @@ function DashboardLayout() {
     <Link to="/">
       <Typography.Title level={2} style={{ margin: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img width={50} src='/public/img/logo.svg' /> 
-          <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div>
+          <img width={50} src='/public/img/logo.png' /> 
+          {/* <div style={{ borderBottom: '4px solid #cd2e2c' }}>{SITE_NAME}</div> */}
         </div>
       </Typography.Title>
     </Link>

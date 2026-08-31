@@ -64,6 +64,10 @@ function UserPosts() {
     },
   ]
 
+  if (!postsLoading && (postsData?.total ?? 0) === 0) {
+    return null
+  }
+
   return (
     <Card size="small" style={{ marginTop: 8 }}>
       <Typography.Title level={4} style={{ marginTop: 0 }}>

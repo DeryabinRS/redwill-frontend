@@ -48,8 +48,12 @@
     "motoclub": "Мотоклуб:",
     "motoclubEmpty": "Вы пока не состоите в мотоклубах",
     "motoclubRemove": "Удалить мотоклуб",
+    "motoclubPending": "Подана заявка",
+    "motoclubMember": "Участник",
+    "motoclubAdmin": "Администратор",
     "motoclubLeft": "Вы вышли из мотоклуба",
     "motoclubLeaveError": "Не удалось выйти из мотоклуба",
+    "motoclubLeaveAsAdminBlocked": "Назначьте другого администратора в «Участники», чтобы выйти из клуба",
     "loadError": "Не удалось загрузить данные пользователя"
   }
 }

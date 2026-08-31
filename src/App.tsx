@@ -32,6 +32,7 @@ import Motoclubs from './pages/Motoclubs'
 import Motoclub from './pages/Motoclubs/Motoclub'
 import AddMotoclub from './pages/Motoclubs/addMotoclub'
 import EditMotoclub from './pages/Motoclubs/EditMotoclub'
+import MotoclubMembers from './pages/Motoclubs/Members'
 import Motobars from './pages/Motobars'
 import Motobar from './pages/Motobars/Motobar'
 import AddMotobar from './pages/Motobars/AddMotobar'
@@ -97,6 +98,14 @@ function AppContent() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/motoclubs/:motoclub/members"
+              element={
+                <ProtectedRoute>
+                  <MotoclubMembers />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/motoclubs/:motoclub" element={<Motoclub />} />
             <Route path="/motobars" element={<Motobars />} />
             <Route
@@ -149,6 +158,7 @@ function AppContent() {
             <Route path="motoclubs" element={<DashboardMotoclubs />} />
             <Route path="motoclubs/create" element={<AddMotoclub />} />
             <Route path="motoclubs/:motoclub/edit" element={<EditMotoclub />} />
+            <Route path="motoclubs/:motoclub/members" element={<MotoclubMembers />} />
             <Route path="motobars" element={<DashboardMotobars />} />
             <Route path="motobars/create" element={<AddMotobar />} />
             <Route path="motobars/:motobar/edit" element={<DashboardEditMotobar />} />

@@ -1,6 +1,6 @@
-import { App as AntdApp, Button, Card, Popconfirm, Space, Table, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Popconfirm, Space, Table, Tag, Tooltip, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import { DeleteOutlined, EditOutlined, EyeFilled } from '@ant-design/icons'
+import { DeleteOutlined, EditOutlined, EyeFilled, TeamOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import dayjs from 'dayjs'
@@ -79,35 +79,58 @@ function UserMotoclubs() {
     {
       title: '',
       key: 'actions',
-      width: 120,
-      render: (_value, record) => (
-        <Space size="small" wrap>
-          <Button
-            disabled={record.publication_status !== 1 || record.moderation_status !== 2}
-            icon={<EyeFilled />}
-            size="small"
-            onClick={() => navigate(`/motoclubs/${record.id}`)}
-          />
-          <Button
-            disabled={record.moderation_status === 0 && record.publication_status !== 1}
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => navigate(`/motoclubs/${record.id}/edit`)}
-          />
-          <Popconfirm
-            title="Удалить мотоклуб?"
-            description="Действие нельзя отменить"
-            okText="Удалить"
-            cancelText="Отмена"
-            okButtonProps={{ danger: true, loading: isDeleting }}
-            onConfirm={() => void handleDeleteMotoclub(record.id)}
-          >
-            <Button danger icon={<DeleteOutlined />} size="small" />
-          </Popconfirm>
-        </Space>
-      ),
+      width: 160,
+      render: (_value, record) => {
+        const canDelete =
+          (record.pending_members_count ?? 0) === 0 && (record.verified_members_count ?? 0) <= 1
+        const deleteTitle = canDelete
+          ? 'Удалить мотоклуб'
+          : 'Нельзя удалить мотоклуб, пока в нём есть другие участники или заявки'
+
+        return (
+          <Space size="small" wrap>
+            <Button
+              disabled={record.publication_status !== 1 || record.moderation_status !== 2}
+              icon={<EyeFilled />}
+              size="small"
+              onClick={() => navigate(`/motoclubs/${record.id}`)}
+            />
+            <Button
+              icon={<TeamOutlined />}
+              size="small"
+              title="Участники"
+              onClick={() => navigate(`/motoclubs/${record.id}/members`)}
+            />
+            <Button
+              disabled={record.moderation_status === 0 && record.publication_status !== 1}
+              icon={<EditOutlined />}
+              size="small"
+              onClick={() => navigate(`/motoclubs/${record.id}/edit`)}
+            />
+            <Tooltip title={deleteTitle}>
+              <span>
+                <Popconfirm
+                  title="Удалить мотоклуб?"
+                  description="Действие нельзя отменить"
+                  okText="Удалить"
+                  cancelText="Отмена"
+                  okButtonProps={{ danger: true, loading: isDeleting }}
+                  disabled={!canDelete}
+                  onConfirm={() => void handleDeleteMotoclub(record.id)}
+                >
+                  <Button danger disabled={!canDelete} icon={<DeleteOutlined />} size="small" />
+                </Popconfirm>
+              </span>
+            </Tooltip>
+          </Space>
+        )
+      },
     },
   ]
+
+  if (!motoclubsLoading && (motoclubsData?.total ?? 0) === 0) {
+    return null
+  }
 
   return (
     <Card size="small" style={{ marginTop: 8 }}>

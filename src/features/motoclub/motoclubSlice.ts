@@ -8,8 +8,25 @@ export type MotoclubMember = {
   avatar: string | null
 }
 
+export type MotoclubManagedMember = MotoclubMember & {
+  email: string
+  verified: string | null
+  joined_at: string
+  is_admin: number
+  is_owner: boolean
+}
+
+export type MotoclubMembersResponse = {
+  motoclub: {
+    id: number
+    name: string
+  }
+  members: MotoclubManagedMember[]
+}
+
 export type Motoclub = {
   id: number
+  user_id?: number
   parent_id: number | null
   name: string
   desc: string | null
@@ -33,6 +50,16 @@ export type Motoclub = {
   members?: MotoclubMember[]
   verified_members_count?: number
   pending_members_count?: number
+  members_count?: number
+  admins_count?: number
+  pivot?: {
+    user_id?: number
+    motoclub_id?: number
+    verified?: string | null
+    is_admin?: number
+    created_at?: string
+    updated_at?: string
+  }
 }
 
 type CreateMotoclubResponse = {
@@ -58,7 +85,7 @@ type GetMotoclubListArgs = {
 
 export const motoclubApi = createApi({
   reducerPath: 'motoclubApi',
-  tagTypes: ['Motoclubs', 'Motoclub', 'JoinedMotoclubs'],
+  tagTypes: ['Motoclubs', 'Motoclub', 'JoinedMotoclubs', 'MotoclubMembers'],
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL || '/api',
     credentials: 'include',
@@ -153,7 +180,57 @@ export const motoclubApi = createApi({
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, motoclub) => [
+        'Motoclubs',
         'JoinedMotoclubs',
+        { type: 'Motoclub', id: motoclub },
+      ],
+    }),
+    getMotoclubMembers: builder.query<MotoclubMembersResponse, string | number>({
+      query: (motoclub) => ({
+        url: `/motoclubs/${motoclub}/members`,
+        method: 'GET',
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: MotoclubMembersResponse
+      }) => response.data,
+      providesTags: (_result, _error, motoclub) => [{ type: 'MotoclubMembers', id: motoclub }],
+    }),
+    updateMotoclubMember: builder.mutation<
+      void,
+      {
+        motoclub: string | number
+        userId: number
+        status?: 'pending' | 'member'
+        is_admin?: 0 | 1
+      }
+    >({
+      query: ({ motoclub, userId, status, is_admin }) => ({
+        url: `/motoclubs/${motoclub}/members/${userId}`,
+        method: 'PATCH',
+        body: {
+          ...(status !== undefined ? { status } : {}),
+          ...(is_admin !== undefined ? { is_admin } : {}),
+        },
+      }),
+      invalidatesTags: (_result, _error, { motoclub }) => [
+        'Motoclubs',
+        'JoinedMotoclubs',
+        { type: 'MotoclubMembers', id: motoclub },
+        { type: 'Motoclub', id: motoclub },
+      ],
+    }),
+    removeMotoclubMember: builder.mutation<void, { motoclub: string | number; userId: number }>({
+      query: ({ motoclub, userId }) => ({
+        url: `/motoclubs/${motoclub}/members/${userId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { motoclub }) => [
+        'Motoclubs',
+        'JoinedMotoclubs',
+        { type: 'MotoclubMembers', id: motoclub },
         { type: 'Motoclub', id: motoclub },
       ],
     }),
@@ -189,7 +266,7 @@ export const motoclubApi = createApi({
         formData: true,
       }),
       transformResponse: (response: CreateMotoclubResponse) => response.data,
-      invalidatesTags: ['Motoclubs'],
+      invalidatesTags: ['Motoclubs', 'JoinedMotoclubs'],
     }),
     updateMotoclub: builder.mutation<Motoclub, { motoclub: string | number; payload: FormData }>({
       query: ({ motoclub, payload }) => ({
@@ -236,6 +313,9 @@ export const {
   useGetJoinedMotoclubsQuery,
   useJoinMotoclubMutation,
   useLeaveMotoclubMutation,
+  useGetMotoclubMembersQuery,
+  useUpdateMotoclubMemberMutation,
+  useRemoveMotoclubMemberMutation,
   useGetDashboardMotoclubQuery,
   useUpdateMotoclubMutation,
   useUploadMotoclubLogoMutation,
