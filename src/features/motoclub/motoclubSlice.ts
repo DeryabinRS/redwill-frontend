@@ -20,6 +20,7 @@ export type MotoclubMembersResponse = {
   motoclub: {
     id: number
     name: string
+    user_id: number
   }
   members: MotoclubManagedMember[]
 }

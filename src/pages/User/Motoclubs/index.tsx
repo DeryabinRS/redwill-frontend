@@ -9,12 +9,14 @@ import {
   useGetUserMotoclubsQuery,
   type Motoclub,
 } from '@features/motoclub/motoclubSlice'
+import { useGetUserInfoQuery } from '@features/user/userSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function UserMotoclubs() {
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const [pagination, setPagination] = useState({ page: 1, per_page: 10 })
+  const { data: userInfo } = useGetUserInfoQuery()
   const { data: motoclubsData, isLoading: motoclubsLoading } = useGetUserMotoclubsQuery({ pagination })
   const [deleteMotoclub, { isLoading: isDeleting }] = useDeleteMotoclubMutation()
 
@@ -81,11 +83,16 @@ function UserMotoclubs() {
       key: 'actions',
       width: 160,
       render: (_value, record) => {
+        const isOwner = userInfo != null && record.user_id === userInfo.id
         const canDelete =
-          (record.pending_members_count ?? 0) === 0 && (record.verified_members_count ?? 0) <= 1
-        const deleteTitle = canDelete
-          ? 'Удалить мотоклуб'
-          : 'Нельзя удалить мотоклуб, пока в нём есть другие участники или заявки'
+          isOwner &&
+          (record.pending_members_count ?? 0) === 0 &&
+          (record.verified_members_count ?? 0) <= 1
+        const deleteTitle = !isOwner
+          ? 'Удалить мотоклуб может только создатель'
+          : canDelete
+            ? 'Удалить мотоклуб'
+            : 'Нельзя удалить мотоклуб, пока в нём есть другие участники или заявки'
 
         return (
           <Space size="small" wrap>

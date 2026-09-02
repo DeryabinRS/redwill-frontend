@@ -47,12 +47,15 @@
     "avatarDeleteError": "Не удалось удалить аватар",
     "motoclub": "Мотоклуб:",
     "motoclubEmpty": "Вы пока не состоите в мотоклубах",
-    "motoclubRemove": "Удалить мотоклуб",
+    "motoclubRemove": "Выйти из мотоклуба",
     "motoclubPending": "Подана заявка",
     "motoclubMember": "Участник",
     "motoclubAdmin": "Администратор",
     "motoclubLeft": "Вы вышли из мотоклуба",
     "motoclubLeaveError": "Не удалось выйти из мотоклуба",
+    "motoclubLeaveConfirmTitle": "Выйти из мотоклуба?",
+    "motoclubLeaveConfirmDesc": "Вы перестанете быть участником этого клуба",
+    "motoclubLeaveConfirmOk": "Выйти",
     "motoclubLeaveAsAdminBlocked": "Назначьте другого администратора в «Участники», чтобы выйти из клуба",
     "loadError": "Не удалось загрузить данные пользователя"
   }

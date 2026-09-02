@@ -52,12 +52,15 @@
     "avatarDeleteError": "Failed to delete avatar",
     "motoclub": "Motoclub:",
     "motoclubEmpty": "You are not a member of any motoclub yet",
-    "motoclubRemove": "Remove motoclub",
+    "motoclubRemove": "Leave motoclub",
     "motoclubPending": "Application submitted",
     "motoclubMember": "Member",
     "motoclubAdmin": "Administrator",
     "motoclubLeft": "You left the motoclub",
     "motoclubLeaveError": "Failed to leave the motoclub",
+    "motoclubLeaveConfirmTitle": "Leave this motoclub?",
+    "motoclubLeaveConfirmDesc": "You will no longer be a member of this club",
+    "motoclubLeaveConfirmOk": "Leave",
     "motoclubLeaveAsAdminBlocked": "Appoint another administrator in Members before leaving the club",
     "loadError": "Failed to load user data"
   }

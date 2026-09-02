@@ -4,6 +4,7 @@ import { ArrowLeftOutlined, DeleteOutlined, UserOutlined } from '@ant-design/ico
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { API_URL } from '@config/constants'
+import { useGetUserInfoQuery } from '@features/user/userSlice'
 import {
   useGetMotoclubMembersQuery,
   useRemoveMotoclubMemberMutation,
@@ -19,6 +20,7 @@ function MotoclubMembers() {
   const isDashboard = pathname.startsWith('/dashboard')
   const backPath = isDashboard ? '/dashboard/motoclubs' : '/profile'
   const backLabel = isDashboard ? 'К списку мотоклубов' : 'К профилю'
+  const { data: userInfo } = useGetUserInfoQuery()
   const { data, isLoading, isError, error } = useGetMotoclubMembersQuery(motoclub as string, {
     skip: !motoclub,
   })
@@ -26,6 +28,16 @@ function MotoclubMembers() {
   const [removeMember, { isLoading: isRemoving }] = useRemoveMotoclubMemberMutation()
 
   const isForbidden = Boolean(error && 'status' in error && error.status === 403)
+  const isCreator = Boolean(userInfo && data?.motoclub.user_id === userInfo.id)
+
+  const canToggleAdmin = (record: MotoclubManagedMember) => {
+    if (!record.verified || isUpdating || !userInfo) return false
+    // Создатель и сам пользователь не могут менять свою админку
+    if (record.is_owner || record.id === userInfo.id) return false
+    // Снять админку может только создатель; назначить — любой управляющий (доступ на страницу уже есть)
+    if (record.is_admin === 1) return isCreator
+    return true
+  }
 
   const handleAccept = async (userId: number) => {
     if (!motoclub) return
@@ -118,7 +130,7 @@ function MotoclubMembers() {
       render: (_value, record) => (
         <Switch
           checked={record.is_admin === 1}
-          disabled={record.is_owner || !record.verified || isUpdating}
+          disabled={!canToggleAdmin(record)}
           checkedChildren="да"
           unCheckedChildren="нет"
           onChange={(checked) => void handleAdminChange(record.id, checked)}

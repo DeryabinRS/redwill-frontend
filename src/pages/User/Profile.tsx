@@ -1,6 +1,6 @@
-import { App as AntdApp, Button, Card, Col, Row, Space, Spin, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Col, Popconfirm, Row, Space, Spin, Tooltip, Typography } from 'antd'
 import { CheckCircleFilled, CloseOutlined, ClockCircleFilled, CrownFilled } from '@ant-design/icons'
-import { useEffect, useState, type MouseEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
@@ -108,8 +108,7 @@ function Profile() {
     }
   }
 
-  const onLeaveMotoclub = async (event: MouseEvent, motoclubId: number) => {
-    event.stopPropagation()
+  const onLeaveMotoclub = async (motoclubId: number) => {
     setLeavingId(motoclubId)
     try {
       await leaveMotoclub(motoclubId).unwrap()
@@ -255,22 +254,30 @@ function Profile() {
                             </div>
 
                             <Tooltip title={removeTitle}>
-                              <span className="joined-motoclub-tile__remove-wrap">
-                                <button
-                                  type="button"
-                                  className="joined-motoclub-tile__remove"
-                                  aria-label={removeTitle}
+                              <span
+                                className="joined-motoclub-tile__remove-wrap"
+                                onClick={(event) => event.stopPropagation()}
+                                onKeyDown={(event) => event.stopPropagation()}
+                              >
+                                <Popconfirm
+                                  title={t('profile.motoclubLeaveConfirmTitle')}
+                                  description={t('profile.motoclubLeaveConfirmDesc')}
+                                  okText={t('profile.motoclubLeaveConfirmOk')}
+                                  cancelText={t('common.cancel')}
+                                  okButtonProps={{ danger: true, loading: leavingId === motoclub.id }}
                                   disabled={!canLeave || leavingId === motoclub.id}
-                                  onClick={(event) => {
-                                    if (!canLeave) {
-                                      event.stopPropagation()
-                                      return
-                                    }
-                                    void onLeaveMotoclub(event, motoclub.id)
-                                  }}
+                                  onConfirm={() => void onLeaveMotoclub(motoclub.id)}
                                 >
-                                  <CloseOutlined />
-                                </button>
+                                  <button
+                                    type="button"
+                                    className="joined-motoclub-tile__remove"
+                                    aria-label={removeTitle}
+                                    disabled={!canLeave || leavingId === motoclub.id}
+                                    onClick={(event) => event.stopPropagation()}
+                                  >
+                                    <CloseOutlined />
+                                  </button>
+                                </Popconfirm>
                               </span>
                             </Tooltip>
                           </div>
