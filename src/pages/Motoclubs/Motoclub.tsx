@@ -187,7 +187,7 @@ function Motoclub() {
         </Row>
       </Card>
 
-      <Card style={{ marginTop: 16 }}>
+      <Card style={{ marginTop: 8 }}>
         <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
           Ближайшие мероприятия мотоклуба
         </Title>
@@ -198,7 +198,7 @@ function Motoclub() {
         />
       </Card>
 
-      <Card style={{ marginTop: 16 }}>
+      <Card style={{ marginTop: 8 }}>
         <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
           Участники мотоклуба
         </Title>

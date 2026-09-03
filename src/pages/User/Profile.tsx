@@ -1,7 +1,5 @@
-import { App as AntdApp, Button, Card, Col, Popconfirm, Row, Space, Spin, Tooltip, Typography } from 'antd'
-import { CheckCircleFilled, CloseOutlined, ClockCircleFilled, CrownFilled } from '@ant-design/icons'
+import { App as AntdApp, Button, Card, Col, Flex, Row, Spin, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import { API_URL } from '@config/constants'
@@ -10,38 +8,28 @@ import {
   useGetUserInfoQuery,
   useUploadUserAvatarMutation,
 } from '@features/user/userSlice'
-import {
-  useGetJoinedMotoclubsQuery,
-  useLeaveMotoclubMutation,
-} from '@features/motoclub/motoclubSlice'
 import { base64ToFile, logoDataUrlToFileName } from '@utils/form'
 import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
-import UserJoinedMotoclubs from './JoinedMotoclubs'
+import ProfilePersonalForm from './ProfilePersonalForm'
+import ProfileAccountInfo from './ProfileAccountInfo'
+import ProfileJoinedMotoclubs from './ProfileJoinedMotoclubs'
 // import UserMotobars from './Motobars'
 // import UserMotoPosts from './MotoPosts'
 // import UserServiceStations from './ServiceStations'
-import './JoinedMotoclubs/JoinedMotoclubs.css'
 
 function Profile() {
   const { t } = useTranslation()
   const { message } = AntdApp.useApp()
-  const navigate = useNavigate()
   const { data: userInfo, isLoading } = useGetUserInfoQuery()
-  const { data: joinedData, isLoading: joinedLoading } = useGetJoinedMotoclubsQuery({
-    pagination: { page: 1, per_page: 100 },
-  })
   const [uploadUserAvatar, { isLoading: isUploadingAvatar }] = useUploadUserAvatarMutation()
   const [deleteUserAvatar, { isLoading: isDeletingAvatar }] = useDeleteUserAvatarMutation()
-  const [leaveMotoclub] = useLeaveMotoclubMutation()
   const [previewAvatar, setPreviewAvatar] = useState('')
   const [pendingAvatar, setPendingAvatar] = useState('')
-  const [leavingId, setLeavingId] = useState<number | null>(null)
 
   const cropperValue = pendingAvatar || previewAvatar
   const hasNewAvatarToUpload = Boolean(pendingAvatar && pendingAvatar.startsWith('data:image'))
   const hasSavedAvatar = Boolean(userInfo?.avatar)
-  const joinedList = joinedData?.data || []
 
   useEffect(() => {
     if (!userInfo) return
@@ -108,18 +96,6 @@ function Profile() {
     }
   }
 
-  const onLeaveMotoclub = async (motoclubId: number) => {
-    setLeavingId(motoclubId)
-    try {
-      await leaveMotoclub(motoclubId).unwrap()
-      message.success(t('profile.motoclubLeft'))
-    } catch {
-      message.error(t('profile.motoclubLeaveError'))
-    } finally {
-      setLeavingId(null)
-    }
-  }
-
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', padding: 48 }}>
@@ -142,7 +118,7 @@ function Profile() {
       <Card size="small">
         <Row gutter={[24, 24]}>
           <Col xs={24} sm={10} md={8} lg={5}>
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Flex vertical gap="middle" style={{ width: '100%' }}>
               <ImageCropper
                 value={cropperValue}
                 onChange={(value) => void onAvatarChange(value)}
@@ -160,135 +136,18 @@ function Profile() {
               >
                 {t('profile.avatarSave')}
               </Button>
-            </Space>
+            </Flex>
           </Col>
 
-          <Col xs={24} sm={14} md={16} lg={19}>
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-              <div>
-                <Typography.Text type="secondary">{t('profile.login')}</Typography.Text>
-                <Typography.Title level={5} style={{ margin: '4px 0 0' }}>
-                  {userInfo.login}
-                </Typography.Title>
-              </div>
-              <div>
-                <Typography.Text type="secondary">{t('profile.email')}</Typography.Text>
-                <Typography.Title level={5} style={{ margin: '4px 0 0' }}>
-                  {userInfo.email}
-                </Typography.Title>
-              </div>
-              <div>
-                <Typography.Text type="secondary">{t('profile.motoclub')}</Typography.Text>
-                <div style={{ marginTop: 8 }}>
-                  {joinedLoading ? (
-                    <Spin size="small" />
-                  ) : joinedList.length === 0 ? (
-                    <Typography.Text type="secondary">{t('profile.motoclubEmpty')}</Typography.Text>
-                  ) : (
-                    <div className="joined-motoclubs-grid">
-                      {joinedList.map((motoclub) => {
-                        const logoSrc = motoclub.logo ? `${API_URL}${motoclub.logo}` : null
-                        const isOwner = motoclub.user_id != null && motoclub.user_id === userInfo.id
-                        const isClubAdmin = Number(motoclub.pivot?.is_admin) === 1
-                        const isPending = motoclub.pivot?.verified == null
-                        const membershipTitle = isPending
-                          ? t('profile.motoclubPending')
-                          : t('profile.motoclubMember')
+          <Col xs={24} sm={14} md={8} lg={8}>
+            <Flex vertical gap="middle" style={{ width: '100%' }}>
+              <ProfileAccountInfo userInfo={userInfo} />
+              <ProfileJoinedMotoclubs userId={userInfo.id} />
+            </Flex>
+          </Col>
 
-                        const canLeave =
-                          !isOwner ||
-                          (motoclub.members_count ?? 0) <= 1 ||
-                          (motoclub.admins_count ?? 0) > 1
-                        const removeTitle = canLeave
-                          ? t('profile.motoclubRemove')
-                          : t('profile.motoclubLeaveAsAdminBlocked')
-
-                        return (
-                          <div
-                            key={motoclub.id}
-                            className="joined-motoclub-tile"
-                            role="button"
-                            tabIndex={0}
-                            title={motoclub.name}
-                            onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter' || event.key === ' ') {
-                                event.preventDefault()
-                                navigate(`/motoclubs/${motoclub.id}`)
-                              }
-                            }}
-                          >
-                            {logoSrc ? (
-                              <img
-                                src={logoSrc}
-                                alt={motoclub.name}
-                                className="joined-motoclub-tile__logo"
-                              />
-                            ) : (
-                              <div className="joined-motoclub-tile__placeholder">{motoclub.name}</div>
-                            )}
-
-                            <div className="joined-motoclub-tile__badges">
-                              <Tooltip title={membershipTitle}>
-                                <span
-                                  className={
-                                    isPending
-                                      ? 'joined-motoclub-tile__status joined-motoclub-tile__status--pending'
-                                      : 'joined-motoclub-tile__status joined-motoclub-tile__status--member'
-                                  }
-                                  aria-label={membershipTitle}
-                                >
-                                  {isPending ? <ClockCircleFilled /> : <CheckCircleFilled />}
-                                </span>
-                              </Tooltip>
-                              {isClubAdmin ? (
-                                <Tooltip title={t('profile.motoclubAdmin')}>
-                                  <span
-                                    className="joined-motoclub-tile__status joined-motoclub-tile__status--admin"
-                                    aria-label={t('profile.motoclubAdmin')}
-                                  >
-                                    <CrownFilled />
-                                  </span>
-                                </Tooltip>
-                              ) : null}
-                            </div>
-
-                            <Tooltip title={removeTitle}>
-                              <span
-                                className="joined-motoclub-tile__remove-wrap"
-                                onClick={(event) => event.stopPropagation()}
-                                onKeyDown={(event) => event.stopPropagation()}
-                              >
-                                <Popconfirm
-                                  title={t('profile.motoclubLeaveConfirmTitle')}
-                                  description={t('profile.motoclubLeaveConfirmDesc')}
-                                  okText={t('profile.motoclubLeaveConfirmOk')}
-                                  cancelText={t('common.cancel')}
-                                  okButtonProps={{ danger: true, loading: leavingId === motoclub.id }}
-                                  disabled={!canLeave || leavingId === motoclub.id}
-                                  onConfirm={() => void onLeaveMotoclub(motoclub.id)}
-                                >
-                                  <button
-                                    type="button"
-                                    className="joined-motoclub-tile__remove"
-                                    aria-label={removeTitle}
-                                    disabled={!canLeave || leavingId === motoclub.id}
-                                    onClick={(event) => event.stopPropagation()}
-                                  >
-                                    <CloseOutlined />
-                                  </button>
-                                </Popconfirm>
-                              </span>
-                            </Tooltip>
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
-              </div>
-              <UserJoinedMotoclubs />
-            </Space>
+          <Col xs={24} md={24} lg={11}>
+            <ProfilePersonalForm userInfo={userInfo} />
           </Col>
         </Row>
       </Card>

@@ -13,7 +13,7 @@
     "@ant-design/icons": "^6.1.1",
     "@reduxjs/toolkit": "^2.11.2",
     "@tinymce/tinymce-react": "^6.3.0",
-    "antd": "^5.29.3",
+    "antd": "^6.6.2",
     "axios": "^1.14.0",
     "dayjs": "^1.11.20",
     "i18next": "^26.0.3",

@@ -92,7 +92,7 @@ function MotoclubMembers() {
       render: (value: string, record) => (
         <Space>
           <span>{value}</span>
-          {record.is_owner ? <Tag color="blue">Создатель</Tag> : null}
+          {record.is_owner ? <Tag color="blue">Создатель сообщества</Tag> : null}
           {!record.is_owner && record.is_admin === 1 ? <Tag color="blue">Администратор</Tag> : null}
         </Space>
       ),

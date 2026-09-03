@@ -26,9 +26,14 @@ export type Pagination = {
 
 export type UserInfo = {
   id: number
-  last_name: string
-  first_name: string
-  middle_name: string
+  last_name: string | null
+  first_name: string | null
+  middle_name?: string | null
+  nick_name?: string | null
+  city?: string | null
+  phone?: string | null
+  birthday?: string | null
+  accommodation?: number | null
   login: string
   email: string
   avatar?: string | null
@@ -37,6 +42,16 @@ export type UserInfo = {
   created_at?: string
   updated_at?: string
   verified_at?: string
+}
+
+export type UpdateUserProfilePayload = {
+  first_name?: string | null
+  last_name?: string | null
+  nick_name?: string | null
+  city?: string | null
+  phone?: string | null
+  birthday?: string | null
+  accommodation?: number | null
 }
 
 type GetUserInfoResponse = {
@@ -94,6 +109,15 @@ export const userApi = createApi({
       transformResponse: (response: { data: { id: number; avatar: string | null } }) => response.data,
       invalidatesTags: ['User'],
     }),
+    updateUserProfile: builder.mutation<UpdateUserProfilePayload & { id: number }, UpdateUserProfilePayload>({
+      query: (payload) => ({
+        url: '/user/profile',
+        method: 'PATCH',
+        body: payload,
+      }),
+      transformResponse: (response: { data: UpdateUserProfilePayload & { id: number } }) => response.data,
+      invalidatesTags: ['User'],
+    }),
     getAllUsers: builder.query<UsersListResponse, void>({
       query: () => ({ url: '/users', method: 'GET' }),
       transformResponse: (response: GetAllUsersResponse) => response.data_user_list,
@@ -132,4 +156,5 @@ export const {
   useUpdateUserBanedMutation,
   useUploadUserAvatarMutation,
   useDeleteUserAvatarMutation,
+  useUpdateUserProfileMutation,
 } = userApi

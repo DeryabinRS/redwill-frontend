@@ -1,13 +1,19 @@
-import { App as AntdApp, Button, Select, Space } from 'antd'
+import { App as AntdApp, Button, Flex, Select, Space } from 'antd'
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   useGetJoinedMotoclubsQuery,
   useGetMotoclubListQuery,
   useJoinMotoclubMutation,
 } from '@features/motoclub/motoclubSlice'
 
-/** Форма вступления в мотоклуб (список членств показывается в Profile). */
-function UserJoinedMotoclubs() {
+type UserJoinedMotoclubsProps = {
+  onJoined?: () => void
+}
+
+/** Форма вступления в мотоклуб. */
+function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
+  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [selectedMotoclubId, setSelectedMotoclubId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
@@ -35,43 +41,48 @@ function UserJoinedMotoclubs() {
 
   const onJoin = async () => {
     if (!selectedMotoclubId) {
-      message.warning('Выберите мотоклуб')
+      message.warning(t('profile.motoclubSelectWarning'))
       return
     }
 
     try {
       await joinMotoclub(selectedMotoclubId).unwrap()
-      message.success('Вы вступили в мотоклуб')
+      message.success(t('profile.motoclubJoined'))
       setSelectedMotoclubId(null)
+      onJoined?.()
     } catch {
-      message.error('Не удалось вступить в мотоклуб')
+      message.error(t('profile.motoclubJoinError'))
     }
   }
 
   return (
-    <Space.Compact style={{ width: '100%', maxWidth: 560 }}>
-      <Select
-        showSearch
-        allowClear
-        filterOption={false}
-        placeholder="Выберите мотоклуб"
-        style={{ width: '100%' }}
-        loading={motoclubsLoading}
-        options={options}
-        value={selectedMotoclubId}
-        onSearch={setSearch}
-        onChange={(value) => setSelectedMotoclubId(value ?? null)}
-        notFoundContent={motoclubsLoading ? 'Загрузка...' : 'Ничего не найдено'}
-      />
-      <Button
-        type="primary"
-        loading={isJoining}
-        disabled={!selectedMotoclubId || isJoining}
-        onClick={() => void onJoin()}
-      >
-        Вступить
-      </Button>
-    </Space.Compact>
+    <Flex vertical gap="middle" style={{ width: '100%' }}>
+      <Space.Compact style={{ width: '100%' }}>
+        <Select
+          showSearch
+          allowClear
+          filterOption={false}
+          placeholder={t('profile.motoclubSelectPlaceholder')}
+          style={{ width: '100%' }}
+          loading={motoclubsLoading}
+          options={options}
+          value={selectedMotoclubId}
+          onSearch={setSearch}
+          onChange={(value) => setSelectedMotoclubId(value ?? null)}
+          notFoundContent={
+            motoclubsLoading ? t('common.loading') : t('profile.motoclubSelectEmpty')
+          }
+        />
+        <Button
+          type="primary"
+          loading={isJoining}
+          disabled={!selectedMotoclubId || isJoining}
+          onClick={() => void onJoin()}
+        >
+          {t('profile.motoclubJoin')}
+        </Button>
+      </Space.Compact>
+    </Flex>
   )
 }
 
