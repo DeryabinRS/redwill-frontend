@@ -166,12 +166,21 @@ export const postApi = createApi({
       transformResponse: (response: GetPostResponse) => response.data,
       providesTags: (_result, _error, post) => [{ type: 'Post', id: post }],
     }),
-    getUserPosts: builder.query<GetPostListResponse, { pagination?: { page?: number; per_page?: number } } | void>({
+    getUserPosts: builder.query<
+      GetPostListResponse,
+      {
+        pagination?: { page?: number; per_page?: number }
+        min_start_date?: string
+        max_start_date?: string
+      } | void
+    >({
       query: (args) => ({
         url: '/user/posts',
         params: {
           page: args?.pagination?.page,
           per_page: args?.pagination?.per_page || 10,
+          min_start_date: args?.min_start_date,
+          max_start_date: args?.max_start_date,
         },
       }),
       transformResponse: (response: {

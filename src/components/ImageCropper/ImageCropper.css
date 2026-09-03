@@ -128,3 +128,36 @@
 .image-cropper-preview__remove:hover {
   background: #ff7875;
 }
+
+.image-cropper-preview__crop {
+  position: absolute;
+  bottom: -6px;
+  left: -6px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: #141414;
+  color: #fff;
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.image-cropper-preview__crop:hover {
+  background: #262626;
+}
+
+/* Заглушка размера, пока обрезка открыта в Modal */
+.image-cropper-modal-slot {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+}

@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Col, Flex, Row, Spin, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Spin, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
@@ -12,11 +12,10 @@ import { base64ToFile, logoDataUrlToFileName } from '@utils/form'
 import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
 import ProfilePersonalForm from './ProfilePersonalForm'
-import ProfileAccountInfo from './ProfileAccountInfo'
 import ProfileJoinedMotoclubs from './ProfileJoinedMotoclubs'
-// import UserMotobars from './Motobars'
-// import UserMotoPosts from './MotoPosts'
-// import UserServiceStations from './ServiceStations'
+import './Profile.css'
+import UserMotobars from './Motobars'
+import UserServiceStations from './ServiceStations'
 
 function Profile() {
   const { t } = useTranslation()
@@ -28,18 +27,14 @@ function Profile() {
   const [pendingAvatar, setPendingAvatar] = useState('')
 
   const cropperValue = pendingAvatar || previewAvatar
-  const hasNewAvatarToUpload = Boolean(pendingAvatar && pendingAvatar.startsWith('data:image'))
-  const hasSavedAvatar = Boolean(userInfo?.avatar)
+  const hasNewAvatarToUpload = pendingAvatar.startsWith('data:image')
+  const isAvatarBusy = isUploadingAvatar || isDeletingAvatar
+  const showAvatarSave = hasNewAvatarToUpload && !isAvatarBusy
 
   useEffect(() => {
     if (!userInfo) return
-    if (userInfo.avatar) {
-      setPreviewAvatar(`${API_URL}${userInfo.avatar}`)
-      setPendingAvatar('')
-    } else {
-      setPreviewAvatar('')
-      setPendingAvatar('')
-    }
+    setPreviewAvatar(userInfo.avatar ? `${API_URL}${userInfo.avatar}` : '')
+    setPendingAvatar('')
   }, [userInfo])
 
   const onAvatarSubmit = async () => {
@@ -77,15 +72,13 @@ function Profile() {
     }
 
     setPendingAvatar('')
-
     if (value) return
 
     // Сразу очищаем превью, иначе ImageCropper вернёт старый value
     const previousPreview = previewAvatar
     setPreviewAvatar('')
 
-    // Удаление: новый несохранённый файл — только локально; сохранённый — на сервере
-    if (!hasSavedAvatar) return
+    if (!userInfo?.avatar) return
 
     try {
       await deleteUserAvatar().unwrap()
@@ -113,51 +106,85 @@ function Profile() {
     )
   }
 
+  const fullName = [userInfo.first_name, userInfo.last_name].filter(Boolean).join(' ').trim()
+  const displayName = fullName || userInfo.nick_name?.trim() || userInfo.login
+  const handleLabel = userInfo.nick_name?.trim()
+    ? `@${userInfo.nick_name.trim()}`
+    : userInfo.login
+  const city = userInfo.city?.trim()
+
   return (
-    <div className="container" style={{ marginTop: 8 }}>
-      <Card size="small">
-        <Row gutter={[24, 24]}>
-          <Col xs={24} sm={10} md={8} lg={5}>
-            <Flex vertical gap="middle" style={{ width: '100%' }}>
-              <ImageCropper
-                value={cropperValue}
-                onChange={(value) => void onAvatarChange(value)}
-                aspectRatio={1}
-                outputSize={{ width: 250, height: 250 }}
-                showOrientationSwitch={false}
+    <div className="container profile-page">
+      <section className="profile-shell" aria-label={t('profile.title')}>
+        <div className="profile-shell__inner">
+          <header className="profile-shell__masthead">
+            <div>
+              <span className="profile-shell__eyebrow">{t('profile.title')}</span>
+              <h1 className="profile-shell__name">{userInfo.login}</h1>
+              <p className="profile-shell__handle">{userInfo.email}</p>
+            </div>
+            <div className="profile-shell__meta">
+              {city ? <span className="profile-shell__chip">{city}</span> : null}
+              {userInfo.roles?.length
+                ? userInfo.roles.slice(0, 2).map((role) => (
+                    <span key={role} className="profile-shell__chip profile-shell__chip--accent">
+                      {role}
+                    </span>
+                  ))
+                : (
+                    <span className="profile-shell__chip">ID {userInfo.id}</span>
+                  )}
+            </div>
+          </header>
+
+          <div className="profile-shell__body">
+            <aside className="profile-shell__bay">
+              <div className="profile-shell__avatar-stack">
+                <div className="profile-shell__avatar-ring">
+                  <ImageCropper
+                    value={cropperValue}
+                    onChange={(value) => void onAvatarChange(value)}
+                    aspectRatio={1}
+                    outputSize={{ width: 250, height: 250 }}
+                    showOrientationSwitch={false}
+                    cropInModal
+                  />
+                </div>
+                {showAvatarSave ? (
+                  <Button
+                    className="profile-shell__save"
+                    type="primary"
+                    htmlType="button"
+                    onClick={() => void onAvatarSubmit()}
+                    block
+                  >
+                    {t('profile.avatarSave')}
+                  </Button>
+                ) : null}
+              </div>
+            </aside>
+
+            <div className="profile-shell__dossier">
+              <ProfilePersonalForm
+                userInfo={userInfo}
+                displayName={displayName}
+                handleLabel={handleLabel}
               />
-              <Button
-                type="primary"
-                htmlType="button"
-                loading={isUploadingAvatar || isDeletingAvatar}
-                disabled={!hasNewAvatarToUpload || isUploadingAvatar || isDeletingAvatar}
-                onClick={() => void onAvatarSubmit()}
-                hidden={!hasNewAvatarToUpload || isUploadingAvatar || isDeletingAvatar}
-                block
-              >
-                {t('profile.avatarSave')}
-              </Button>
-            </Flex>
-          </Col>
+            </div>
 
-          <Col xs={24} sm={14} md={8} lg={8}>
-            <Flex vertical gap="middle" style={{ width: '100%' }}>
-              <ProfileAccountInfo userInfo={userInfo} />
+            <div className="profile-shell__identity">
               <ProfileJoinedMotoclubs userId={userInfo.id} />
-            </Flex>
-          </Col>
+            </div>
+          </div>
+        </div>
+      </section>
 
-          <Col xs={24} md={24} lg={11}>
-            <ProfilePersonalForm userInfo={userInfo} />
-          </Col>
-        </Row>
-      </Card>
-
-      <UserPosts />
-      <UserMotoclubs />
-      {/* <UserMotobars /> */}
-      {/* <UserMotoPosts /> */}
-      {/* <UserServiceStations /> */}
+      <div className="profile-page__lists">
+        <UserPosts />
+        <UserMotoclubs />
+        <UserMotobars />
+        <UserServiceStations />
+      </div>
     </div>
   )
 }

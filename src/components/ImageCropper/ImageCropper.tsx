@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
-import { Button, Segmented, Space, message, Upload, Spin } from 'antd'
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
+import { Button, Modal, Segmented, Space, message, Upload, Spin } from 'antd'
+import { CloseOutlined, PlusOutlined, ScissorOutlined } from '@ant-design/icons'
 import 'react-image-crop/dist/ReactCrop.css'
 import './ImageCropper.css'
 import { resizeDataUrlForPost } from '../../utils/postImage'
@@ -23,6 +23,8 @@ export interface ImageCropperProps {
   showOrientationSwitch?: boolean
   /** Без книжной/альбомной и без ручной обрезки: после выбора файла — масштаб под правила поста (1000px). */
   postImageMode?: boolean
+  /** Обрезка в модалке — не раздувает родительский layout (аватар профиля). */
+  cropInModal?: boolean
 }
 
 /** Обрезка через canvas возможна только для локального data URL (новый файл), не для URL с сервера */
@@ -79,6 +81,7 @@ export default function ImageCropper({
   outputSize,
   showOrientationSwitch = true,
   postImageMode = false,
+  cropInModal = false,
 }: ImageCropperProps) {
   const [messageApi, contextHolder] = message.useMessage()
   const [imgSrc, setImgSrc] = useState(value || '')
@@ -224,60 +227,13 @@ export default function ImageCropper({
     setIsCropping(false)
   }, [completedCrop, orientation, onChange, outputSize, imgSrc])
 
-  if (!isCropping) {
-    return (
-      <>
-        {contextHolder}
-        <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
-        {!imgSrc && (
-          <Upload
-            style={{ width: '100%', height: 250 }}
-            listType="picture-card"
-            beforeUpload={beforeUpload}
-            showUploadList={false}
-            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
-          >
-            {isLoading ? <Spin size="small" /> : (
-              <button type="button" style={{ border: 0, background: 'none', padding: 0 }}>
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Загрузить</div>
-              </button>
-            )}
-          </Upload>
-        )}
-        {imgSrc && (
-          <div className="image-cropper-preview-column">
-            <div className="image-cropper-preview image-cropper-preview--with-remove">
-              <img src={imgSrc} alt="Preview" className="image-cropper-preview__img" />
-              <button
-                type="button"
-                className="image-cropper-preview__remove"
-                aria-label="Удалить"
-                title="Удалить"
-                onClick={() => {
-                  setImgSrc('')
-                  onChange?.('')
-                }}
-              >
-                <CloseOutlined />
-              </button>
-            </div>
-            {isCroppableDataUrl(imgSrc) && !postImageMode && (
-              <Button size="small" style={{ marginTop: 8 }} onClick={() => setIsCropping(true)}>
-                Обрезать
-              </Button>
-            )}
-          </div>
-        )}
-      </Space>
-      </>
-    )
+  const cancelCrop = () => {
+    setIsCropping(false)
+    setImgSrc(value || '')
   }
 
-  return (
-    <>
-      {contextHolder}
-      <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
+  const cropEditor = (
+    <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
       {showOrientationSwitch && !postImageMode && (
         <Segmented
           options={[
@@ -288,7 +244,7 @@ export default function ImageCropper({
           onChange={(val) => onOrientationChange?.(val as Orientation)}
         />
       )}
-      
+
       <div className="image-cropper-crop-wrap">
         <ReactCrop
           crop={crop}
@@ -309,18 +265,112 @@ export default function ImageCropper({
 
       <Space>
         <Button type="primary" onClick={getCroppedImage}>Применить</Button>
-        <Button
-          onClick={() => {
-            setIsCropping(false)
-            setImgSrc(value || '')
-          }}
-        >
-          Отмена
-        </Button>
+        <Button onClick={cancelCrop}>Отмена</Button>
       </Space>
 
       <canvas ref={canvasRef} style={{ display: 'none' }} />
     </Space>
+  )
+
+  const idleContent = (
+    <Space className="image-cropper" direction="vertical" style={{ width: '100%' }} size={cropInModal ? 0 : 'small'}>
+      {!imgSrc && (
+        <Upload
+          style={{ width: '100%' }}
+          listType="picture-card"
+          beforeUpload={beforeUpload}
+          showUploadList={false}
+          accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+        >
+          {isLoading ? <Spin size="small" /> : (
+            <button type="button" style={{ border: 0, background: 'none', padding: 0 }}>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Загрузить</div>
+            </button>
+          )}
+        </Upload>
+      )}
+      {imgSrc && (
+        <div className="image-cropper-preview-column">
+          <div className="image-cropper-preview image-cropper-preview--with-remove">
+            <img src={imgSrc} alt="Preview" className="image-cropper-preview__img" />
+            <button
+              type="button"
+              className="image-cropper-preview__remove"
+              aria-label="Удалить"
+              title="Удалить"
+              onClick={() => {
+                setImgSrc('')
+                onChange?.('')
+              }}
+            >
+              <CloseOutlined />
+            </button>
+            {isCroppableDataUrl(imgSrc) && !postImageMode && cropInModal && (
+              <button
+                type="button"
+                className="image-cropper-preview__crop"
+                aria-label="Обрезать"
+                title="Обрезать"
+                onClick={() => setIsCropping(true)}
+              >
+                <ScissorOutlined />
+              </button>
+            )}
+          </div>
+          {isCroppableDataUrl(imgSrc) && !postImageMode && !cropInModal && (
+            <Button size="small" style={{ marginTop: 8 }} onClick={() => setIsCropping(true)}>
+              Обрезать
+            </Button>
+          )}
+        </div>
+      )}
+    </Space>
+  )
+
+  if (cropInModal) {
+    return (
+      <>
+        {contextHolder}
+        {isCropping ? (
+          <div className="image-cropper-preview" aria-hidden>
+            {imgSrc ? (
+              <img src={imgSrc} alt="" className="image-cropper-preview__img" />
+            ) : (
+              <div className="image-cropper-modal-slot" />
+            )}
+          </div>
+        ) : (
+          idleContent
+        )}
+        <Modal
+          title="Обрезать изображение"
+          open={isCropping}
+          onCancel={cancelCrop}
+          footer={null}
+          destroyOnHidden
+          centered
+          width={480}
+        >
+          {isCropping ? cropEditor : null}
+        </Modal>
+      </>
+    )
+  }
+
+  if (!isCropping) {
+    return (
+      <>
+        {contextHolder}
+        {idleContent}
+      </>
+    )
+  }
+
+  return (
+    <>
+      {contextHolder}
+      {cropEditor}
     </>
   )
 }

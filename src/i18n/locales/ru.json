@@ -56,7 +56,7 @@
     "avatarPrepareError": "Не удалось подготовить файл",
     "avatarDeleted": "Аватар удалён",
     "avatarDeleteError": "Не удалось удалить аватар",
-    "motoclub": "Мотоклуб:",
+    "motoclubs": "Мотоклубы",
     "motoclubEmpty": "Вы пока не состоите в мотоклубах",
     "motoclubRemove": "Выйти из мотоклуба",
     "motoclubPending": "Подана заявка",

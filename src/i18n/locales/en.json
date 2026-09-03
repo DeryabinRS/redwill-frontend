@@ -61,7 +61,7 @@
     "avatarPrepareError": "Failed to prepare the file",
     "avatarDeleted": "Avatar deleted",
     "avatarDeleteError": "Failed to delete avatar",
-    "motoclub": "Motoclub:",
+    "motoclubs": "Motoclubs",
     "motoclubEmpty": "You are not a member of any motoclub yet",
     "motoclubRemove": "Leave motoclub",
     "motoclubPending": "Application submitted",

@@ -1,5 +1,5 @@
-import { App as AntdApp, Button, Checkbox, DatePicker, Flex, Form, Input, Modal, Typography } from 'antd'
-import { EditOutlined } from '@ant-design/icons'
+import { App as AntdApp, Button, Checkbox, DatePicker, Flex, Form, Input, Modal, Tag } from 'antd'
+import { EditOutlined, HomeOutlined } from '@ant-design/icons'
 import dayjs, { type Dayjs } from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -23,9 +23,11 @@ type ProfilePersonalFormProps = {
     UserInfo,
     'first_name' | 'last_name' | 'nick_name' | 'city' | 'phone' | 'birthday' | 'accommodation'
   >
+  displayName: string
+  handleLabel: string
 }
 
-function ProfilePersonalForm({ userInfo }: ProfilePersonalFormProps) {
+function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePersonalFormProps) {
   const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
@@ -35,11 +37,6 @@ function ProfilePersonalForm({ userInfo }: ProfilePersonalFormProps) {
   const filledFields = useMemo(() => {
     const fields: { label: string; value: string }[] = []
 
-    const userName = [userInfo.first_name, userInfo.last_name, `${userInfo.nick_name ? `(${userInfo.nick_name})` : ''}`].filter(Boolean).join(' ')
-
-    if (userInfo.first_name?.trim()) {
-      fields.push({ label: '', value: userName })
-    }
     if (userInfo.city?.trim()) {
       fields.push({ label: t('profile.city'), value: userInfo.city.trim() })
     }
@@ -52,15 +49,11 @@ function ProfilePersonalForm({ userInfo }: ProfilePersonalFormProps) {
         value: dayjs(userInfo.birthday).format('DD.MM.YYYY'),
       })
     }
-    if (Number(userInfo.accommodation) === 1) {
-      fields.push({
-        label: t('profile.accommodation'),
-        value: t('common.yes'),
-      })
-    }
 
     return fields
   }, [userInfo, t])
+
+  const showAccommodation = Number(userInfo.accommodation) === 1
 
   useEffect(() => {
     if (!open) return
@@ -101,30 +94,36 @@ function ProfilePersonalForm({ userInfo }: ProfilePersonalFormProps) {
 
   return (
     <>
-      <Flex align="center" gap="middle" style={{ marginBottom: 12 }}>
-        <Typography.Title level={5} style={{ margin: 0 }}>
+      <div className="profile-shell__dossier-head">
+        <div className="profile-shell__section-label">
           {t('profile.personalInfo')}
-        </Typography.Title>
-        <Button icon={<EditOutlined />} size="small" onClick={() => setOpen(true)}>
-          {t('common.edit')}
-        </Button>
-      </Flex>
+          <Button icon={<EditOutlined />} size="small" onClick={() => setOpen(true)} />
+        </div>
+      </div>
 
-      {filledFields.length === 0 ? (
-        <Typography.Text type="secondary">{t('profile.personalInfoEmpty')}</Typography.Text>
-      ) : (
-        <Flex vertical gap="middle" style={{ width: '100%' }}>
-          {filledFields.map((field) => (
-            <div key={field.label}>
-              <Typography.Text type="secondary">{field.label}</Typography.Text>
-              <Typography.Title level={5} style={{ margin: '4px 0 0' }}>
-                {field.value}
-              </Typography.Title>
-            </div>
-          ))}
+      <Flex vertical gap="middle" style={{ width: '100%' }}>
+        <div className="profile-shell__person">
+          <h2 className="profile-shell__name profile-shell__name--section">{displayName}</h2>
+          <p className="profile-shell__handle">{handleLabel}</p>
+        </div>
+        <Flex gap="middle" wrap="wrap">
+          {filledFields.length === 0 && !showAccommodation ? (
+            <p className="profile-shell__empty">{t('profile.personalInfoEmpty')}</p>
+          ) : (
+            filledFields.map((field) => (
+              <div key={`${field.label}-${field.value}`} className="profile-shell__field">
+                <span className="profile-shell__field-label">{field.label}</span>
+                <p className="profile-shell__field-value">{field.value}</p>
+              </div>
+            ))
+          )}
         </Flex>
-      )}
-
+        {showAccommodation ? (
+          <Tag icon={<HomeOutlined />} color="green">
+            {t('profile.accommodation')}
+          </Tag>
+        ) : null}
+      </Flex>
       <Modal
         title={t('profile.personalInfo')}
         open={open}

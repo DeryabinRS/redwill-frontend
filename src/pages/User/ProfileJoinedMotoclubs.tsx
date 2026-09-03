@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Flex, Modal, Popconfirm, Spin, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Modal, Popconfirm, Spin, Tooltip } from 'antd'
 import {
   CheckCircleFilled,
   CloseOutlined,
@@ -47,23 +47,23 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
   }
 
   return (
-    <div>
-      <Flex align="center" gap="small" style={{ marginBottom: 8 }}>
-        <Typography.Text type="secondary">{t('profile.motoclub')}</Typography.Text>
+    <section className="profile-shell__section">
+      <div className="profile-shell__section-label">
+        {t('profile.motoclubs')}
         <Button
-          type="text"
           size="small"
           icon={<PlusOutlined />}
           aria-label={t('profile.motoclubJoin')}
           title={t('profile.motoclubJoin')}
           onClick={() => setJoinOpen(true)}
+          style={{ marginLeft: 4 }}
         />
-      </Flex>
+      </div>
 
       {isLoading ? (
         <Spin size="small" />
       ) : joinedList.length === 0 ? (
-        <Typography.Text type="secondary">{t('profile.motoclubEmpty')}</Typography.Text>
+        <p className="profile-shell__empty">{t('profile.motoclubEmpty')}</p>
       ) : (
         <div className="joined-motoclubs-grid">
           {joinedList.map((motoclub) => {
@@ -171,7 +171,7 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
       >
         <UserJoinedMotoclubs onJoined={() => setJoinOpen(false)} />
       </Modal>
-    </div>
+    </section>
   )
 }
 
