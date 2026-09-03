@@ -132,6 +132,7 @@ function Profile() {
                 loading={isUploadingAvatar || isDeletingAvatar}
                 disabled={!hasNewAvatarToUpload || isUploadingAvatar || isDeletingAvatar}
                 onClick={() => void onAvatarSubmit()}
+                hidden={!hasNewAvatarToUpload || isUploadingAvatar || isDeletingAvatar}
                 block
               >
                 {t('profile.avatarSave')}

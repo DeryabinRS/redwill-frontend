@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect, useLayoutEffect } from 'react'
 import ReactCrop, { type Crop, type PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import { Button, Segmented, Space, message, Upload, Spin } from 'antd'
-import { PlusOutlined } from '@ant-design/icons'
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
 import 'react-image-crop/dist/ReactCrop.css'
 import './ImageCropper.css'
 import { resizeDataUrlForPost } from '../../utils/postImage'
@@ -231,7 +231,7 @@ export default function ImageCropper({
         <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
         {!imgSrc && (
           <Upload
-            style={{ width: '100%', height: 250, marginTop: -16 }}
+            style={{ width: '100%', height: 250 }}
             listType="picture-card"
             beforeUpload={beforeUpload}
             showUploadList={false}
@@ -246,16 +246,27 @@ export default function ImageCropper({
           </Upload>
         )}
         {imgSrc && (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <img src={imgSrc} alt="Preview" style={{ maxWidth: '100%' }} />
-            <Space style={{ marginTop: 8 }}>
-              {isCroppableDataUrl(imgSrc) && !postImageMode && (
-                <Button size="small" onClick={() => setIsCropping(true)}>
-                  Обрезать
-                </Button>
-              )}
-              <Button size="small" danger onClick={() => { setImgSrc(''); onChange?.('') }}>Удалить</Button>
-            </Space>
+          <div className="image-cropper-preview-column">
+            <div className="image-cropper-preview image-cropper-preview--with-remove">
+              <img src={imgSrc} alt="Preview" className="image-cropper-preview__img" />
+              <button
+                type="button"
+                className="image-cropper-preview__remove"
+                aria-label="Удалить"
+                title="Удалить"
+                onClick={() => {
+                  setImgSrc('')
+                  onChange?.('')
+                }}
+              >
+                <CloseOutlined />
+              </button>
+            </div>
+            {isCroppableDataUrl(imgSrc) && !postImageMode && (
+              <Button size="small" style={{ marginTop: 8 }} onClick={() => setIsCropping(true)}>
+                Обрезать
+              </Button>
+            )}
           </div>
         )}
       </Space>
