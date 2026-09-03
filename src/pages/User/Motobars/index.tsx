@@ -1,90 +1,151 @@
-import { Button, Card, Space, Table, Tag, Typography } from 'antd'
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import { EyeFilled } from '@ant-design/icons'
+import { App as AntdApp, Button, Card, Col, Pagination, Popconfirm, Row, Space, Tag, Typography } from 'antd'
+import { CoffeeOutlined, DeleteOutlined, EyeFilled } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import dayjs from 'dayjs'
-import { useGetUserMotobarsQuery, type Motobar } from '@features/motobar/motobarSlice'
+import { API_URL } from '@config/constants'
+import {
+  useDeleteMotobarMutation,
+  useGetUserMotobarsQuery,
+  type Motobar,
+} from '@features/motobar/motobarSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import '@components/PostFeed/PostFeed.css'
 
-function UserMotobars() {
+const { Title, Text } = Typography
+const PAGE_SIZE = 4
+
+function UserMotobarCard({
+  motobar,
+  onDelete,
+  isDeleting,
+}: {
+  motobar: Motobar
+  onDelete: (id: number) => void
+  isDeleting: boolean
+}) {
   const navigate = useNavigate()
-  const [pagination, setPagination] = useState({ page: 1, per_page: 10 })
-  const { data: motobarsData, isLoading: motobarsLoading } = useGetUserMotobarsQuery({ pagination })
-
-  const handleTableChange = (tablePagination: TablePaginationConfig) => {
-    setPagination({
-      page: tablePagination.current || 1,
-      per_page: tablePagination.pageSize || 10,
-    })
-  }
-
-  const columns: ColumnsType<Motobar> = [
-    { title: 'Название', dataIndex: 'name', key: 'name' },
-    {
-      title: 'Дата',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 110,
-      render: (value: string) => dayjs(value).format('DD.MM.YYYY'),
-    },
-    {
-      title: 'Публикация',
-      dataIndex: 'publication_status',
-      key: 'publication_status',
-      width: 120,
-      render: (value: number) =>
-        value === 1 ? <Tag color="green">Опубликован</Tag> : <Tag color="red">Не опубликован</Tag>,
-    },
-    {
-      title: 'Модерация',
-      dataIndex: 'moderation_status',
-      key: 'moderation_status',
-      width: 160,
-      render: (value?: number) => {
-        const option = moderationStatusOptions.find((item) => item.value === value)
-        if (!option) return <Tag>—</Tag>
-        return <Tag color={moderationStatusTagColor[value ?? 0] ?? 'default'}>{option.label}</Tag>
-      },
-    },
-    {
-      title: '',
-      key: 'actions',
-      width: 30,
-      render: (_value, record) => (
-        <Space size="small" wrap>
-          <Button
-            disabled={record.publication_status !== 1 || record.moderation_status !== 2}
-            icon={<EyeFilled />}
-            size="small"
-            onClick={() => navigate(`/motobars/${record.id}`)}
-          />
-        </Space>
-      ),
-    },
-  ]
+  const canView = motobar.publication_status === 1 && motobar.moderation_status === 2
+  const moderation = moderationStatusOptions.find((item) => item.value === motobar.moderation_status)
 
   return (
-    <Card size="small" style={{ marginTop: 8 }}>
-      <Typography.Title level={4} style={{ marginTop: 0 }}>
+    <Card
+      size="small"
+      className="post-card post-card--compact"
+      hoverable
+      onClick={() => {
+        if (canView) navigate(`/motobars/${motobar.id}`)
+      }}
+      cover={
+        motobar.logo ? (
+          <div className="post-card-image-container">
+            <img
+              src={`${API_URL}${motobar.logo}`}
+              alt={motobar.name}
+              className="post-card-image"
+              loading="lazy"
+              style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)' }}
+            />
+          </div>
+        ) : (
+          <div className="post-card-image-placeholder">
+            <CoffeeOutlined style={{ fontSize: 28, color: '#d9d9d9' }} />
+          </div>
+        )
+      }
+    >
+      <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+          {motobar.name}
+        </Title>
+        <Space size={4} wrap>
+          <Tag color={motobar.publication_status === 1 ? 'green' : 'red'}>
+            {motobar.publication_status === 1 ? 'Опубликован' : 'Не опубликован'}
+          </Tag>
+          {moderation ? (
+            <Tag color={moderationStatusTagColor[motobar.moderation_status] ?? 'default'}>
+              {moderation.label}
+            </Tag>
+          ) : null}
+        </Space>
+        <Text type="secondary" style={{ fontSize: 12 }}>
+          {motobar.address?.trim() || `Создан: ${dayjs(motobar.created_at).format('DD.MM.YYYY')}`}
+        </Text>
+        <Space size="small" wrap onClick={(event) => event.stopPropagation()}>
+          <Button
+            disabled={!canView}
+            icon={<EyeFilled />}
+            size="small"
+            onClick={() => navigate(`/motobars/${motobar.id}`)}
+          />
+          <Popconfirm
+            title="Удалить мото-бар?"
+            description="Действие нельзя отменить"
+            okText="Удалить"
+            cancelText="Отмена"
+            okButtonProps={{ danger: true, loading: isDeleting }}
+            onConfirm={() => onDelete(motobar.id)}
+          >
+            <Button danger icon={<DeleteOutlined />} size="small" />
+          </Popconfirm>
+        </Space>
+      </Space>
+    </Card>
+  )
+}
+
+function UserMotobars() {
+  const { message } = AntdApp.useApp()
+  const [page, setPage] = useState(1)
+  const { data: motobarsData, isLoading, isError } = useGetUserMotobarsQuery({
+    pagination: { page, per_page: PAGE_SIZE },
+  })
+  const [deleteMotobar, { isLoading: isDeleting }] = useDeleteMotobarMutation()
+
+  const motobars = motobarsData?.data || []
+  const total = motobarsData?.total ?? 0
+
+  const handleDeleteMotobar = async (motobarId: number) => {
+    try {
+      await deleteMotobar(motobarId).unwrap()
+      message.success('Мото-бар удален')
+    } catch {
+      message.error('Не удалось удалить мото-бар')
+    }
+  }
+
+  if (isLoading || isError || total === 0) {
+    return null
+  }
+
+  return (
+    <section className="profile-list-section">
+      <Typography.Title level={4} className="profile-list-section__title">
         Мои мото-бары
       </Typography.Title>
-      <Table<Motobar>
-        size="small"
-        rowKey="id"
-        loading={motobarsLoading}
-        dataSource={motobarsData?.data || []}
-        columns={columns}
-        onChange={handleTableChange}
-        pagination={{
-          current: motobarsData?.current_page || pagination.page,
-          pageSize: motobarsData?.per_page || pagination.per_page,
-          total: motobarsData?.total || 0,
-          showSizeChanger: true,
-          showTotal: (total) => `Всего: ${total}`,
-        }}
-      />
-    </Card>
+      <Row gutter={[12, 12]}>
+        {motobars.map((motobar) => (
+          <Col key={motobar.id} xs={24} sm={12}>
+            <UserMotobarCard
+              motobar={motobar}
+              isDeleting={isDeleting}
+              onDelete={(id) => void handleDeleteMotobar(id)}
+            />
+          </Col>
+        ))}
+      </Row>
+      {total > PAGE_SIZE ? (
+        <Pagination
+          className="profile-list-section__pagination"
+          size="small"
+          current={motobarsData?.current_page || page}
+          pageSize={PAGE_SIZE}
+          total={total}
+          onChange={setPage}
+          showSizeChanger={false}
+        />
+      ) : null}
+    </section>
   )
 }
 
