@@ -179,12 +179,18 @@ function Profile() {
         </div>
       </section>
 
-      <div className="profile-page__lists">
-        <UserPosts />
-        <UserMotoclubs />
-        <UserMotobars />
-        <UserServiceStations />
-      </div>
+      <section className="profile-content" aria-label="Мой контент">
+        <header className="profile-content__head">
+          <span className="profile-shell__eyebrow">Активность</span>
+          <h2 className="profile-content__title">Мой контент</h2>
+        </header>
+        <div className="profile-content__sections">
+          <UserPosts />
+          <UserMotoclubs />
+          <UserMotobars />
+          <UserServiceStations />
+        </div>
+      </section>
     </div>
   )
 }

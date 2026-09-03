@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Col, Pagination, Popconfirm, Row, Space, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tag, Typography } from 'antd'
 import { DeleteOutlined, EyeFilled, ToolOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import {
   type ServiceStation,
 } from '@features/serviceStation/serviceStationSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text } = Typography
@@ -68,10 +69,10 @@ function UserServiceStationCard({
             </Tag>
           ) : null}
         </Space>
-        <Text type="secondary" style={{ fontSize: 12 }}>
+        <Text type="secondary" className="profile-card-meta">
           {serviceStation.address?.trim() || `Создана: ${dayjs(serviceStation.created_at).format('DD.MM.YYYY')}`}
         </Text>
-        <Space size="small" wrap onClick={(event) => event.stopPropagation()}>
+        <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
           <Button
             disabled={!canView}
             icon={<EyeFilled />}
@@ -119,33 +120,32 @@ function UserServiceStations() {
   }
 
   return (
-    <section className="profile-list-section">
-      <Typography.Title level={4} className="profile-list-section__title">
-        Мои СТО
-      </Typography.Title>
-      <Row gutter={[12, 12]}>
-        {serviceStations.map((serviceStation) => (
-          <Col key={serviceStation.id} xs={24} sm={12}>
-            <UserServiceStationCard
-              serviceStation={serviceStation}
-              isDeleting={isDeleting}
-              onDelete={(id) => void handleDeleteServiceStation(id)}
-            />
-          </Col>
-        ))}
-      </Row>
-      {total > PAGE_SIZE ? (
-        <Pagination
-          className="profile-list-section__pagination"
-          size="small"
-          current={serviceStationsData?.current_page || page}
-          pageSize={PAGE_SIZE}
-          total={total}
-          onChange={setPage}
-          showSizeChanger={false}
+    <ProfileListSection
+      title="СТО"
+      count={total}
+      pagination={
+        total > PAGE_SIZE ? (
+          <Pagination
+            className="profile-list-section__pagination"
+            size="small"
+            current={serviceStationsData?.current_page || page}
+            pageSize={PAGE_SIZE}
+            total={total}
+            onChange={setPage}
+            showSizeChanger={false}
+          />
+        ) : null
+      }
+    >
+      {serviceStations.map((serviceStation) => (
+        <UserServiceStationCard
+          key={serviceStation.id}
+          serviceStation={serviceStation}
+          isDeleting={isDeleting}
+          onDelete={(id) => void handleDeleteServiceStation(id)}
         />
-      ) : null}
-    </section>
+      ))}
+    </ProfileListSection>
   )
 }
 

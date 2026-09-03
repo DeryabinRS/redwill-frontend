@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Col, Pagination, Popconfirm, Row, Space, Tag, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tag, Tooltip, Typography } from 'antd'
 import { DeleteOutlined, EditOutlined, EyeFilled, ShopOutlined, TeamOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import {
 } from '@features/motoclub/motoclubSlice'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text } = Typography
@@ -81,13 +82,13 @@ function UserMotoclubCard({
             </Tag>
           ) : null}
         </Space>
-        <Text type="secondary" style={{ fontSize: 12 }}>
+        <Text type="secondary" className="profile-card-meta">
           Участники: {motoclub.verified_members_count ?? 0}
           {(motoclub.pending_members_count ?? 0) > 0
             ? ` · Заявки: ${motoclub.pending_members_count}`
             : ''}
         </Text>
-        <Space size="small" wrap onClick={(event) => event.stopPropagation()}>
+        <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
           <Button
             disabled={!canView}
             icon={<EyeFilled />}
@@ -153,34 +154,33 @@ function UserMotoclubs() {
   }
 
   return (
-    <section className="profile-list-section">
-      <Typography.Title level={4} className="profile-list-section__title">
-        Мои мотоклубы
-      </Typography.Title>
-      <Row gutter={[12, 12]}>
-        {motoclubs.map((motoclub) => (
-          <Col key={motoclub.id} xs={24} sm={12}>
-            <UserMotoclubCard
-              motoclub={motoclub}
-              userId={userInfo?.id}
-              isDeleting={isDeleting}
-              onDelete={(id) => void handleDeleteMotoclub(id)}
-            />
-          </Col>
-        ))}
-      </Row>
-      {total > PAGE_SIZE ? (
-        <Pagination
-          className="profile-list-section__pagination"
-          size="small"
-          current={motoclubsData?.current_page || page}
-          pageSize={PAGE_SIZE}
-          total={total}
-          onChange={setPage}
-          showSizeChanger={false}
+    <ProfileListSection
+      title="Мотоклубы"
+      count={total}
+      pagination={
+        total > PAGE_SIZE ? (
+          <Pagination
+            className="profile-list-section__pagination"
+            size="small"
+            current={motoclubsData?.current_page || page}
+            pageSize={PAGE_SIZE}
+            total={total}
+            onChange={setPage}
+            showSizeChanger={false}
+          />
+        ) : null
+      }
+    >
+      {motoclubs.map((motoclub) => (
+        <UserMotoclubCard
+          key={motoclub.id}
+          motoclub={motoclub}
+          userId={userInfo?.id}
+          isDeleting={isDeleting}
+          onDelete={(id) => void handleDeleteMotoclub(id)}
         />
-      ) : null}
-    </section>
+      ))}
+    </ProfileListSection>
   )
 }
 

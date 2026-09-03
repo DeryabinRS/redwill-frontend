@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Col, Pagination, Popconfirm, Row, Space, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tag, Typography } from 'antd'
 import { CoffeeOutlined, DeleteOutlined, EyeFilled } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import {
   type Motobar,
 } from '@features/motobar/motobarSlice'
 import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text } = Typography
@@ -68,10 +69,10 @@ function UserMotobarCard({
             </Tag>
           ) : null}
         </Space>
-        <Text type="secondary" style={{ fontSize: 12 }}>
+        <Text type="secondary" className="profile-card-meta">
           {motobar.address?.trim() || `Создан: ${dayjs(motobar.created_at).format('DD.MM.YYYY')}`}
         </Text>
-        <Space size="small" wrap onClick={(event) => event.stopPropagation()}>
+        <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
           <Button
             disabled={!canView}
             icon={<EyeFilled />}
@@ -119,33 +120,32 @@ function UserMotobars() {
   }
 
   return (
-    <section className="profile-list-section">
-      <Typography.Title level={4} className="profile-list-section__title">
-        Мои мото-бары
-      </Typography.Title>
-      <Row gutter={[12, 12]}>
-        {motobars.map((motobar) => (
-          <Col key={motobar.id} xs={24} sm={12}>
-            <UserMotobarCard
-              motobar={motobar}
-              isDeleting={isDeleting}
-              onDelete={(id) => void handleDeleteMotobar(id)}
-            />
-          </Col>
-        ))}
-      </Row>
-      {total > PAGE_SIZE ? (
-        <Pagination
-          className="profile-list-section__pagination"
-          size="small"
-          current={motobarsData?.current_page || page}
-          pageSize={PAGE_SIZE}
-          total={total}
-          onChange={setPage}
-          showSizeChanger={false}
+    <ProfileListSection
+      title="Мои мото-бары"
+      count={total}
+      pagination={
+        total > PAGE_SIZE ? (
+          <Pagination
+            className="profile-list-section__pagination"
+            size="small"
+            current={motobarsData?.current_page || page}
+            pageSize={PAGE_SIZE}
+            total={total}
+            onChange={setPage}
+            showSizeChanger={false}
+          />
+        ) : null
+      }
+    >
+      {motobars.map((motobar) => (
+        <UserMotobarCard
+          key={motobar.id}
+          motobar={motobar}
+          isDeleting={isDeleting}
+          onDelete={(id) => void handleDeleteMotobar(id)}
         />
-      ) : null}
-    </section>
+      ))}
+    </ProfileListSection>
   )
 }
 

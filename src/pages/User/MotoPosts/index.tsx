@@ -67,7 +67,7 @@ function UserMotoPosts() {
   return (
     <Card size="small" style={{ marginTop: 8 }}>
       <Typography.Title level={4} style={{ marginTop: 0 }}>
-        Мои мото-посты
+        Мото-посты
       </Typography.Title>
       <Table<MotoPost>
         size="small"

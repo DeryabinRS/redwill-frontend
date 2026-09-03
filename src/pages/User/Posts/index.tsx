@@ -1,8 +1,9 @@
-import { Col, Pagination, Row, Typography } from 'antd'
+import { Pagination } from 'antd'
 import { useState } from 'react'
 import dayjs from 'dayjs'
 import { useGetUserPostsQuery } from '@features/post/postSlice'
 import PostCard from '@components/PostFeed/PostCard'
+import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const PAGE_SIZE = 4
@@ -22,29 +23,27 @@ function UserPosts() {
   }
 
   return (
-    <section className="profile-list-section">
-      <Typography.Title level={4} className="profile-list-section__title">
-        Мои события
-      </Typography.Title>
-      <Row gutter={[12, 12]}>
-        {posts.map((post) => (
-          <Col key={post.id} xs={24} sm={12}>
-            <PostCard post={post} compact showStatus />
-          </Col>
-        ))}
-      </Row>
-      {total > PAGE_SIZE ? (
-        <Pagination
-          className="profile-list-section__pagination"
-          size="small"
-          current={postsData?.current_page || page}
-          pageSize={PAGE_SIZE}
-          total={total}
-          onChange={setPage}
-          showSizeChanger={false}
-        />
-      ) : null}
-    </section>
+    <ProfileListSection
+      title="События"
+      count={total}
+      pagination={
+        total > PAGE_SIZE ? (
+          <Pagination
+            className="profile-list-section__pagination"
+            size="small"
+            current={postsData?.current_page || page}
+            pageSize={PAGE_SIZE}
+            total={total}
+            onChange={setPage}
+            showSizeChanger={false}
+          />
+        ) : null
+      }
+    >
+      {posts.map((post) => (
+        <PostCard key={post.id} post={post} compact showStatus />
+      ))}
+    </ProfileListSection>
   )
 }
 
