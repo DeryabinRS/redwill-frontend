@@ -1,0 +1,24 @@
+.header-notifications {
+  width: min(360px, 86vw);
+}
+
+.header-notifications__item {
+  cursor: pointer;
+  padding-inline: 4px !important;
+  border-radius: 6px;
+}
+
+.header-notifications__item:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.header-notifications__item--unread {
+  background: rgba(205, 46, 44, 0.12);
+}
+
+.header-notifications__footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: 8px;
+  padding-top: 10px;
+  text-align: center;
+}

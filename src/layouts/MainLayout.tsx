@@ -19,6 +19,7 @@ import { useGetUserInfoQuery } from '../features/user/userSlice'
 import { useAppDispatch } from '../store/hooks'
 import { resetClientState } from '../store'
 import { SITE_NAME } from '../config/constants'
+import HeaderNotifications from '../components/HeaderNotifications/HeaderNotifications'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
 
@@ -152,13 +153,16 @@ function MainLayout() {
 					)}
 
 					{!isLoadingUserInfo && (
-						<Menu
-							mode="horizontal"
-							selectable={false}
-							style={{ flex: 1, minWidth: 0, justifyContent: 'end' }}
-							overflowedIndicator={<MoreOutlined />}
-							items={authItems}
-						/>
+						<>
+							{userIsAuthenticated && userInfo ? <HeaderNotifications /> : null}
+							<Menu
+								mode="horizontal"
+								selectable={false}
+								style={{ flex: 1, minWidth: 0, justifyContent: 'end' }}
+								overflowedIndicator={<MoreOutlined />}
+								items={authItems}
+							/>
+						</>
 					)}
 					{/* <ThemeSwitcher />
 					<LanguageSwitcher /> */}

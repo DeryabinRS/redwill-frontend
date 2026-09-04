@@ -10,7 +10,8 @@ import {
   TeamOutlined,
   ToolOutlined,
   SettingOutlined,
-  LogoutOutlined 
+  LogoutOutlined,
+  MailOutlined,
 } from '@ant-design/icons'
 import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -94,6 +95,11 @@ function DashboardLayout() {
       key: 'service-stations',
       icon: <ToolOutlined />,
       label: <NavLink to="/dashboard/service-stations" onClick={handleMenuClick}>СТО</NavLink>,
+    },
+    {
+      key: 'messages',
+      icon: <MailOutlined />,
+      label: <NavLink to="/dashboard/messages" onClick={handleMenuClick}>Сообщения</NavLink>,
     },
     {
       key: 'settings',

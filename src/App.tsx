@@ -46,6 +46,8 @@ import ServiceStation from './pages/ServiceStations/ServiceStation'
 import AddServiceStation from './pages/ServiceStations/AddServiceStation'
 import DashboardServiceStations from './pages/Dashboard/ServiceStations/ServiceStations'
 import DashboardEditServiceStation from './pages/Dashboard/ServiceStations/EditServiceStation'
+import NotificationsPage from './pages/Notifications'
+import DashboardMessages from './pages/Dashboard/Messages'
 
 import { ThemeProvider, useTheme } from './contexts/ThemeContext'
 
@@ -71,6 +73,14 @@ function AppContent() {
               <Route index element={<Profile />} />
               <Route path="posts/:post/edit" element={<DashboardUpdatePost />} />
             </Route>
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationsPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/posts/create"
               element={
@@ -168,6 +178,7 @@ function AppContent() {
             <Route path="service-stations" element={<DashboardServiceStations />} />
             <Route path="service-stations/create" element={<AddServiceStation />} />
             <Route path="service-stations/:serviceStation/edit" element={<DashboardEditServiceStation />} />
+            <Route path="messages" element={<DashboardMessages />} />
             <Route path="orders" element={<div>Заказы</div>} />
             <Route path="settings" element={<div>Настройки</div>} />
           </Route>

@@ -1,0 +1,54 @@
+.notifications-page {
+  padding: 24px 8px 48px;
+}
+
+.notifications-page__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.notifications-page__loading {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.notifications-page__list .notifications-page__item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 8px;
+  padding-inline: 12px !important;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.06), transparent 38%),
+    linear-gradient(165deg, rgba(32, 32, 36, 0.96), rgba(10, 10, 12, 0.94));
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.28),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+
+.notifications-page__item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(205, 46, 44, 0.28), transparent 34%),
+    radial-gradient(circle at 8% 100%, rgba(255, 255, 255, 0.08), transparent 40%);
+}
+
+.notifications-page__item:hover::before {
+  opacity: 1;
+}
+
+.notifications-page__item--unread {
+  background: rgba(205, 46, 44, 0.1);
+  border-color: rgba(205, 46, 44, 0.28);
+}

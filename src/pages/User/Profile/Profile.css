@@ -15,7 +15,6 @@
   margin-top: 8px;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid var(--profile-line);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.06), transparent 38%),
     linear-gradient(165deg, rgba(32, 32, 36, 0.96), rgba(10, 10, 12, 0.94));
@@ -222,7 +221,6 @@
   position: relative;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid var(--profile-line);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.1), transparent 36%),
     linear-gradient(165deg, rgba(38, 38, 42, 0.96), rgba(8, 8, 10, 0.94));

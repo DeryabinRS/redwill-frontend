@@ -20,6 +20,14 @@
     "register": "Register",
     "logout": "Logout"
   },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "viewAll": "View all",
+    "markAllRead": "Mark all as read",
+    "markedAllRead": "All notifications marked as read",
+    "markAllError": "Failed to mark notifications as read"
+  },
   "auth": {
     "login": "Sign In",
     "register": "Sign Up",

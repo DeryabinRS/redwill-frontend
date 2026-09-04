@@ -87,7 +87,7 @@ function Dashboard() {
         Добро пожаловать, {userInfo?.first_name || userInfo?.login}!
       </Typography.Paragraph>
 
-      <Row gutter={[16, 16]} style={{ marginTop: 8 }}>
+      <Row gutter={[8, 8]} style={{ marginTop: 8 }}>
         {stats.map((stat) => (
           <Col key={stat.title} xs={24} sm={12} lg={8}>
             <Card loading={stat.loading}>
@@ -101,7 +101,7 @@ function Dashboard() {
         ))}
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
+      <Row gutter={[8, 8]} style={{ marginTop: 8 }}>
         <Col xs={24} lg={12}>
           <Card title="Последние действия">
             <Space orientation="vertical" style={{ width: '100%' }}>
