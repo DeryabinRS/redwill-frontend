@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tag, Tooltip, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tooltip, Typography } from 'antd'
 import { DeleteOutlined, EditOutlined, EyeFilled, ShopOutlined, TeamOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -9,7 +9,7 @@ import {
   type Motoclub,
 } from '@features/motoclub/motoclubSlice'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
@@ -40,7 +40,6 @@ function UserMotoclubCard({
     : canDelete
       ? 'Удалить мотоклуб'
       : 'Нельзя удалить мотоклуб, пока в нём есть другие участники или заявки'
-  const moderation = moderationStatusOptions.find((item) => item.value === motoclub.moderation_status)
 
   return (
     <Card
@@ -68,62 +67,60 @@ function UserMotoclubCard({
         )
       }
     >
-      <Space direction="vertical" size={8} style={{ width: '100%' }}>
-        <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
-          {motoclub.name}
-        </Title>
-        <Space size={4} wrap>
-          <Tag color={motoclub.publication_status === 1 ? 'green' : 'red'}>
-            {motoclub.publication_status === 1 ? 'Опубликован' : 'Не опубликован'}
-          </Tag>
-          {moderation ? (
-            <Tag color={moderationStatusTagColor[motoclub.moderation_status] ?? 'default'}>
-              {moderation.label}
-            </Tag>
-          ) : null}
+      <div className="profile-card-body">
+        <ProfileCardStatusBadges
+          publicationStatus={motoclub.publication_status}
+          moderationStatus={motoclub.moderation_status}
+        />
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+            {motoclub.name}
+          </Title>
+          <Text type="secondary" className="profile-card-meta">
+            Участники: {motoclub.verified_members_count ?? 0}
+            {(motoclub.pending_members_count ?? 0) > 0
+              ? ` · Заявки: ${motoclub.pending_members_count}`
+              : ''}
+          </Text>
+          <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
+            <Button
+              disabled={!canView}
+              icon={<EyeFilled />}
+              size="small"
+              onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
+            />
+            <Button
+              icon={<TeamOutlined />}
+              size="small"
+              title="Участники"
+              onClick={() => navigate(`/motoclubs/${motoclub.id}/members`)}
+            />
+            <Tooltip title="Редактировать">
+              <Button
+                disabled={!canEdit}
+                icon={<EditOutlined />}
+                size="small"
+                onClick={() => navigate(`/motoclubs/${motoclub.id}/edit`)}
+              />
+            </Tooltip>
+            <Tooltip title={deleteTitle}>
+              <span>
+                <Popconfirm
+                  title="Удалить мотоклуб?"
+                  description="Действие нельзя отменить"
+                  okText="Удалить"
+                  cancelText="Отмена"
+                  okButtonProps={{ danger: true, loading: isDeleting }}
+                  disabled={!canDelete}
+                  onConfirm={() => onDelete(motoclub.id)}
+                >
+                  <Button danger disabled={!canDelete} icon={<DeleteOutlined />} size="small" />
+                </Popconfirm>
+              </span>
+            </Tooltip>
+          </Space>
         </Space>
-        <Text type="secondary" className="profile-card-meta">
-          Участники: {motoclub.verified_members_count ?? 0}
-          {(motoclub.pending_members_count ?? 0) > 0
-            ? ` · Заявки: ${motoclub.pending_members_count}`
-            : ''}
-        </Text>
-        <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
-          <Button
-            disabled={!canView}
-            icon={<EyeFilled />}
-            size="small"
-            onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
-          />
-          <Button
-            icon={<TeamOutlined />}
-            size="small"
-            title="Участники"
-            onClick={() => navigate(`/motoclubs/${motoclub.id}/members`)}
-          />
-          <Button
-            disabled={!canEdit}
-            icon={<EditOutlined />}
-            size="small"
-            onClick={() => navigate(`/motoclubs/${motoclub.id}/edit`)}
-          />
-          <Tooltip title={deleteTitle}>
-            <span>
-              <Popconfirm
-                title="Удалить мотоклуб?"
-                description="Действие нельзя отменить"
-                okText="Удалить"
-                cancelText="Отмена"
-                okButtonProps={{ danger: true, loading: isDeleting }}
-                disabled={!canDelete}
-                onConfirm={() => onDelete(motoclub.id)}
-              >
-                <Button danger disabled={!canDelete} icon={<DeleteOutlined />} size="small" />
-              </Popconfirm>
-            </span>
-          </Tooltip>
-        </Space>
-      </Space>
+      </div>
     </Card>
   )
 }

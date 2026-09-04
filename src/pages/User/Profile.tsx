@@ -111,7 +111,7 @@ function Profile() {
   const handleLabel = userInfo.nick_name?.trim()
     ? `@${userInfo.nick_name.trim()}`
     : userInfo.login
-  const city = userInfo.city?.trim()
+  // const city = userInfo.city?.trim()
 
   return (
     <div className="container profile-page">
@@ -124,7 +124,7 @@ function Profile() {
               <p className="profile-shell__handle">{userInfo.email}</p>
             </div>
             <div className="profile-shell__meta">
-              {city ? <span className="profile-shell__chip">{city}</span> : null}
+              {/* {city ? <span className="profile-shell__chip">{city}</span> : null} */}
               {userInfo.roles?.length
                 ? userInfo.roles.slice(0, 2).map((role) => (
                     <span key={role} className="profile-shell__chip profile-shell__chip--accent">

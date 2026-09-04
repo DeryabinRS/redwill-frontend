@@ -1,7 +1,7 @@
-import { Pagination } from 'antd'
+import { App as AntdApp, Pagination } from 'antd'
 import { useState } from 'react'
 import dayjs from 'dayjs'
-import { useGetUserPostsQuery } from '@features/post/postSlice'
+import { useDeletePostMutation, useGetUserPostsQuery } from '@features/post/postSlice'
 import PostCard from '@components/PostFeed/PostCard'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
@@ -9,14 +9,25 @@ import '@components/PostFeed/PostFeed.css'
 const PAGE_SIZE = 4
 
 function UserPosts() {
+  const { message } = AntdApp.useApp()
   const [page, setPage] = useState(1)
   const { data: postsData, isLoading, isError } = useGetUserPostsQuery({
     pagination: { page, per_page: PAGE_SIZE },
     min_start_date: dayjs().format('YYYY-MM-DD'),
   })
+  const [deletePost, { isLoading: isDeleting }] = useDeletePostMutation()
 
   const posts = postsData?.data || []
   const total = postsData?.total ?? 0
+
+  const handleDeletePost = async (postId: number) => {
+    try {
+      await deletePost(postId).unwrap()
+      message.success('Событие удалено')
+    } catch {
+      message.error('Не удалось удалить событие')
+    }
+  }
 
   if (isLoading || isError || total === 0) {
     return null
@@ -41,7 +52,14 @@ function UserPosts() {
       }
     >
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} compact showStatus />
+        <PostCard
+          key={post.id}
+          post={post}
+          compact
+          showStatus
+          isDeleting={isDeleting}
+          onDelete={(id) => void handleDeletePost(id)}
+        />
       ))}
     </ProfileListSection>
   )

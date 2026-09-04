@@ -1,10 +1,10 @@
-import { Card, Space, Tag, Typography } from 'antd'
-import { CalendarOutlined } from '@ant-design/icons'
+import { Button, Card, Popconfirm, Space, Typography } from 'antd'
+import { CalendarOutlined, DeleteOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import type { Post } from '../../features/post/postSlice'
 import { API_URL } from '../../config/constants'
-import { moderationStatusOptions, moderationStatusTagColor } from '../../utils/form'
+import { ProfileCardStatusBadges } from '../ProfileCardOverlays'
 
 const { Title, Text } = Typography
 
@@ -12,11 +12,18 @@ type PostCardProps = {
   post: Post
   compact?: boolean
   showStatus?: boolean
+  onDelete?: (id: number) => void
+  isDeleting?: boolean
 }
 
-function PostCard({ post, compact = false, showStatus = false }: PostCardProps) {
+function PostCard({
+  post,
+  compact = false,
+  showStatus = false,
+  onDelete,
+  isDeleting = false,
+}: PostCardProps) {
   const navigate = useNavigate()
-  const moderation = moderationStatusOptions.find((item) => item.value === post.moderation_status)
 
   return (
     <Card
@@ -41,43 +48,57 @@ function PostCard({ post, compact = false, showStatus = false }: PostCardProps) 
         )
       }
     >
-      <Space direction="vertical" size="small" style={{ width: '100%' }}>
-        <Title
-          level={4}
-          className="post-card-title"
-          style={{ margin: 0, fontSize: compact ? '14px' : '16px', lineHeight: 1.2 }}
-        >
-          {post.title}
-        </Title>
-
-        <div className="post-card-meta">
-          <Space direction="vertical" size={4} style={{ width: '100%' }}>
-            {(post.date_start || post.time_start) && (
-              <div className="post-card-date">
-                <CalendarOutlined className="post-card-icon" />
-                <Text type="secondary">
-                  {post.date_start && dayjs(post.date_start).format('DD.MM.YYYY')}
-                  {post.time_start && ` ${dayjs().hour(parseInt(post.time_start.split(':')[0])).minute(parseInt(post.time_start.split(':')[1])).format('HH:mm')}`}
-                  {post.date_end && ` - ${dayjs(post.date_end).format('DD.MM.YYYY')}`}
-                </Text>
-              </div>
-            )}
-          </Space>
-        </div>
-
+      <div className="profile-card-body">
         {showStatus ? (
-          <Space size={4} wrap>
-            <Tag color={post.publication_status === 1 ? 'green' : 'red'}>
-              {post.publication_status === 1 ? 'Опубликован' : 'Не опубликован'}
-            </Tag>
-            {moderation ? (
-              <Tag color={moderationStatusTagColor[post.moderation_status] ?? 'default'}>
-                {moderation.label}
-              </Tag>
-            ) : null}
-          </Space>
+          <ProfileCardStatusBadges
+            publicationStatus={post.publication_status}
+            moderationStatus={post.moderation_status}
+          />
         ) : null}
-      </Space>
+        <Space direction="vertical" size="small" style={{ width: '100%' }}>
+          <Title
+            level={4}
+            className="post-card-title"
+            style={{ margin: 0, fontSize: compact ? '14px' : '16px', lineHeight: 1.2 }}
+          >
+            {post.title}
+          </Title>
+
+          <div className="post-card-meta">
+            <Space direction="vertical" size={4} style={{ width: '100%' }}>
+              {(post.date_start || post.time_start) && (
+                <div className="post-card-date">
+                  <CalendarOutlined className="post-card-icon" />
+                  <Text type="secondary" style={{ fontSize: '12px' }}>
+                    {post.date_start && dayjs(post.date_start).format('DD.MM.YYYY')}
+                    {post.time_start && ` ${dayjs().hour(parseInt(post.time_start.split(':')[0])).minute(parseInt(post.time_start.split(':')[1])).format('HH:mm')}`}
+                    {post.date_end && ` - ${dayjs(post.date_end).format('DD.MM.YYYY')}`}
+                  </Text>
+                </div>
+              )}
+            </Space>
+          </div>
+
+          {onDelete ? (
+            <Space
+              className="profile-card-actions"
+              size="small"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <Popconfirm
+                title="Удалить событие?"
+                description="Действие нельзя отменить"
+                okText="Удалить"
+                cancelText="Отмена"
+                okButtonProps={{ danger: true, loading: isDeleting }}
+                onConfirm={() => onDelete(post.id)}
+              >
+                <Button danger icon={<DeleteOutlined />} size="small" />
+              </Popconfirm>
+            </Space>
+          ) : null}
+        </Space>
+      </div>
     </Card>
   )
 }

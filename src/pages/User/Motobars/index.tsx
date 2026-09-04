@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Typography } from 'antd'
 import { CoffeeOutlined, DeleteOutlined, EyeFilled } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -9,7 +9,7 @@ import {
   useGetUserMotobarsQuery,
   type Motobar,
 } from '@features/motobar/motobarSlice'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
@@ -27,7 +27,6 @@ function UserMotobarCard({
 }) {
   const navigate = useNavigate()
   const canView = motobar.publication_status === 1 && motobar.moderation_status === 2
-  const moderation = moderationStatusOptions.find((item) => item.value === motobar.moderation_status)
 
   return (
     <Card
@@ -55,42 +54,38 @@ function UserMotobarCard({
         )
       }
     >
-      <Space direction="vertical" size={8} style={{ width: '100%' }}>
-        <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
-          {motobar.name}
-        </Title>
-        <Space size={4} wrap>
-          <Tag color={motobar.publication_status === 1 ? 'green' : 'red'}>
-            {motobar.publication_status === 1 ? 'Опубликован' : 'Не опубликован'}
-          </Tag>
-          {moderation ? (
-            <Tag color={moderationStatusTagColor[motobar.moderation_status] ?? 'default'}>
-              {moderation.label}
-            </Tag>
-          ) : null}
+      <div className="profile-card-body">
+        <ProfileCardStatusBadges
+          publicationStatus={motobar.publication_status}
+          moderationStatus={motobar.moderation_status}
+        />
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+            {motobar.name}
+          </Title>
+          <Text type="secondary" className="profile-card-meta">
+            {motobar.address?.trim() || `Создан: ${dayjs(motobar.created_at).format('DD.MM.YYYY')}`}
+          </Text>
+          <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
+            <Button
+              disabled={!canView}
+              icon={<EyeFilled />}
+              size="small"
+              onClick={() => navigate(`/motobars/${motobar.id}`)}
+            />
+            <Popconfirm
+              title="Удалить мото-бар?"
+              description="Действие нельзя отменить"
+              okText="Удалить"
+              cancelText="Отмена"
+              okButtonProps={{ danger: true, loading: isDeleting }}
+              onConfirm={() => onDelete(motobar.id)}
+            >
+              <Button danger icon={<DeleteOutlined />} size="small" />
+            </Popconfirm>
+          </Space>
         </Space>
-        <Text type="secondary" className="profile-card-meta">
-          {motobar.address?.trim() || `Создан: ${dayjs(motobar.created_at).format('DD.MM.YYYY')}`}
-        </Text>
-        <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
-          <Button
-            disabled={!canView}
-            icon={<EyeFilled />}
-            size="small"
-            onClick={() => navigate(`/motobars/${motobar.id}`)}
-          />
-          <Popconfirm
-            title="Удалить мото-бар?"
-            description="Действие нельзя отменить"
-            okText="Удалить"
-            cancelText="Отмена"
-            okButtonProps={{ danger: true, loading: isDeleting }}
-            onConfirm={() => onDelete(motobar.id)}
-          >
-            <Button danger icon={<DeleteOutlined />} size="small" />
-          </Popconfirm>
-        </Space>
-      </Space>
+      </div>
     </Card>
   )
 }

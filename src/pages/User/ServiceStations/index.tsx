@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Typography } from 'antd'
 import { DeleteOutlined, EyeFilled, ToolOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
@@ -9,7 +9,7 @@ import {
   useGetUserServiceStationsQuery,
   type ServiceStation,
 } from '@features/serviceStation/serviceStationSlice'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
@@ -27,7 +27,6 @@ function UserServiceStationCard({
 }) {
   const navigate = useNavigate()
   const canView = serviceStation.publication_status === 1 && serviceStation.moderation_status === 2
-  const moderation = moderationStatusOptions.find((item) => item.value === serviceStation.moderation_status)
 
   return (
     <Card
@@ -55,42 +54,40 @@ function UserServiceStationCard({
         )
       }
     >
-      <Space direction="vertical" size={8} style={{ width: '100%' }}>
-        <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
-          {serviceStation.name}
-        </Title>
-        <Space size={4} wrap>
-          <Tag color={serviceStation.publication_status === 1 ? 'green' : 'red'}>
-            {serviceStation.publication_status === 1 ? 'Опубликована' : 'Не опубликована'}
-          </Tag>
-          {moderation ? (
-            <Tag color={moderationStatusTagColor[serviceStation.moderation_status] ?? 'default'}>
-              {moderation.label}
-            </Tag>
-          ) : null}
+      <div className="profile-card-body">
+        <ProfileCardStatusBadges
+          publicationStatus={serviceStation.publication_status}
+          moderationStatus={serviceStation.moderation_status}
+          publishedLabel="Опубликована"
+          unpublishedLabel="Не опубликована"
+        />
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+            {serviceStation.name}
+          </Title>
+          <Text type="secondary" className="profile-card-meta">
+            {serviceStation.address?.trim() || `Создана: ${dayjs(serviceStation.created_at).format('DD.MM.YYYY')}`}
+          </Text>
+          <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
+            <Button
+              disabled={!canView}
+              icon={<EyeFilled />}
+              size="small"
+              onClick={() => navigate(`/service-stations/${serviceStation.id}`)}
+            />
+            <Popconfirm
+              title="Удалить СТО?"
+              description="Действие нельзя отменить"
+              okText="Удалить"
+              cancelText="Отмена"
+              okButtonProps={{ danger: true, loading: isDeleting }}
+              onConfirm={() => onDelete(serviceStation.id)}
+            >
+              <Button danger icon={<DeleteOutlined />} size="small" />
+            </Popconfirm>
+          </Space>
         </Space>
-        <Text type="secondary" className="profile-card-meta">
-          {serviceStation.address?.trim() || `Создана: ${dayjs(serviceStation.created_at).format('DD.MM.YYYY')}`}
-        </Text>
-        <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
-          <Button
-            disabled={!canView}
-            icon={<EyeFilled />}
-            size="small"
-            onClick={() => navigate(`/service-stations/${serviceStation.id}`)}
-          />
-          <Popconfirm
-            title="Удалить СТО?"
-            description="Действие нельзя отменить"
-            okText="Удалить"
-            cancelText="Отмена"
-            okButtonProps={{ danger: true, loading: isDeleting }}
-            onConfirm={() => onDelete(serviceStation.id)}
-          >
-            <Button danger icon={<DeleteOutlined />} size="small" />
-          </Popconfirm>
-        </Space>
-      </Space>
+      </div>
     </Card>
   )
 }
