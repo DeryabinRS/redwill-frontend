@@ -50,7 +50,6 @@ a:hover {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(120deg, transparent 0 58%, rgba(205, 46, 44, 0.5) 58% 60%, transparent 60% 100%),
     radial-gradient(circle at 82% 8%, rgba(205, 46, 44, 0.2), transparent 32%),
     radial-gradient(circle at 8% 100%, rgba(255, 255, 255, 0.08), transparent 34%);
   pointer-events: none;
@@ -226,7 +225,6 @@ a:hover {
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(120deg, transparent 0 55%, rgba(205, 46, 44, 0.72) 55% 58%, transparent 58% 100%),
         radial-gradient(circle at 85% 18%, rgba(205, 46, 44, 0.22), transparent 34%),
         radial-gradient(circle at 10% 110%, rgba(255, 255, 255, 0.1), transparent 36%);
       pointer-events: none;
@@ -354,7 +352,6 @@ a:hover {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(120deg, transparent 0 62%, rgba(205, 46, 44, 0.44) 62% 64%, transparent 64% 100%),
     radial-gradient(circle at 86% 14%, rgba(205, 46, 44, 0.22), transparent 34%);
   pointer-events: none;
 }

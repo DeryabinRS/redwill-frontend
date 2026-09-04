@@ -3,7 +3,7 @@ import { useState } from 'react'
 import dayjs from 'dayjs'
 import { useDeletePostMutation, useGetUserPostsQuery } from '@features/post/postSlice'
 import PostCard from '@components/PostFeed/PostCard'
-import ProfileListSection from '../ProfileListSection'
+import ProfileListSection from '../Profile/ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const PAGE_SIZE = 4

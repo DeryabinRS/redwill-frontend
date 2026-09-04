@@ -11,7 +11,7 @@ import {
 import { useGetUserInfoQuery } from '@features/user/userSlice'
 import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
 import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
-import ProfileListSection from '../ProfileListSection'
+import ProfileListSection from '../Profile/ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text } = Typography
@@ -73,7 +73,7 @@ function UserMotoclubCard({
           publicationStatus={motoclub.publication_status}
           moderationStatus={motoclub.moderation_status}
         />
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
           <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
             {motoclub.name}
           </Title>

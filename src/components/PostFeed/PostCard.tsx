@@ -56,7 +56,7 @@ function PostCard({
             moderationStatus={post.moderation_status}
           />
         ) : null}
-        <Space direction="vertical" size="small" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="small" style={{ width: '100%' }}>
           <Title
             level={4}
             className="post-card-title"
@@ -66,7 +66,7 @@ function PostCard({
           </Title>
 
           <div className="post-card-meta">
-            <Space direction="vertical" size={4} style={{ width: '100%' }}>
+            <Space orientation="vertical" size={4} style={{ width: '100%' }}>
               {(post.date_start || post.time_start) && (
                 <div className="post-card-date">
                   <CalendarOutlined className="post-card-icon" />

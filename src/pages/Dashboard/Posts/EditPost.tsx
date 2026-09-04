@@ -147,7 +147,7 @@ function UpdatePost() {
   }
 
   const renderImageSection = () => (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
       <Typography.Text strong>Обложка (JPG, PNG)</Typography.Text>
       <ImageCropper
         postImageMode

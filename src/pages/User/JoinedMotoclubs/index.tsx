@@ -7,6 +7,8 @@ import {
   useJoinMotoclubMutation,
 } from '@features/motoclub/motoclubSlice'
 
+const MAX_JOINED_MOTOCLUBS = 3
+
 type UserJoinedMotoclubsProps = {
   onJoined?: () => void
 }
@@ -31,6 +33,8 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
     () => new Set((joinedData?.data || []).map((item) => item.id)),
     [joinedData],
   )
+  const joinedCount = joinedData?.data?.length ?? 0
+  const canJoinMore = joinedCount < MAX_JOINED_MOTOCLUBS
 
   const options = (motoclubsData?.data || [])
     .filter((item) => !joinedIds.has(item.id))
@@ -40,6 +44,10 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
     }))
 
   const onJoin = async () => {
+    if (!canJoinMore) {
+      message.warning(t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS }))
+      return
+    }
     if (!selectedMotoclubId) {
       message.warning(t('profile.motoclubSelectWarning'))
       return
@@ -76,7 +84,7 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
         <Button
           type="primary"
           loading={isJoining}
-          disabled={!selectedMotoclubId || isJoining}
+          disabled={!canJoinMore || !selectedMotoclubId || isJoining}
           onClick={() => void onJoin()}
         >
           {t('profile.motoclubJoin')}

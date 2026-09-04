@@ -14,8 +14,10 @@ import {
   useGetJoinedMotoclubsQuery,
   useLeaveMotoclubMutation,
 } from '@features/motoclub/motoclubSlice'
-import UserJoinedMotoclubs from './JoinedMotoclubs'
-import './JoinedMotoclubs/JoinedMotoclubs.css'
+import UserJoinedMotoclubs from '../JoinedMotoclubs'
+import '../JoinedMotoclubs/JoinedMotoclubs.css'
+
+const MAX_JOINED_MOTOCLUBS = 3
 
 type ProfileJoinedMotoclubsProps = {
   userId: number
@@ -33,6 +35,15 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
   const [joinOpen, setJoinOpen] = useState(false)
 
   const joinedList = joinedData?.data || []
+  const canJoinMore = joinedList.length < MAX_JOINED_MOTOCLUBS
+
+  const onOpenJoin = () => {
+    if (!canJoinMore) {
+      message.warning(t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS }))
+      return
+    }
+    setJoinOpen(true)
+  }
 
   const onLeaveMotoclub = async (motoclubId: number) => {
     setLeavingId(motoclubId)
@@ -54,8 +65,9 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
           size="small"
           icon={<PlusOutlined />}
           aria-label={t('profile.motoclubJoin')}
-          title={t('profile.motoclubJoin')}
-          onClick={() => setJoinOpen(true)}
+          title={canJoinMore ? t('profile.motoclubJoin') : t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS })}
+          onClick={onOpenJoin}
+          disabled={!canJoinMore}
           style={{ marginLeft: 4 }}
         />
       </div>

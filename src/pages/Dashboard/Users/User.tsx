@@ -27,7 +27,7 @@ function User() {
       </Link>
 
       <Card>
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="large" style={{ width: '100%' }}>
           <Space align="center">
             <UserOutlined style={{ fontSize: 48 }} />
             <Typography.Title level={4} style={{ margin: 0 }}>

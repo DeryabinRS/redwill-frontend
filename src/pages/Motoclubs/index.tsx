@@ -37,12 +37,12 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
         )
       }
     >
-      <Space direction="vertical" size="small" style={{ width: '100%' }}>
+      <Space orientation="vertical" size="small" style={{ width: '100%' }}>
         <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: '15px', lineHeight: 1.2 }}>
           {motoclub.name}
         </Title>
         <div className="post-card-meta">
-          <Space direction="vertical" size={4} style={{ width: '100%' }}>
+          <Space orientation="vertical" size={4} style={{ width: '100%' }}>
             {motoclub.address && (
               <div className="post-card-location">
                 <EnvironmentOutlined className="post-card-icon" />
@@ -150,7 +150,7 @@ function Motoclubs() {
       </Card>
 
       <Card>
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        <Space orientation="vertical" size="large" style={{ width: '100%' }}>
           <Space style={{ width: '100%', justifyContent: 'space-between' }} wrap>
             <Typography.Title level={4} style={{ margin: 0 }}>
               Список мотоклубов

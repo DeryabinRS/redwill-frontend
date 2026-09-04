@@ -9,14 +9,14 @@ import {
   useUploadUserAvatarMutation,
 } from '@features/user/userSlice'
 import { base64ToFile, logoDataUrlToFileName } from '@utils/form'
-import UserPosts from './Posts'
-import UserMotoclubs from './Motoclubs'
-import ProfilePersonalForm from './ProfilePersonalForm'
+import UserPosts from '../Posts'
+import UserMotoclubs from '../Motoclubs'
+import { ProfilePersonalForm } from './ProfilePersonalForm'
 import ProfileJoinedMotoclubs from './ProfileJoinedMotoclubs'
 import ProfileMotorcycles from './ProfileMotorcycles'
 import './Profile.css'
-import UserMotobars from './Motobars'
-import UserServiceStations from './ServiceStations'
+import UserMotobars from '../Motobars'
+import UserServiceStations from '../ServiceStations'
 
 function Profile() {
   const { t } = useTranslation()

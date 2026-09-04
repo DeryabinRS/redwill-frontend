@@ -231,7 +231,7 @@ function EditMotoclub() {
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>
             <Col xs={24} md={8}>
-              <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+              <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
                 <Typography.Text strong>Логотип (JPG, PNG)</Typography.Text>
                 <ImageCropper
                   value={cropperValue}

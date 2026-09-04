@@ -79,6 +79,7 @@
     "motoclubLeaveConfirmDesc": "You will no longer be a member of this club",
     "motoclubLeaveConfirmOk": "Leave",
     "motoclubLeaveAsAdminBlocked": "Appoint another administrator in Members before leaving the club",
+    "motoclubLimit": "You can join no more than {{count}} motoclubs",
     "motorcycles": "My motorcycles",
     "motorcycleEmpty": "No motorcycles added yet",
     "motorcycleAdd": "Add motorcycle",
@@ -96,6 +97,7 @@
     "motorcycleDeleted": "Motorcycle deleted",
     "motorcycleDeleteError": "Failed to delete motorcycle",
     "motorcycleDeleteConfirmTitle": "Delete motorcycle?",
+    "motorcycleLimit": "You can add no more than {{count}} motorcycles",
     "loadError": "Failed to load user data"
   }
 }

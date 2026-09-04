@@ -233,7 +233,7 @@ export default function ImageCropper({
   }
 
   const cropEditor = (
-    <Space className="image-cropper" direction="vertical" style={{ width: '100%' }}>
+    <Space className="image-cropper" orientation="vertical" style={{ width: '100%' }}>
       {showOrientationSwitch && !postImageMode && (
         <Segmented
           options={[
@@ -273,7 +273,7 @@ export default function ImageCropper({
   )
 
   const idleContent = (
-    <Space className="image-cropper" direction="vertical" style={{ width: '100%' }} size={cropInModal ? 0 : 'small'}>
+    <Space className="image-cropper" orientation="vertical" style={{ width: '100%' }} size={cropInModal ? 0 : 'small'}>
       {!imgSrc && (
         <Upload
           style={{ width: '100%' }}

@@ -104,7 +104,7 @@ function Dashboard() {
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={12}>
           <Card title="Последние действия">
-            <Space direction="vertical" style={{ width: '100%' }}>
+            <Space orientation="vertical" style={{ width: '100%' }}>
               {recentItems.length > 0 ? (
                 recentItems.map((item) => (
                   <Typography.Text key={item}>
@@ -119,7 +119,7 @@ function Dashboard() {
         </Col>
         <Col xs={24} lg={12}>
           <Card title="Система">
-            <Space direction="vertical" style={{ width: '100%' }}>
+            <Space orientation="vertical" style={{ width: '100%' }}>
               <Typography.Text>Всего сущностей: {stats.reduce((sum, stat) => sum + Number(stat.value || 0), 0)}</Typography.Text>
               <Typography.Text>Статус: Онлайн</Typography.Text>
               <Typography.Text>Ваша роль: {userInfo?.roles.join(', ') || 'не указана'}</Typography.Text>

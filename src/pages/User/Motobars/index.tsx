@@ -11,7 +11,7 @@ import {
 } from '@features/motobar/motobarSlice'
 import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
 import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
-import ProfileListSection from '../ProfileListSection'
+import ProfileListSection from '../Profile/ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text } = Typography
@@ -60,7 +60,7 @@ function UserMotobarCard({
           publicationStatus={motobar.publication_status}
           moderationStatus={motobar.moderation_status}
         />
-        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
           <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
             {motobar.name}
           </Title>

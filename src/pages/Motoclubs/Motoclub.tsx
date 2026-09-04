@@ -110,13 +110,13 @@ function Motoclub() {
           )}
 
           <Col xs={24} md={logoSrc ? 16 : 24}>
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
               <Title level={3} style={{ margin: 0 }}>
                 {motoclubData.name}
               </Title>
               <Divider style={{ margin: 0 }} />
 
-              <Space direction="vertical" size={8}>
+              <Space orientation="vertical" size={8}>
                 {motoclubData.address && (
                   <Space size={8}>
                     <EnvironmentOutlined />
@@ -157,14 +157,14 @@ function Motoclub() {
                 )}
 
                 {motoclubData.parent_id && parent && (
-                  <Space direction="vertical" size={8}>
+                  <Space orientation="vertical" size={8}>
                     <Text strong>Родительский мотоклуб:</Text>
                     <MotoclubLogoLink item={parent} />
                   </Space>
                 )}
 
                 {children.length > 0 && (
-                  <Space direction="vertical" size={8}>
+                  <Space orientation="vertical" size={8}>
                     <Text strong>Дочерние мотоклубы:</Text>
                     <Space size={12} wrap>
                       {children.map((child) => (

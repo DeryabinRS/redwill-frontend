@@ -44,7 +44,7 @@ function About() {
           <Col xs={24} lg={10}>
             <Card>
               <Title level={3}>Контакты</Title>
-              <Space direction="vertical" size="middle">
+              <Space orientation="vertical" size="middle">
                 <Space>
                   <MailOutlined />
                   <a href="mailto:deryabinrs@yandex.ru">deryabinrs@yandex.ru</a>
@@ -60,7 +60,7 @@ function About() {
         <Row gutter={[8, 8]} style={{ marginTop: 8 }}>
           <Col xs={24} sm={12} lg={6}>
             <Card>
-              <Space direction="vertical">
+              <Space orientation="vertical">
                 <ScheduleOutlined style={{ fontSize: 28 }} />
                 <Title level={4}>События</Title>
                 <Text type="secondary">Календарь ближайших мероприятий мотосообщества.</Text>
@@ -69,7 +69,7 @@ function About() {
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <Card>
-              <Space direction="vertical">
+              <Space orientation="vertical">
                 <TeamOutlined style={{ fontSize: 28 }} />
                 <Title level={4}>Мотоклубы</Title>
                 <Text type="secondary">Каталог клубов и объединений райдеров.</Text>
@@ -78,7 +78,7 @@ function About() {
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <Card>
-              <Space direction="vertical">
+              <Space orientation="vertical">
                 <CoffeeOutlined style={{ fontSize: 28 }} />
                 <Title level={4}>Мото-бары</Title>
                 <Text type="secondary">Места встреч, отдыха и общения.</Text>
@@ -87,7 +87,7 @@ function About() {
           </Col>
           <Col xs={24} sm={12} lg={6}>
             <Card>
-              <Space direction="vertical">
+              <Space orientation="vertical">
                 <ToolOutlined style={{ fontSize: 28 }} />
                 <Title level={4}>СТО и точки</Title>
                 <Text type="secondary">Сервисы, мото-посты и полезные места на карте.</Text>
@@ -97,7 +97,7 @@ function About() {
         </Row>
 
         <Card style={{ marginTop: 8 }}>
-          <Space direction="vertical" size="middle">
+          <Space orientation="vertical" size="middle">
             <Space>
               <EnvironmentOutlined />
               <Title level={3} style={{ margin: 0 }}>Идея проекта</Title>

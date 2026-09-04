@@ -134,7 +134,7 @@ function EditMotobar() {
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
   const renderLogoSection = () => (
-    <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+    <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
       <Typography.Text strong>Логотип (JPG, PNG)</Typography.Text>
       <ImageCropper
         value={cropperValue}

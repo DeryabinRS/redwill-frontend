@@ -74,6 +74,7 @@
     "motoclubLeaveConfirmDesc": "Вы перестанете быть участником этого клуба",
     "motoclubLeaveConfirmOk": "Выйти",
     "motoclubLeaveAsAdminBlocked": "Назначьте другого администратора в «Участники», чтобы выйти из клуба",
+    "motoclubLimit": "Можно состоять не более чем в {{count}} мотоклубах",
     "motorcycles": "Мои мотоциклы",
     "motorcycleEmpty": "Мотоциклы пока не добавлены",
     "motorcycleAdd": "Добавить мотоцикл",
@@ -91,6 +92,7 @@
     "motorcycleDeleted": "Мотоцикл удалён",
     "motorcycleDeleteError": "Не удалось удалить мотоцикл",
     "motorcycleDeleteConfirmTitle": "Удалить мотоцикл?",
+    "motorcycleLimit": "Можно добавить не более {{count}} мотоциклов",
     "loadError": "Не удалось загрузить данные пользователя"
   }
 }

@@ -5,11 +5,15 @@ import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
 import {
   useCreateMotoclubMutation,
+  useGetJoinedMotoclubsQuery,
   useGetMotoclubListQuery,
   type Motoclub,
 } from '../../features/motoclub/motoclubSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
 import dayjs from 'dayjs'
+import { useTranslation } from 'react-i18next'
+
+const MAX_JOINED_MOTOCLUBS = 3
 
 type FormValues = {
   name: string
@@ -27,12 +31,16 @@ type FormValues = {
 
 function AddMotoclub() {
   const [form] = Form.useForm<FormValues>()
+  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const [logo, setLogo] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [createMotoclub, { isLoading }] = useCreateMotoclubMutation()
+  const { data: joinedData } = useGetJoinedMotoclubsQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
   const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetMotoclubListQuery({
     pagination: { page: 1, per_page: 100 },
   })
@@ -41,6 +49,7 @@ function AddMotoclub() {
     label: motoclub.address ? `${motoclub.name} (${motoclub.address})` : motoclub.name,
   }))
   const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/profile'
+  const canCreate = (joinedData?.data?.length ?? 0) < MAX_JOINED_MOTOCLUBS
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
@@ -54,6 +63,10 @@ function AddMotoclub() {
   }
 
   const onSubmit = async (values: FormValues) => {
+    if (!canCreate) {
+      message.warning(t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS }))
+      return
+    }
     try {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
@@ -83,6 +96,11 @@ function AddMotoclub() {
   return (
     <div className="container">
       <Typography.Title level={2}>Добавить мотоклуб</Typography.Title>
+      {!canCreate ? (
+        <Typography.Paragraph type="warning">
+          {t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS })}
+        </Typography.Paragraph>
+      ) : null}
       <Card>
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Row gutter={16}>
@@ -248,7 +266,7 @@ function AddMotoclub() {
           </Row>
 
           <Space>
-            <Button type="primary" htmlType="submit" loading={isLoading}>
+            <Button type="primary" htmlType="submit" loading={isLoading} disabled={!canCreate}>
               Сохранить
             </Button>
             <Button onClick={() => navigate(backPath)}>

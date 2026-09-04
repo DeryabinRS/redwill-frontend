@@ -62,13 +62,13 @@ function ServiceStation() {
           )}
 
           <Col xs={24} md={logoSrc ? 16 : 24}>
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
               <Title level={3} style={{ margin: 0 }}>
                 {serviceStationData.name}
               </Title>
               <Divider style={{ margin: 0 }} />
 
-              <Space direction="vertical" size={8}>
+              <Space orientation="vertical" size={8}>
                 {serviceStationData.address && (
                   <Space size={8}>
                     <EnvironmentOutlined />

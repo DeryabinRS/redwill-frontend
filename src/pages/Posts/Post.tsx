@@ -91,12 +91,12 @@ function Post() {
           )}
 
           <Col xs={24} md={imageSrc ? 14 : 24}>
-            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+            <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
               <Title level={3} style={{ margin: 0 }}>
                 {postData.title}
               </Title>
               <Divider style={{ margin: '0' }} />
-              <Space direction="vertical" size={8}>
+              <Space orientation="vertical" size={8}>
                 {(postData.date_start || postData.time_start) && (
                   <Space size={8}>
                     <CalendarOutlined />
@@ -133,7 +133,7 @@ function Post() {
                 )}
 
                 {postDetails.motoclubs && postDetails.motoclubs.length > 0 && (
-                  <Space direction="vertical" size={8}>
+                  <Space orientation="vertical" size={8}>
                     <Text strong>Организаторы (Мотоклубы):</Text>
                     <Space size={12} wrap>
                       {postDetails.motoclubs.map((motoclub) => (

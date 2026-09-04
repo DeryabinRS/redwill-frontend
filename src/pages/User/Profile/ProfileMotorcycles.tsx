@@ -21,6 +21,8 @@ import {
 } from '@features/motorcycle/motorcycleSlice'
 import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
 
+const MAX_MOTORCYCLES = 3
+
 type FormValues = {
   motorcycle_make_id: string
   motorcycle_model_id: string
@@ -43,15 +45,27 @@ function ProfileMotorcycles() {
   })
   const [createMotorcycle, { isLoading: isCreating }] = useCreateUserMotorcycleMutation()
   const [deleteMotorcycle, { isLoading: isDeleting }] = useDeleteUserMotorcycleMutation()
+  const canAddMore = motorcycles.length < MAX_MOTORCYCLES
 
   useEffect(() => {
     if (!open) {
       setMakeId(undefined)
-      form.resetFields()
     }
-  }, [open, form])
+  }, [open])
+
+  const onOpenAdd = () => {
+    if (!canAddMore) {
+      message.warning(t('profile.motorcycleLimit', { count: MAX_MOTORCYCLES }))
+      return
+    }
+    setOpen(true)
+  }
 
   const onSubmit = async (values: FormValues) => {
+    if (!canAddMore) {
+      message.warning(t('profile.motorcycleLimit', { count: MAX_MOTORCYCLES }))
+      return
+    }
     try {
       await createMotorcycle({
         motorcycle_make_id: values.motorcycle_make_id,
@@ -82,8 +96,9 @@ function ProfileMotorcycles() {
           size="small"
           icon={<PlusOutlined />}
           aria-label={t('profile.motorcycleAdd')}
-          title={t('profile.motorcycleAdd')}
-          onClick={() => setOpen(true)}
+          title={canAddMore ? t('profile.motorcycleAdd') : t('profile.motorcycleLimit', { count: MAX_MOTORCYCLES })}
+          onClick={onOpenAdd}
+          disabled={!canAddMore}
           style={{ marginLeft: 4 }}
         />
       </div>

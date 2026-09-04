@@ -1,7 +1,7 @@
 import { App as AntdApp, Button, Checkbox, DatePicker, Flex, Form, Input, Modal, Tag } from 'antd'
 import { EditOutlined, HomeOutlined } from '@ant-design/icons'
 import dayjs, { type Dayjs } from 'dayjs'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   useUpdateUserProfileMutation,
@@ -27,7 +27,7 @@ type ProfilePersonalFormProps = {
   handleLabel: string
 }
 
-function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePersonalFormProps) {
+export function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePersonalFormProps) {
   const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
@@ -55,9 +55,7 @@ function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePers
 
   const showAccommodation = Number(userInfo.accommodation) === 1
 
-  useEffect(() => {
-    if (!open) return
-
+  const fillForm = () => {
     const birthdayValue =
       userInfo.birthday && dayjs(userInfo.birthday).isValid()
         ? dayjs(userInfo.birthday)
@@ -72,7 +70,7 @@ function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePers
       birthday: birthdayValue,
       accommodation: Number(userInfo.accommodation) === 1,
     })
-  }, [userInfo, form, open])
+  }
 
   const onSubmit = async (values: ProfileFormValues) => {
     try {
@@ -130,6 +128,9 @@ function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePers
         onCancel={() => setOpen(false)}
         footer={null}
         destroyOnHidden
+        afterOpenChange={(visible) => {
+          if (visible) fillForm()
+        }}
       >
         <Form<ProfileFormValues>
           form={form}
@@ -168,5 +169,3 @@ function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePers
     </>
   )
 }
-
-export default ProfilePersonalForm
