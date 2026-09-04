@@ -10,6 +10,7 @@ import {
   type ServiceStation,
 } from '@features/serviceStation/serviceStationSlice'
 import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
+import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
@@ -77,7 +78,7 @@ function UserServiceStationCard({
             />
             <Popconfirm
               title="Удалить СТО?"
-              description="Действие нельзя отменить"
+              description={DELETE_CONFIRM_DESCRIPTION}
               okText="Удалить"
               cancelText="Отмена"
               okButtonProps={{ danger: true, loading: isDeleting }}

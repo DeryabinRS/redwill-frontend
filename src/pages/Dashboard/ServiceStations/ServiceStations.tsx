@@ -10,7 +10,7 @@ import {
   type ServiceStation,
 } from '@features/serviceStation/serviceStationSlice'
 import { API_URL } from '@config/constants'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { DELETE_CONFIRM_DESCRIPTION, moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function DashboardServiceStations() {
   const { message } = AntdApp.useApp()
@@ -107,7 +107,7 @@ function DashboardServiceStations() {
           </Link>
           <Popconfirm
             title="Удалить СТО?"
-            description="Действие нельзя отменить"
+            description={DELETE_CONFIRM_DESCRIPTION}
             okText="Удалить"
             cancelText="Отмена"
             okButtonProps={{ danger: true, loading: isDeleting }}

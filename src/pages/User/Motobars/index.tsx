@@ -10,6 +10,7 @@ import {
   type Motobar,
 } from '@features/motobar/motobarSlice'
 import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
+import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
@@ -75,7 +76,7 @@ function UserMotobarCard({
             />
             <Popconfirm
               title="Удалить мото-бар?"
-              description="Действие нельзя отменить"
+              description={DELETE_CONFIRM_DESCRIPTION}
               okText="Удалить"
               cancelText="Отмена"
               okButtonProps={{ danger: true, loading: isDeleting }}

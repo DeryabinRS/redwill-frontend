@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useDeletePostMutation, useGetDashboardPostListQuery, type Post } from '@features/post/postSlice'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { DELETE_CONFIRM_DESCRIPTION, moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function Posts() {
   const { message } = AntdApp.useApp()
@@ -77,7 +77,7 @@ function Posts() {
           </Link>
           <Popconfirm
             title="Удалить пост?"
-            description="Действие нельзя отменить"
+            description={DELETE_CONFIRM_DESCRIPTION}
             okText="Удалить"
             cancelText="Отмена"
             okButtonProps={{ danger: true, loading: isDeleting }}

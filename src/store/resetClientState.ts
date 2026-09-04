@@ -6,6 +6,7 @@ import { motoclubApi } from '../features/motoclub/motoclubSlice'
 import { motobarApi } from '../features/motobar/motobarSlice'
 import { motoPostApi } from '../features/motoPost/motoPostSlice'
 import { serviceStationApi } from '../features/serviceStation/serviceStationSlice'
+import { motorcycleApi } from '../features/motorcycle/motorcycleSlice'
 
 /** Сброс кэша всех RTK Query API (при logout / смене пользователя). */
 export function resetClientState(dispatch: Dispatch<UnknownAction>) {
@@ -16,4 +17,5 @@ export function resetClientState(dispatch: Dispatch<UnknownAction>) {
   dispatch(motobarApi.util.resetApiState())
   dispatch(motoPostApi.util.resetApiState())
   dispatch(serviceStationApi.util.resetApiState())
+  dispatch(motorcycleApi.util.resetApiState())
 }

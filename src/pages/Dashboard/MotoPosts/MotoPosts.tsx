@@ -10,7 +10,7 @@ import {
   type MotoPost,
 } from '@features/motoPost/motoPostSlice'
 import { API_URL } from '@config/constants'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { DELETE_CONFIRM_DESCRIPTION, moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
 
 function DashboardMotoPosts() {
   const { message } = AntdApp.useApp()
@@ -107,7 +107,7 @@ function DashboardMotoPosts() {
           </Link>
           <Popconfirm
             title="Удалить мото-пост?"
-            description="Действие нельзя отменить"
+            description={DELETE_CONFIRM_DESCRIPTION}
             okText="Удалить"
             cancelText="Отмена"
             okButtonProps={{ danger: true, loading: isDeleting }}

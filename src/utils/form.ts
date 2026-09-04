@@ -15,6 +15,9 @@ export const publicationStatusOptions = [
 	{ value: 1, label: 'Опубликован' },
 ];
 
+/** Текст подтверждения для Popconfirm при удалении. */
+export const DELETE_CONFIRM_DESCRIPTION = 'Подтвердите действие'
+
 /** Имя файла для загрузки логотипа после ImageCropper (всегда WebP). */
 export function logoDataUrlToFileName(prefix: string): string {
 	return `${prefix}_${Date.now()}.webp`

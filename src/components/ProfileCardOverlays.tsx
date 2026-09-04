@@ -1,6 +1,7 @@
 import { Tooltip } from 'antd'
 import {
   CheckCircleFilled,
+  PlusCircleFilled,
   ClockCircleFilled,
   CloseCircleFilled,
   EyeInvisibleFilled,
@@ -47,7 +48,7 @@ export function ProfileCardStatusBadges({
           className={`profile-card-status__icon ${isPublished ? 'profile-card-status__icon--success' : 'profile-card-status__icon--danger'}`}
           aria-label={publicationLabel}
         >
-          {isPublished ? <CheckCircleFilled /> : <EyeInvisibleFilled />}
+          {isPublished ? <PlusCircleFilled /> : <EyeInvisibleFilled />}
         </span>
       </Tooltip>
       {moderation ? (

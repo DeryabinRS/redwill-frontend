@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import type { Post } from '../../features/post/postSlice'
 import { API_URL } from '../../config/constants'
 import { ProfileCardStatusBadges } from '../ProfileCardOverlays'
+import { DELETE_CONFIRM_DESCRIPTION } from '../../utils/form'
 
 const { Title, Text } = Typography
 
@@ -87,7 +88,7 @@ function PostCard({
             >
               <Popconfirm
                 title="Удалить событие?"
-                description="Действие нельзя отменить"
+                description={DELETE_CONFIRM_DESCRIPTION}
                 okText="Удалить"
                 cancelText="Отмена"
                 okButtonProps={{ danger: true, loading: isDeleting }}

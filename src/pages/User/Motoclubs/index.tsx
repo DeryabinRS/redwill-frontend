@@ -10,6 +10,7 @@ import {
 } from '@features/motoclub/motoclubSlice'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
 import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
+import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
 import ProfileListSection from '../ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
@@ -107,7 +108,7 @@ function UserMotoclubCard({
               <span>
                 <Popconfirm
                   title="Удалить мотоклуб?"
-                  description="Действие нельзя отменить"
+                  description={DELETE_CONFIRM_DESCRIPTION}
                   okText="Удалить"
                   cancelText="Отмена"
                   okButtonProps={{ danger: true, loading: isDeleting }}

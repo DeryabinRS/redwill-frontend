@@ -13,6 +13,7 @@ import UserPosts from './Posts'
 import UserMotoclubs from './Motoclubs'
 import ProfilePersonalForm from './ProfilePersonalForm'
 import ProfileJoinedMotoclubs from './ProfileJoinedMotoclubs'
+import ProfileMotorcycles from './ProfileMotorcycles'
 import './Profile.css'
 import UserMotobars from './Motobars'
 import UserServiceStations from './ServiceStations'
@@ -174,6 +175,7 @@ function Profile() {
 
             <div className="profile-shell__identity">
               <ProfileJoinedMotoclubs userId={userInfo.id} />
+              <ProfileMotorcycles />
             </div>
           </div>
         </div>

@@ -79,6 +79,23 @@
     "motoclubLeaveConfirmDesc": "You will no longer be a member of this club",
     "motoclubLeaveConfirmOk": "Leave",
     "motoclubLeaveAsAdminBlocked": "Appoint another administrator in Members before leaving the club",
+    "motorcycles": "My motorcycles",
+    "motorcycleEmpty": "No motorcycles added yet",
+    "motorcycleAdd": "Add motorcycle",
+    "motorcycleMake": "Manufacturer",
+    "motorcycleMakePlaceholder": "Select manufacturer",
+    "motorcycleMakeRequired": "Select a manufacturer",
+    "motorcycleModel": "Model",
+    "motorcycleModelPlaceholder": "Select model",
+    "motorcycleModelRequired": "Select a model",
+    "motorcycleMileage": "Mileage",
+    "motorcycleMileageUnit": "km",
+    "motorcycleMileagePlaceholder": "Enter mileage",
+    "motorcycleAdded": "Motorcycle added",
+    "motorcycleAddError": "Failed to add motorcycle",
+    "motorcycleDeleted": "Motorcycle deleted",
+    "motorcycleDeleteError": "Failed to delete motorcycle",
+    "motorcycleDeleteConfirmTitle": "Delete motorcycle?",
     "loadError": "Failed to load user data"
   }
 }
