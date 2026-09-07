@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Empty, List, Spin, Typography } from 'antd'
+import { App as AntdApp, Button, Checkbox, Empty, Listy, Spin, Typography } from 'antd'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -41,6 +41,15 @@ function NotificationsPage() {
     }
   }
 
+  const onMarkRead = async (e: React.MouseEvent, notification: UserNotification) => {
+    e.stopPropagation()
+    try {
+      await markRead(notification.id).unwrap()
+    } catch {
+      // ignore
+    }
+  }
+
   return (
     <div className="container notifications-page">
       <div className="notifications-page__head">
@@ -59,12 +68,12 @@ function NotificationsPage() {
       ) : notifications.length === 0 ? (
         <Empty description={t('notifications.empty')} />
       ) : (
-        <List
+        <Listy
           className="notifications-page__list"
-          itemLayout="vertical"
-          dataSource={notifications}
-          renderItem={(item) => (
-            <List.Item
+          items={notifications}
+          rowKey={(item) => item.id}
+          itemRender={(item) => (
+            <div
               className={
                 item.read_at
                   ? 'notifications-page__item'
@@ -72,20 +81,24 @@ function NotificationsPage() {
               }
               onClick={() => void openNotification(item)}
             >
-              <List.Item.Meta
-                title={item.title}
-                description={
-                  <>
-                    {item.body ? (
-                      <Typography.Paragraph style={{ marginBottom: 8 }}>{item.body}</Typography.Paragraph>
-                    ) : null}
-                    <Typography.Text type="secondary">
-                      {dayjs(item.created_at).format('DD.MM.YYYY HH:mm')}
-                    </Typography.Text>
-                  </>
-                }
+              <div style={{ flex: 1 }}>
+                <Typography.Text strong style={{ display: 'block' }}>{item.title}</Typography.Text>
+                {item.body ? (
+                  <Typography.Paragraph style={{ marginBottom: 8 }}>{item.body}</Typography.Paragraph>
+                ) : null}
+                <Typography.Text type="secondary">
+                  {dayjs(item.created_at).format('DD.MM.YYYY HH:mm')}
+                </Typography.Text>
+              </div>
+              <Checkbox
+                checked={!!item.read_at}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  if (!item.read_at) void onMarkRead(e, item)
+                }}
+                style={{ flexShrink: 0 }}
               />
-            </List.Item>
+            </div>
           )}
         />
       )}

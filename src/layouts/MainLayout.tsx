@@ -94,8 +94,12 @@ function MainLayout() {
 		})
 	}
 
-	const authItems: MenuItem[] = (userIsAuthenticated && userInfo)
+	const authItems: MenuItem[] = (userIsAuthenticated && !isLoadingUserInfo && userInfo)
 		? [
+			{
+				key: 'notification',
+				label: userInfo && <HeaderNotifications />,
+			},
 			{
 				key: 'profile',
 				icon: <UserOutlined />,
@@ -154,7 +158,7 @@ function MainLayout() {
 
 					{!isLoadingUserInfo && (
 						<>
-							{userIsAuthenticated && userInfo ? <HeaderNotifications /> : null}
+							{/* {userIsAuthenticated && userInfo ? <HeaderNotifications /> : null} */}
 							<Menu
 								mode="horizontal"
 								selectable={false}

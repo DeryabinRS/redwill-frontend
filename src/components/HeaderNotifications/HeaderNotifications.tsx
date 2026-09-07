@@ -1,4 +1,4 @@
-import { Badge, Button, Empty, List, Popover, Typography } from 'antd'
+import { Badge, Button, Empty, Listy, Popover, Spin, Typography } from 'antd'
 import { BellOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -46,41 +46,38 @@ function HeaderNotifications() {
       {notifications.length === 0 && !isFetching ? (
         <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('notifications.empty')} />
       ) : (
-        <List
-          size="small"
-          loading={isFetching}
-          dataSource={notifications}
-          renderItem={(item) => (
-            <List.Item
-              className={
-                item.read_at
-                  ? 'header-notifications__item'
-                  : 'header-notifications__item header-notifications__item--unread'
-              }
-              onClick={() => void openNotification(item)}
-            >
-              <List.Item.Meta
-                title={item.title}
-                description={
-                  <>
-                    {item.body ? (
-                      <Typography.Paragraph
-                        type="secondary"
-                        ellipsis={{ rows: 2 }}
-                        style={{ marginBottom: 4 }}
-                      >
-                        {item.body}
-                      </Typography.Paragraph>
-                    ) : null}
-                    <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                      {dayjs(item.created_at).format('DD.MM.YYYY HH:mm')}
-                    </Typography.Text>
-                  </>
+        <Spin spinning={isFetching}>
+          <Listy
+            items={notifications}
+            rowKey={(item) => item.id}
+            itemRender={(item) => (
+              <div
+                className={
+                  item.read_at
+                    ? 'header-notifications__item'
+                    : 'header-notifications__item header-notifications__item--unread'
                 }
-              />
-            </List.Item>
-          )}
-        />
+                onClick={() => void openNotification(item)}
+              >
+                <Typography.Text strong style={{ display: 'block' }}>
+                  {item.title}
+                </Typography.Text>
+                {item.body ? (
+                  <Typography.Paragraph
+                    type="secondary"
+                    ellipsis={{ rows: 2 }}
+                    style={{ marginBottom: 4 }}
+                  >
+                    {item.body}
+                  </Typography.Paragraph>
+                ) : null}
+                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                  {dayjs(item.created_at).format('DD.MM.YYYY HH:mm')}
+                </Typography.Text>
+              </div>
+            )}
+          />
+        </Spin>
       )}
       <div className="header-notifications__footer">
         <Link to="/notifications" onClick={() => setOpen(false)}>
