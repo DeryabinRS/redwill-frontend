@@ -50,7 +50,9 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         headerBg: mode === 'dark' ? '#141414' : '#fff',
         siderBg: mode === 'dark' ? '#141414' : '',
       },
-
+      Form: {
+        itemMarginBottom: 16,
+      },
     },
   }), [mode])
 

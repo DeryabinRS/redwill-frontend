@@ -90,6 +90,7 @@ function NotificationsPage() {
                   {dayjs(item.created_at).format('DD.MM.YYYY HH:mm')}
                 </Typography.Text>
               </div>
+              {item.read_at && 'Прочитано'}
               <Checkbox
                 checked={!!item.read_at}
                 onClick={(e) => {

@@ -1,3 +1,7 @@
+import React from "react";
+
+export const renderHTML = (rawHTML: string, tag = 'div') => React.createElement(tag, { dangerouslySetInnerHTML: { __html: rawHTML } });
+
 export const moderationStatusOptions = [
 	{ value: 0, label: 'На модерации' },
 	{ value: 1, label: 'Модерация отклонена' },

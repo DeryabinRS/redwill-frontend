@@ -11,6 +11,7 @@ import {
   type UserNotification,
 } from '@features/notification/notificationSlice'
 import './HeaderNotifications.css'
+import { renderHTML } from '@utils/form'
 
 function HeaderNotifications() {
   const { t } = useTranslation()
@@ -49,6 +50,7 @@ function HeaderNotifications() {
         <Spin spinning={isFetching}>
           <Listy
             items={notifications}
+            styles={{ item: { padding: '4px 0' } }}
             rowKey={(item) => item.id}
             itemRender={(item) => (
               <div
@@ -68,7 +70,7 @@ function HeaderNotifications() {
                     ellipsis={{ rows: 2 }}
                     style={{ marginBottom: 4 }}
                   >
-                    {item.body}
+                    {renderHTML(item.body)}
                   </Typography.Paragraph>
                 ) : null}
                 <Typography.Text type="secondary" style={{ fontSize: 12 }}>
