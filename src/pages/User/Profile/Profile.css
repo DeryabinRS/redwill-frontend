@@ -96,13 +96,6 @@
   text-align: center;
 }
 
-.profile-list-section__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 12px;
-  align-items: stretch;
-}
-
 .profile-list-section__pagination {
   display: flex;
   justify-content: center;
@@ -212,9 +205,6 @@
     padding-inline: 16px;
   }
 
-  .profile-list-section__grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .profile-shell {

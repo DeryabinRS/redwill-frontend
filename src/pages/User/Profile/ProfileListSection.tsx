@@ -1,3 +1,5 @@
+import { Col, Row } from 'antd'
+import { Children } from 'react'
 import type { ReactNode } from 'react'
 
 type ProfileListSectionProps = {
@@ -14,7 +16,13 @@ function ProfileListSection({ title, count, children, pagination }: ProfileListS
         <h3 className="profile-list-section__title">{title}</h3>
         {count != null ? <span className="profile-list-section__count">{count}</span> : null}
       </header>
-      <div className="profile-list-section__grid">{children}</div>
+      <Row gutter={[12, 12]}>
+        {Children.map(children, (child) => (
+          <Col xs={24} sm={12} lg={8}>
+            {child}
+          </Col>
+        ))}
+      </Row>
       {pagination}
     </section>
   )
