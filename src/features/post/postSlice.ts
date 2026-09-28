@@ -28,9 +28,13 @@ export type Post = {
   user_id: number
   created_at: string
   updated_at: string
-  profile?: {
-    first_name: string
-    last_name: string
+  user?: {
+    login?: string | null
+    profile?: {
+      first_name: string
+      last_name: string
+      nick_name?: string | null
+    }
   }
   category?: {
     id: number

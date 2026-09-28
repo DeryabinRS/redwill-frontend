@@ -75,7 +75,7 @@ function Post() {
 
   const postDetails = postData as PostWithMotoclubs
   const imageSrc = postDetails.image ? `${API_URL}${postDetails.image}` : null
-
+  console.log(postData)
   return (
     <div className="container">
       <Card style={{ marginTop: 8 }}>
@@ -95,6 +95,21 @@ function Post() {
               <Title level={3} style={{ margin: 0 }}>
                 {postData.title}
               </Title>
+              {(() => {
+                const authorName =
+                  postData.user?.profile?.nick_name?.trim() ||
+                  postData.user?.login?.trim() ||
+                  null
+
+                if (!authorName) return null
+
+                return (
+                  <Space size={8}>
+                    <UserOutlined />
+                    <Text type="secondary">{authorName}</Text>
+                  </Space>
+                )
+              })()}
               <Divider style={{ margin: '0' }} />
               <Space orientation="vertical" size={8}>
                 {(postData.date_start || postData.time_start) && (
@@ -120,15 +135,6 @@ function Post() {
                   <Space size={8}>
                     <EnvironmentOutlined />
                     <Text type="secondary">{postData.address}</Text>
-                  </Space>
-                )}
-
-                {postData.profile && (
-                  <Space size={8}>
-                    <UserOutlined />
-                    <Text type="secondary">
-                      {postData.profile.first_name} {postData.profile.last_name}
-                    </Text>
                   </Space>
                 )}
 

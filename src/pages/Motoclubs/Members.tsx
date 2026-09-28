@@ -1,6 +1,6 @@
-import { App as AntdApp, Avatar, Button, Card, Popconfirm, Space, Switch, Table, Tag, Typography } from 'antd'
+import { App as AntdApp, Avatar, Button, Card, Popconfirm, Space, Switch, Table, Tag, Tooltip, Typography } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
-import { ArrowLeftOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons'
+import { ArrowLeftOutlined, CheckOutlined, CloseOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import { API_URL } from '@config/constants'
@@ -47,6 +47,17 @@ function MotoclubMembers() {
       message.success('Заявка принята')
     } catch {
       message.error('Не удалось принять заявку')
+    }
+  }
+
+  const handleDecline = async (userId: number) => {
+    if (!motoclub) return
+
+    try {
+      await removeMember({ motoclub, userId }).unwrap()
+      message.success('Заявка отклонена')
+    } catch {
+      message.error('Не удалось отклонить заявку')
     }
   }
 
@@ -118,9 +129,7 @@ function MotoclubMembers() {
         record.verified ? (
           <Tag color="green">Участник</Tag>
         ) : (
-          <Button size="small" type="primary" loading={isUpdating} onClick={() => void handleAccept(record.id)}>
-            Принять заявку
-          </Button>
+          <Tag color="blue">Заявка</Tag>
         ),
     },
     {
@@ -142,17 +151,43 @@ function MotoclubMembers() {
       key: 'actions',
       width: 80,
       render: (_value, record) => (
-        <Popconfirm
-          title="Удалить из клуба?"
-          description="Пользователь будет исключён из мотоклуба"
-          okText="Удалить"
-          cancelText="Отмена"
-          okButtonProps={{ danger: true, loading: isRemoving }}
-          disabled={record.is_owner}
-          onConfirm={() => void handleRemove(record.id)}
-        >
-          <Button danger disabled={record.is_owner} icon={<DeleteOutlined />} size="small" />
-        </Popconfirm>
+        <div>
+          {record.verified ? (
+          <Popconfirm
+            title="Удалить из клуба?"
+            description="Пользователь будет исключён из мотоклуба"
+            okText="Удалить"
+            cancelText="Отмена"
+            okButtonProps={{ danger: true, loading: isRemoving }}
+            disabled={record.is_owner}
+            onConfirm={() => void handleRemove(record.id)}
+          >
+            <Button danger disabled={record.is_owner} icon={<DeleteOutlined />} size="small" />
+          </Popconfirm>
+          ) : (
+            <Space.Compact block>
+              <Tooltip title="Принять">
+                <Button 
+                  size="small" 
+                  icon={<CheckOutlined />} 
+                  variant="solid"
+                  color="green"
+                  loading={isUpdating} 
+                  onClick={() => void handleAccept(record.id)} 
+                />
+              </Tooltip>
+              <Tooltip title="Отклонить">
+                <Button 
+                  size="small"
+                  icon={<CloseOutlined />}
+                  type="primary" 
+                  loading={isUpdating} 
+                  onClick={() => void handleDecline(record.id)}
+                />
+              </Tooltip>
+            </Space.Compact>
+          )}
+        </div>
       ),
     },
   ]
