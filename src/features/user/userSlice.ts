@@ -56,6 +56,8 @@ export type PublicUserInfo = {
   accommodation: number | null
   avatar: string | null
   roles: string[]
+  is_friend: boolean
+  friends_count?: number
 }
 
 export type UpdateUserProfilePayload = {

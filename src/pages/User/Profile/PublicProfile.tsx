@@ -1,10 +1,12 @@
-import { Card, Spin, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Spin, Typography } from 'antd'
 import { Link, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { API_URL } from '@config/constants'
-import { useGetPublicUserProfileQuery } from '@features/user/userSlice'
+import { useGetPublicUserProfileQuery, useGetUserInfoQuery } from '@features/user/userSlice'
 import { useGetPublicJoinedMotoclubsQuery } from '@features/motoclub/motoclubSlice'
 import { useGetPublicUserMotorcyclesQuery } from '@features/motorcycle/motorcycleSlice'
+import { useAddFriendMutation, useRemoveFriendMutation } from '@features/friend/friendSlice'
 import { ProfilePersonalForm } from './ProfilePersonalForm'
 import './Profile.css'
 import '../JoinedMotoclubs/JoinedMotoclubs.css'
@@ -39,6 +41,16 @@ function PublicProfile() {
     skip: !isValidId,
   })
 
+  const { data: currentUser } = useGetUserInfoQuery()
+  const { message } = AntdApp.useApp()
+  const [addFriend, { isLoading: isAddingFriend }] = useAddFriendMutation()
+  const [removeFriend, { isLoading: isRemovingFriend }] = useRemoveFriendMutation()
+  const [isFriend, setIsFriend] = useState(false)
+
+  useEffect(() => {
+    setIsFriend(Boolean(userInfo?.is_friend))
+  }, [userInfo])
+
   if (isLoading) {
     return (
       <div style={{ textAlign: 'center', padding: 48 }}>
@@ -62,6 +74,23 @@ function PublicProfile() {
     : userInfo.login
   const avatarSrc = userInfo.avatar ? `${API_URL}${userInfo.avatar}` : null
   const motoclubs = joinedData?.data || []
+  const isOwnProfile = currentUser?.id === userId
+
+  const handleToggleFriend = async () => {
+    try {
+      if (isFriend) {
+        await removeFriend(userId).unwrap()
+        setIsFriend(false)
+        message.success(t('profile.friendRemoved'))
+      } else {
+        await addFriend(userId).unwrap()
+        setIsFriend(true)
+        message.success(t('profile.friendAdded'))
+      }
+    } catch {
+      message.error(isFriend ? t('profile.friendRemoveError') : t('profile.friendAddError'))
+    }
+  }
 
   return (
     <div className="container profile-page">
@@ -74,6 +103,16 @@ function PublicProfile() {
               <p className="profile-shell__handle">{handleLabel}</p>
             </div>
             <div className="profile-shell__meta">
+              {!isOwnProfile && (
+                <Button
+                  type={isFriend ? 'default' : 'primary'}
+                  danger={isFriend}
+                  loading={isAddingFriend || isRemovingFriend}
+                  onClick={() => void handleToggleFriend()}
+                >
+                  {isFriend ? t('profile.removeFriend') : t('profile.addFriend')}
+                </Button>
+              )}
               {userInfo.roles?.length
                 ? userInfo.roles.slice(0, 2).map((role) => (
                     <span key={role} className="profile-shell__chip profile-shell__chip--accent">

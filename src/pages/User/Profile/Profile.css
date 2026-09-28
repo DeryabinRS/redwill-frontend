@@ -605,6 +605,34 @@
   font-size: 14px;
 }
 
+.friends-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.friends-list__more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--profile-muted);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.friends-list__more:hover {
+  border-color: var(--profile-accent);
+  color: #fff;
+}
+
 @media (max-width: 991px) {
   .profile-shell__body {
     grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);

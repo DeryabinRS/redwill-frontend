@@ -106,6 +106,13 @@
     "motorcycleDeleteError": "Failed to delete motorcycle",
     "motorcycleDeleteConfirmTitle": "Delete motorcycle?",
     "motorcycleLimit": "You can add no more than {{count}} motorcycles",
+    "friends": "Friends",
+    "addFriend": "Add friend",
+    "removeFriend": "Remove friend",
+    "friendAdded": "User added to friends",
+    "friendRemoved": "User removed from friends",
+    "friendAddError": "Failed to add friend",
+    "friendRemoveError": "Failed to remove friend",
     "loadError": "Failed to load user data"
   }
 }

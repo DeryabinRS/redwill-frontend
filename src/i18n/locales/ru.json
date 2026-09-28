@@ -101,6 +101,13 @@
     "motorcycleDeleteError": "Не удалось удалить мотоцикл",
     "motorcycleDeleteConfirmTitle": "Удалить мотоцикл?",
     "motorcycleLimit": "Можно добавить не более {{count}} мотоциклов",
+    "friends": "Друзья",
+    "addFriend": "Добавить в друзья",
+    "removeFriend": "Удалить из друзей",
+    "friendAdded": "Пользователь добавлен в друзья",
+    "friendRemoved": "Пользователь удалён из друзей",
+    "friendAddError": "Не удалось добавить в друзья",
+    "friendRemoveError": "Не удалось удалить из друзей",
     "loadError": "Не удалось загрузить данные пользователя"
   }
 }

@@ -14,6 +14,7 @@ import UserMotoclubs from '../Motoclubs'
 import { ProfilePersonalForm } from './ProfilePersonalForm'
 import ProfileJoinedMotoclubs from './ProfileJoinedMotoclubs'
 import ProfileMotorcycles from './ProfileMotorcycles'
+import FriendsSection from './FriendsSection'
 import './Profile.css'
 import UserMotobars from '../Motobars'
 import UserServiceStations from '../ServiceStations'
@@ -171,6 +172,7 @@ function Profile() {
                 displayName={displayName}
                 handleLabel={handleLabel}
               />
+              <FriendsSection userId={userInfo.id} />
             </div>
 
             <div className="profile-shell__identity">
