@@ -94,6 +94,8 @@ function Motoclub() {
   const logoSrc = motoclubData.logo ? `${API_URL}${motoclubData.logo}` : null
   const parent = motoclubData.parent
   const children = motoclubData.children ?? []
+  // Показываем только подтверждённых участников (verified не NULL)
+  const verifiedMembers = (motoclubData.members ?? []).filter((member) => member.verified !== null)
 
   return (
     <div className="container">
@@ -202,7 +204,7 @@ function Motoclub() {
         <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
           Участники мотоклуба
         </Title>
-        {(motoclubData.members?.length ?? 0) === 0 ? (
+        {(verifiedMembers.length ?? 0) === 0 ? (
           <Text type="secondary">Пока нет участников</Text>
         ) : (
           <div
@@ -212,7 +214,7 @@ function Motoclub() {
               gap: 12,
             }}
           >
-            {motoclubData.members?.map((member) => {
+            {verifiedMembers.map((member) => {
               const avatarSrc = member.avatar ? `${API_URL}${member.avatar}` : null
 
               return (

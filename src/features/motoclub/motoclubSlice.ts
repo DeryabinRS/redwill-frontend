@@ -6,6 +6,7 @@ export type MotoclubMember = {
   id: number
   login: string
   avatar: string | null
+  verified?: string | null
 }
 
 export type MotoclubManagedMember = MotoclubMember & {
