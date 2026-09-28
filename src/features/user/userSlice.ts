@@ -44,6 +44,20 @@ export type UserInfo = {
   verified_at?: string
 }
 
+export type PublicUserInfo = {
+  id: number
+  login: string
+  first_name: string | null
+  last_name: string | null
+  nick_name: string | null
+  city: string | null
+  phone: string | null
+  birthday: string | null
+  accommodation: number | null
+  avatar: string | null
+  roles: string[]
+}
+
 export type UpdateUserProfilePayload = {
   first_name?: string | null
   last_name?: string | null
@@ -118,6 +132,11 @@ export const userApi = createApi({
       transformResponse: (response: { data: UpdateUserProfilePayload & { id: number } }) => response.data,
       invalidatesTags: ['User'],
     }),
+    getPublicUserProfile: builder.query<PublicUserInfo, number>({
+      query: (id) => ({ url: `/users/${id}/profile`, method: 'GET' }),
+      transformResponse: (response: { data: PublicUserInfo }) => response.data,
+      providesTags: (_result, _error, id) => [{ type: 'User', id }],
+    }),
     getAllUsers: builder.query<UsersListResponse, void>({
       query: () => ({ url: '/users', method: 'GET' }),
       transformResponse: (response: GetAllUsersResponse) => response.data_user_list,
@@ -153,6 +172,7 @@ export const {
   useLazyGetAllUsersQuery,
   useGetUserQuery,
   useLazyGetUserQuery,
+  useGetPublicUserProfileQuery,
   useUpdateUserBanedMutation,
   useUploadUserAvatarMutation,
   useDeleteUserAvatarMutation,

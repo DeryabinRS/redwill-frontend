@@ -25,9 +25,10 @@ type ProfilePersonalFormProps = {
   >
   displayName: string
   handleLabel: string
+  readOnly?: boolean
 }
 
-export function ProfilePersonalForm({ userInfo, displayName, handleLabel }: ProfilePersonalFormProps) {
+export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOnly = false }: ProfilePersonalFormProps) {
   const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
@@ -95,7 +96,7 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel }: Prof
       <div className="profile-shell__dossier-head">
         <div className="profile-shell__section-label">
           {t('profile.personalInfo')}
-          <Button icon={<EditOutlined />} size="small" onClick={() => setOpen(true)} />
+          {!readOnly && <Button icon={<EditOutlined />} size="small" onClick={() => setOpen(true)} />}
         </div>
       </div>
 

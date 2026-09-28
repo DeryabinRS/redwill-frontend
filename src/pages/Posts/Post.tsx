@@ -103,10 +103,18 @@ function Post() {
 
                 if (!authorName) return null
 
+                const authorId = postData.user_id
+
                 return (
                   <Space size={8}>
                     <UserOutlined />
-                    <Text type="secondary">{authorName}</Text>
+                    {authorId != null ? (
+                      <Link to={`/users/${authorId}`} style={{ color: 'inherit' }}>
+                        <Text type="secondary" underline>{authorName}</Text>
+                      </Link>
+                    ) : (
+                      <Text type="secondary">{authorName}</Text>
+                    )}
                   </Space>
                 )
               })()}

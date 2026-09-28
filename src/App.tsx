@@ -16,6 +16,7 @@ import ResendVerification from './pages/Auth/ResendVerification'
 import ForgotPassword from './pages/Auth/ForgotPassword'
 import ResetPassword from './pages/Auth/ResetPassword'
 import Profile from './pages/User/Profile'
+import PublicProfile from './pages/User/Profile/PublicProfile'
 import Dashboard from './pages/Dashboard'
 import Users from './pages/Dashboard/Users/Users'
 import User from './pages/Dashboard/Users/User'
@@ -73,6 +74,14 @@ function AppContent() {
               <Route index element={<Profile />} />
               <Route path="posts/:post/edit" element={<DashboardUpdatePost />} />
             </Route>
+            <Route
+              path="/users/:id"
+              element={
+                <ProtectedRoute>
+                  <PublicProfile />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/notifications"
               element={

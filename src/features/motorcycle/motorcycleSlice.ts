@@ -56,6 +56,10 @@ export const motorcycleApi = createApi({
       transformResponse: (response: { data: UserMotorcycle[] }) => response.data,
       providesTags: ['UserMotorcycles'],
     }),
+    getPublicUserMotorcycles: builder.query<UserMotorcycle[], number>({
+      query: (id) => ({ url: `/users/${id}/motorcycles`, method: 'GET' }),
+      transformResponse: (response: { data: UserMotorcycle[] }) => response.data,
+    }),
     createUserMotorcycle: builder.mutation<UserMotorcycle, CreateUserMotorcyclePayload>({
       query: (body) => ({
         url: '/user/motorcycles',
@@ -80,6 +84,7 @@ export const {
   useGetMotorcycleModelsQuery,
   useLazyGetMotorcycleModelsQuery,
   useGetUserMotorcyclesQuery,
+  useGetPublicUserMotorcyclesQuery,
   useCreateUserMotorcycleMutation,
   useDeleteUserMotorcycleMutation,
 } = motorcycleApi

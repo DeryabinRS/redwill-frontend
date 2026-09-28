@@ -85,6 +85,11 @@ type GetMotoclubListArgs = {
   search?: string
 }
 
+type GetPublicJoinedMotoclubsArgs = {
+  userId: number
+  pagination?: { page?: number; per_page?: number }
+}
+
 export const motoclubApi = createApi({
   reducerPath: 'motoclubApi',
   tagTypes: ['Motoclubs', 'Motoclub', 'JoinedMotoclubs', 'MotoclubMembers'],
@@ -164,6 +169,21 @@ export const motoclubApi = createApi({
         data: MotoclubListResponse
       }) => response.data,
       providesTags: ['JoinedMotoclubs'],
+    }),
+    getPublicJoinedMotoclubs: builder.query<MotoclubListResponse, GetPublicJoinedMotoclubsArgs>({
+      query: ({ userId, pagination }) => ({
+        url: `/users/${userId}/joined-motoclubs`,
+        params: {
+          page: pagination?.page,
+          per_page: pagination?.per_page || 100,
+        },
+      }),
+      transformResponse: (response: {
+        response_code: number
+        status: string
+        message: string
+        data: MotoclubListResponse
+      }) => response.data,
     }),
     joinMotoclub: builder.mutation<Motoclub, string | number>({
       query: (motoclub) => ({
@@ -313,6 +333,7 @@ export const {
   useGetUserMotoclubsQuery,
   useGetUserMotoclubQuery,
   useGetJoinedMotoclubsQuery,
+  useGetPublicJoinedMotoclubsQuery,
   useJoinMotoclubMutation,
   useLeaveMotoclubMutation,
   useGetMotoclubMembersQuery,
