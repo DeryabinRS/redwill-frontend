@@ -113,6 +113,7 @@
     "friendRemoved": "User removed from friends",
     "friendAddError": "Failed to add friend",
     "friendRemoveError": "Failed to remove friend",
+    "friendRemoveConfirmTitle": "Remove from friends?",
     "loadError": "Failed to load user data"
   }
 }

@@ -108,6 +108,7 @@
     "friendRemoved": "Пользователь удалён из друзей",
     "friendAddError": "Не удалось добавить в друзья",
     "friendRemoveError": "Не удалось удалить из друзей",
+    "friendRemoveConfirmTitle": "Удалить из друзей?",
     "loadError": "Не удалось загрузить данные пользователя"
   }
 }

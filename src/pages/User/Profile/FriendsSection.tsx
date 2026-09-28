@@ -1,9 +1,10 @@
-import { Avatar, List, Modal, Spin, Tooltip } from 'antd'
+import { App as AntdApp, Avatar, Button, List, Modal, Popconfirm, Spin, Tooltip } from 'antd'
+import { CloseOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { API_URL } from '@config/constants'
-import { useGetUserFriendsQuery } from '@features/friend/friendSlice'
+import { useGetUserFriendsQuery, useRemoveFriendMutation } from '@features/friend/friendSlice'
 
 const MAX_VISIBLE_FRIENDS = 10
 
@@ -13,8 +14,23 @@ type FriendsSectionProps = {
 
 function FriendsSection({ userId }: FriendsSectionProps) {
   const { t } = useTranslation()
+  const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
+  const [removingId, setRemovingId] = useState<number | null>(null)
   const { data: friends = [], isLoading } = useGetUserFriendsQuery(userId)
+  const [removeFriend] = useRemoveFriendMutation()
+
+  const handleRemove = async (friendId: number) => {
+    setRemovingId(friendId)
+    try {
+      await removeFriend(friendId).unwrap()
+      message.success(t('profile.friendRemoved'))
+    } catch {
+      message.error(t('profile.friendRemoveError'))
+    } finally {
+      setRemovingId(null)
+    }
+  }
 
   if (isLoading) {
     return (
@@ -33,7 +49,7 @@ function FriendsSection({ userId }: FriendsSectionProps) {
   const hiddenCount = friends.length - visibleFriends.length
 
   return (
-    <section className="profile-shell__section">
+    <section className="profile-shell__section" style={{ marginTop: 6 }}>
       <div className="profile-shell__section-label">{t('profile.friends')}</div>
       <div className="friends-list">
         {visibleFriends.map((friend) => {
@@ -41,13 +57,30 @@ function FriendsSection({ userId }: FriendsSectionProps) {
           const label = friend.nick_name?.trim() || friend.login
 
           return (
-            <Tooltip key={friend.id} title={label}>
-              <Link to={`/users/${friend.id}`}>
-                <Avatar src={avatarSrc} size={40}>
-                  {avatarSrc ? null : label.slice(0, 1).toUpperCase()}
-                </Avatar>
-              </Link>
-            </Tooltip>
+            <div key={friend.id} className="friends-list__item">
+              <Tooltip title={label}>
+                <Link to={`/users/${friend.id}`}>
+                  <Avatar src={avatarSrc} size={40}>
+                    {avatarSrc ? null : label.slice(0, 1).toUpperCase()}
+                  </Avatar>
+                </Link>
+              </Tooltip>
+              <Popconfirm
+                title={t('profile.friendRemoveConfirmTitle')}
+                okText={t('common.delete')}
+                cancelText={t('common.cancel')}
+                okButtonProps={{ danger: true, loading: removingId === friend.id }}
+                onConfirm={() => void handleRemove(friend.id)}
+              >
+                <button
+                  type="button"
+                  className="friends-list__remove"
+                  aria-label={t('profile.removeFriend')}
+                >
+                  <CloseOutlined />
+                </button>
+              </Popconfirm>
+            </div>
           )
         })}
         {hiddenCount > 0 && (
@@ -75,7 +108,22 @@ function FriendsSection({ userId }: FriendsSectionProps) {
             const label = friend.nick_name?.trim() || friend.login
 
             return (
-              <List.Item>
+              <List.Item
+                actions={[
+                  <Popconfirm
+                    key="remove"
+                    title={t('profile.friendRemoveConfirmTitle')}
+                    okText={t('common.delete')}
+                    cancelText={t('common.cancel')}
+                    okButtonProps={{ danger: true, loading: removingId === friend.id }}
+                    onConfirm={() => void handleRemove(friend.id)}
+                  >
+                    <Button danger size="small">
+                      {t('profile.removeFriend')}
+                    </Button>
+                  </Popconfirm>,
+                ]}
+              >
                 <List.Item.Meta
                   avatar={
                     <Avatar src={avatarSrc}>{avatarSrc ? null : label.slice(0, 1).toUpperCase()}</Avatar>
