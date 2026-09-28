@@ -1,5 +1,5 @@
 import { App as AntdApp, Button, Card, Spin, Typography } from 'antd'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { API_URL } from '@config/constants'
@@ -75,6 +75,11 @@ function PublicProfile() {
   const avatarSrc = userInfo.avatar ? `${API_URL}${userInfo.avatar}` : null
   const motoclubs = joinedData?.data || []
   const isOwnProfile = currentUser?.id === userId
+
+  // Если открыли собственный профиль по публичному маршруту — ведём на редактируемый профиль
+  if (isOwnProfile) {
+    return <Navigate to="/profile" replace />
+  }
 
   const handleToggleFriend = async () => {
     try {

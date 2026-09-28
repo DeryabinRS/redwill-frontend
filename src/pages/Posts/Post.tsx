@@ -75,7 +75,6 @@ function Post() {
 
   const postDetails = postData as PostWithMotoclubs
   const imageSrc = postDetails.image ? `${API_URL}${postDetails.image}` : null
-  console.log(postData)
   return (
     <div className="container">
       <Card style={{ marginTop: 8 }}>
