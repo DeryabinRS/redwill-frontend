@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
 import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
+import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
 import '@components/PostFeed/PostFeed.css'
 
@@ -120,43 +121,30 @@ function Motobars() {
 
   return (
     <div className="container" style={{ padding: '8px 0' }}>
-      <div className="title_page">
-        <div>
-          <Typography.Text className="events-calendar-eyebrow">
-            места
-          </Typography.Text>
-          <Typography.Title level={1} className="events-calendar-title">
-            Мото-бары
-          </Typography.Title>
-          <Typography.Paragraph className="events-calendar-description">
-            Карта и список мото-баров сообщества.
-          </Typography.Paragraph>
-        </div>
-        <CoffeeOutlined className="title_page__icon" />
-      </div>
+      <Shell>
+        <ShellHeader
+          eyebrow="места"
+          title="Мото-бары"
+          subtitle="Карта и список мото-баров сообщества."
+          actions={<span className="shell__chip shell__chip--accent"><CoffeeOutlined /></span>}
+        />
 
-      <Card style={{ marginBottom: 8 }}>
-        {mapMarkers.length > 0 ? (
-          <MapView markers={mapMarkers} height={520} zoom={4} />
-        ) : (
-          <Typography.Text type="secondary">Нет мото-баров с координатами для отображения на карте.</Typography.Text>
-        )}
-      </Card>
+        <ShellSection label="карта">
+          {mapMarkers.length > 0 ? (
+            <MapView markers={mapMarkers} height={520} zoom={4} />
+          ) : (
+            <Typography.Text type="secondary">Нет мото-баров с координатами для отображения на карте.</Typography.Text>
+          )}
+        </ShellSection>
 
-      <Card>
-        <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }} wrap>
-            <Typography.Title level={4} style={{ margin: 0 }}>
-              Список мото-баров
-            </Typography.Title>
-            <Input.Search
-              allowClear
-              placeholder="Поиск по названию или адресу"
-              style={{ width: 320, maxWidth: '100%' }}
-              value={searchInput}
-              onChange={(event) => setSearchInput(event.target.value)}
-            />
-          </Space>
+        <ShellSection label="список">
+          <Input.Search
+            allowClear
+            placeholder="Поиск по названию или адресу"
+            style={{ width: 320, maxWidth: '100%', marginBottom: 16 }}
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+          />
 
           <Spin spinning={isLoading || isFetching}>
             {motobars.length === 0 && !isLoading ? (
@@ -174,7 +162,7 @@ function Motobars() {
 
           {total > 0 && (
             <Pagination
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 16 }}
               align="end"
               current={page}
               pageSize={pageSize}
@@ -189,8 +177,8 @@ function Motobars() {
               }}
             />
           )}
-        </Space>
-      </Card>
+        </ShellSection>
+      </Shell>
     </div>
   )
 }

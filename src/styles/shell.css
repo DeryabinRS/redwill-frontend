@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+/* ============================================================
+   Переиспользуемая дизайн-система «shell» (на базе profile-shell)
+   ============================================================ */
+
+.shell {
+  --shell-ink: #f2f2f0;
+  --shell-muted: #9a9a96;
+  --shell-line: rgba(255, 255, 255, 0.12);
+  --shell-accent: var(--theme-color, #cd2e2c);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    linear-gradient(165deg, rgba(38, 38, 42, 0.96), rgba(8, 8, 10, 0.94));
+  box-shadow:
+    0 22px 40px rgba(0, 0, 0, 0.34),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+  font-family: 'IBM Plex Sans', 'Segoe UI', sans-serif;
+}
+
+.shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(205, 46, 44, 0.28), transparent 34%),
+    radial-gradient(circle at 8% 100%, rgba(255, 255, 255, 0.08), transparent 40%);
+  pointer-events: none;
+}
+
+.shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+
+.shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.shell__masthead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 22px 22px 18px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.16);
+}
+
+.shell__eyebrow {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--shell-accent);
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.shell__title {
+  margin: 0;
+  color: var(--shell-ink);
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: clamp(1.75rem, 3vw, 2.35rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.shell__title--section {
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+}
+
+.shell__subtitle {
+  margin: 6px 0 0;
+  color: var(--shell-muted);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
+.shell__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.shell__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--shell-line);
+  background: rgba(0, 0, 0, 0.24);
+  color: #c8c8c4;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.shell__chip--accent {
+  border-color: rgba(205, 46, 44, 0.5);
+  color: #ffb3b1;
+}
+
+.shell__body {
+  display: grid;
+  gap: 0;
+}
+
+.shell__section {
+  padding: 18px 22px 20px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.shell__section:last-child {
+  border-bottom: none;
+}
+
+.shell__section-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.shell__section-head::after {
+  content: '';
+  flex: 1;
+  min-width: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.16), transparent);
+}
+
+.shell__section-label {
+  margin: 0;
+  color: var(--shell-muted);
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.shell__empty {
+  color: var(--shell-muted);
+  font-size: 14px;
+}
+
+.shell__field {
+  margin-bottom: 0;
+  border-bottom: 1px solid var(--shell-line);
+  border-left: 1px solid var(--shell-line);
+  padding: 2px 6px;
+}
+
+.shell__field-label {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--shell-muted);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.shell__field-value {
+  margin: 0;
+  color: var(--shell-ink);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+/* Внутри shell карточки antd выглядят как панели профиля */
+.shell .ant-card {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.shell .ant-typography,
+.shell .ant-card-head-title,
+.shell .ant-empty-description {
+  color: var(--shell-ink);
+}
+
+.shell .ant-input-search .ant-input,
+.shell .ant-pagination-item,
+.shell .ant-select-selector {
+  background: rgba(0, 0, 0, 0.24);
+}
+
+@media (max-width: 575px) {
+  .shell__masthead,
+  .shell__section {
+    padding-inline: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shell::before,
+  .shell::after {
+    animation: none;
+    transition: none;
+  }
+}

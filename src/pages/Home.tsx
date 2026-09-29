@@ -6,6 +6,7 @@ import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutli
 import HeaderAnimation from '../components/HeaderAnimation/HeaderAnimation'
 import PostFeed from '../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
+import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
 import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
@@ -118,63 +119,52 @@ function Home() {
 
   const renderResourceBlock = (block: typeof resourceBlocks[number]) => (
     <Col key={block.title} xs={24} xl={12}>
-      <div className="home-resource-card">
-        <div className="home-resource-card__header">
-          <div>
-            <Typography.Text className="home-resource-card__eyebrow">
-              раздел
-            </Typography.Text>
-            <Typography.Title level={3} className="home-resource-card__title">
-              {block.title}
-            </Typography.Title>
-            <Typography.Paragraph className="home-resource-card__description">
-              {block.description}
-            </Typography.Paragraph>
-          </div>
-          <div className="home-resource-card__icon">
-            {block.icon}
-          </div>
-        </div>
+      <Shell>
+        <ShellHeader
+          title={block.title}
+          subtitle={block.description}
+          actions={<span className="shell__chip shell__chip--accent">{block.icon}</span>}
+        />
+        <ShellSection>
+          <Space.Compact style={{ marginBottom: 16 }}>
+            <ThemeButton onClick={() => navigate(block.link)}>
+              Смотреть все
+            </ThemeButton>
+            <ThemeButton icon={<PlusOutlined />} onClick={() => navigate(block.createLink)}>
+              Добавить
+            </ThemeButton>
+          </Space.Compact>
 
-        <Space.Compact style={{ marginBottom: 16 }}>
-          <ThemeButton onClick={() => navigate(block.link)}>
-            Смотреть все
-          </ThemeButton>
-          <ThemeButton icon={<PlusOutlined />} onClick={() => navigate(block.createLink)}>
-            Добавить
-          </ThemeButton>
-        </Space.Compact>
-
-        {block.isLoading ? (
-          <Skeleton active paragraph={{ rows: 4 }} />
-        ) : (
-          <div className="home-resource-gallery">
-            {block.items.map((item) => (
-              <Link
-                key={`${block.link}-${item.id}`}
-                to={`${block.link}/${item.id}`}
-                className="home-resource-gallery__item"
-                title={item.name}
-              >
-                <img src={`${API_URL}${item.logo}`} alt={item.name} loading="lazy" />
-                <span>{item.name}</span>
-              </Link>
-            ))}
-            {block.items.length === 0 && (
-              <Typography.Text className="home-resource-card__empty">
-                Пока нет опубликованных элементов с изображениями.
-              </Typography.Text>
-            )}
-          </div>
-        )}
-      </div>
+          {block.isLoading ? (
+            <Skeleton active paragraph={{ rows: 4 }} />
+          ) : (
+            <div className="home-resource-gallery">
+              {block.items.map((item) => (
+                <Link
+                  key={`${block.link}-${item.id}`}
+                  to={`${block.link}/${item.id}`}
+                  className="home-resource-gallery__item"
+                  title={item.name}
+                >
+                  <img src={`${API_URL}${item.logo}`} alt={item.name} loading="lazy" />
+                  <span>{item.name}</span>
+                </Link>
+              ))}
+              {block.items.length === 0 && (
+                <Typography.Text className="shell__empty">
+                  Пока нет опубликованных элементов с изображениями.
+                </Typography.Text>
+              )}
+            </div>
+          )}
+        </ShellSection>
+      </Shell>
     </Col>
   )
 
   return (
     <>
       <section className="section section__header" style={{ padding: '16px 0' }}>
-        <HeaderAnimation />
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="route-tile-panel">
             <Row gutter={[12, 12]}>
@@ -184,28 +174,28 @@ function Home() {
         </div>
       </section>
 
-      <section className="section section__events" style={{ padding: '30px 0' }}>
+      <section className="section">
         <div className="container">
-          <div className="events_header" style={{ marginTop: -80, zIndex: 1 }}>
-            <Typography.Title level={2} className="events_title">
-              Ближайшие события
-            </Typography.Title>
-          </div>
-          <Space.Compact>
-            <ThemeButton icon={<ScheduleOutlined />} onClick={() => navigate('/calendar')}>
-              Календарь
-            </ThemeButton>
-            <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/posts/create')}>
-              Добавить событие
-            </ThemeButton>
-          </Space.Compact>
-          <PostFeed />
-        </div>
-      </section>
+          <Shell>
+            <ShellHeader
+              title="Ближайшие события"
+              actions={
+                <Space.Compact>
+                  <ThemeButton icon={<ScheduleOutlined />} onClick={() => navigate('/calendar')}>
+                    Календарь
+                  </ThemeButton>
+                  <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/posts/create')}>
+                    Добавить событие
+                  </ThemeButton>
+                </Space.Compact>
+              }
+            />
+            <ShellSection>
+              <PostFeed />
+            </ShellSection>
+          </Shell>
 
-      <section className="section home-resources-section" style={{ padding: '30px 0' }}>
-        <div className="container">
-          <Row gutter={[16, 16]}>
+          <Row gutter={[16, 0]}>
             {resourceBlocks.map(renderResourceBlock)}
           </Row>
         </div>

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
 import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
+import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
 import '@components/PostFeed/PostFeed.css'
 
@@ -126,43 +127,30 @@ function Motoclubs() {
 
   return (
     <div className="container" style={{ padding: '8px 0' }}>
-      <div className="title_page">
-        <div>
-          <Typography.Text className="events-calendar-eyebrow">
-            сообщество
-          </Typography.Text>
-          <Typography.Title level={1} className="events-calendar-title">
-            Мотоклубы
-          </Typography.Title>
-          <Typography.Paragraph className="events-calendar-description">
-            Карта и список мотоклубов сообщества.
-          </Typography.Paragraph>
-        </div>
-        <ShopOutlined className="title_page__icon" />
-      </div>
+      <Shell>
+        <ShellHeader
+          eyebrow="сообщество"
+          title="Мотоклубы"
+          subtitle="Карта и список мотоклубов сообщества."
+          actions={<span className="shell__chip shell__chip--accent"><ShopOutlined /></span>}
+        />
 
-      <Card style={{ marginBottom: 8 }}>
-        {mapMarkers.length > 0 ? (
-          <MapView markers={mapMarkers} height={520} zoom={4} />
-        ) : (
-          <Typography.Text type="secondary">Нет мотоклубов с координатами для отображения на карте.</Typography.Text>
-        )}
-      </Card>
+        <ShellSection label="карта">
+          {mapMarkers.length > 0 ? (
+            <MapView markers={mapMarkers} height={520} zoom={4} />
+          ) : (
+            <Typography.Text type="secondary">Нет мотоклубов с координатами для отображения на карте.</Typography.Text>
+          )}
+        </ShellSection>
 
-      <Card>
-        <Space orientation="vertical" size="large" style={{ width: '100%' }}>
-          <Space style={{ width: '100%', justifyContent: 'space-between' }} wrap>
-            <Typography.Title level={4} style={{ margin: 0 }}>
-              Список мотоклубов
-            </Typography.Title>
-            <Input.Search
-              allowClear
-              placeholder="Поиск по названию или адресу"
-              style={{ width: 320, maxWidth: '100%' }}
-              value={searchInput}
-              onChange={(event) => setSearchInput(event.target.value)}
-            />
-          </Space>
+        <ShellSection label="список">
+          <Input.Search
+            allowClear
+            placeholder="Поиск по названию или адресу"
+            style={{ width: 320, maxWidth: '100%', marginBottom: 16 }}
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+          />
 
           <Spin spinning={isLoading || isFetching}>
             {motoclubs.length === 0 && !isLoading ? (
@@ -180,7 +168,7 @@ function Motoclubs() {
 
           {total > 0 && (
             <Pagination
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 16 }}
               align="end"
               current={page}
               pageSize={pageSize}
@@ -195,8 +183,8 @@ function Motoclubs() {
               }}
             />
           )}
-        </Space>
-      </Card>
+        </ShellSection>
+      </Shell>
     </div>
   )
 }
