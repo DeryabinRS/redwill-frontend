@@ -5,6 +5,7 @@ import { API_URL } from '@config/constants'
 import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import PostFeed from '@components/PostFeed/PostFeed'
+import { isAuthenticated } from '@utils/auth'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -96,6 +97,7 @@ function Motoclub() {
   const children = motoclubData.children ?? []
   // Показываем только подтверждённых участников (verified не NULL)
   const verifiedMembers = (motoclubData.members ?? []).filter((member) => member.verified !== null)
+  const isAuthenticatedUser = isAuthenticated()
 
   return (
     <div className="container">
@@ -217,9 +219,8 @@ function Motoclub() {
             {verifiedMembers.map((member) => {
               const avatarSrc = member.avatar ? `${API_URL}${member.avatar}` : null
 
-              return (
+              const memberCard = (
                 <Card
-                  key={member.id}
                   size="small"
                   styles={{ body: { padding: '8px 10px', textAlign: 'center' } }}
                   style={{ width: 120, overflow: 'hidden' }}
@@ -257,6 +258,21 @@ function Motoclub() {
                     {member.login}
                   </Text>
                 </Card>
+              )
+
+              if (!isAuthenticatedUser) {
+                return <div key={member.id}>{memberCard}</div>
+              }
+
+              return (
+                <Link
+                  key={member.id}
+                  to={`/users/${member.id}`}
+                  title={`Профиль ${member.login}`}
+                  style={{ display: 'block', color: 'inherit' }}
+                >
+                  {memberCard}
+                </Link>
               )
             })}
           </div>
