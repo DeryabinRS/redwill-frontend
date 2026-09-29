@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getAuthToken } from '../../utils/auth'
-import { API_URL } from '../../config/constants'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type MotorcycleOption = {
   value: string
@@ -27,17 +26,7 @@ export type CreateUserMotorcyclePayload = {
 export const motorcycleApi = createApi({
   reducerPath: 'motorcycleApi',
   tagTypes: ['UserMotorcycles'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getMotorcycleMakes: builder.query<MotorcycleOption[], void>({
       query: () => ({ url: '/motorcycles/makes', method: 'GET' }),

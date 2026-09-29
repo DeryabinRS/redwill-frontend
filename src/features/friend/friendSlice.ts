@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getAuthToken } from '../../utils/auth'
-import { API_URL } from '../../config/constants'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type Friend = {
   id: number
@@ -16,17 +15,7 @@ type FriendStatusResponse = {
 export const friendApi = createApi({
   reducerPath: 'friendApi',
   tagTypes: ['Friends'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getUserFriends: builder.query<Friend[], number>({
       query: (userId) => ({ url: `/users/${userId}/friends`, method: 'GET' }),

@@ -22,3 +22,12 @@ export function removeAuthToken(): void {
 export function isAuthenticated(): boolean {
   return Boolean(getAuthToken())
 }
+
+/**
+ * Централизованная обработка 401: удаляем токен и перенаправляем на логин.
+ */
+export function handleAuthError(): void {
+  removeAuthToken()
+  window.location.href = '/login'
+}
+

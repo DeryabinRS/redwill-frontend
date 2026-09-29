@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { API_URL } from '../../config/constants'
-import { getAuthToken } from '../../utils/auth'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type MotoclubMember = {
   id: number
@@ -93,17 +92,7 @@ type GetPublicJoinedMotoclubsArgs = {
 export const motoclubApi = createApi({
   reducerPath: 'motoclubApi',
   tagTypes: ['Motoclubs', 'Motoclub', 'JoinedMotoclubs', 'MotoclubMembers'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getMotoclub: builder.query<Motoclub, string | number>({
       query: (motoclub) => ({

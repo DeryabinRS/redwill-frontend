@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { useLazyGetUserInfoQuery, handleAuthError } from '../features/user/userSlice'
-import { isAuthenticated } from '../utils/auth'
+import { useLazyGetUserInfoQuery } from '../features/user/userSlice'
+import { isAuthenticated, handleAuthError } from '../utils/auth'
 
 function AppInitializer({ children }: { children: React.ReactNode }) {
   const [getUserInfo] = useLazyGetUserInfoQuery()

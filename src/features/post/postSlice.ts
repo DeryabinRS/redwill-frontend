@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getAuthToken } from '../../utils/auth'
-import { API_URL } from '../../config/constants'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 import dayjs from 'dayjs'
 
 export type PostCategory = {
@@ -110,17 +109,7 @@ type GetPostListArgs = {
 export const postApi = createApi({
   reducerPath: 'postApi',
   tagTypes: ['Posts', 'Post', 'UserPosts'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getPostCategories: builder.query<PostCategory[], void>({
       query: () => ({ url: '/post-categories', method: 'GET' }),

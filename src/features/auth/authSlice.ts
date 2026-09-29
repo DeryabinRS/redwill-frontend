@@ -1,5 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { API_URL } from '../../config/constants'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type User = {
   id: number
@@ -13,7 +13,6 @@ export type LoginResponse = {
   response_code: number
   status: string
   message: string
-  user_info: User
   token: string
   token_type: string
 }
@@ -36,10 +35,7 @@ export type RegisterResponse = {
 
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (body) => ({ url: '/login', method: 'POST', body }),

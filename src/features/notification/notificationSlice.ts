@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getAuthToken } from '../../utils/auth'
-import { API_URL } from '../../config/constants'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type UserNotification = {
   id: number
@@ -50,17 +49,7 @@ export type UpdateNotificationPayload = {
 export const notificationApi = createApi({
   reducerPath: 'notificationApi',
   tagTypes: ['Notifications', 'NotificationsUnread', 'DashboardNotifications'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getNotifications: builder.query<UserNotification[], number | void>({
       query: (limit = 20) => ({

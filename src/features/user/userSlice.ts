@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { getAuthToken, removeAuthToken } from '../../utils/auth'
-import { API_URL } from '../../config/constants'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type PaginationLink = {
   active: boolean
@@ -89,19 +88,7 @@ type GetUserResponse = {
 export const userApi = createApi({
   reducerPath: 'userApi',
   tagTypes: ['Users', 'User'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getUserInfo: builder.query<UserInfo, void>({
       query: () => ({ url: '/user/info', method: 'GET' }),
@@ -160,12 +147,6 @@ export const userApi = createApi({
     }),
   }),
 })
-
-// Хелпер для обработки ошибок — вызывается при 401
-export function handleAuthError() {
-  removeAuthToken()
-  window.location.href = '/login'
-}
 
 export const { 
   useGetUserInfoQuery, 

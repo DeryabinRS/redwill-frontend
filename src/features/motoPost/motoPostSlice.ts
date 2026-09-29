@@ -1,6 +1,5 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { API_URL } from '../../config/constants'
-import { getAuthToken } from '../../utils/auth'
+import { createApi } from '@reduxjs/toolkit/query/react'
+import { baseQuery } from '../../api/baseQuery'
 
 export type MotoPost = {
   id: number
@@ -41,17 +40,7 @@ type GetMotoPostListArgs = {
 export const motoPostApi = createApi({
   reducerPath: 'motoPostApi',
   tagTypes: ['MotoPosts', 'MotoPost'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_URL || '/api',
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token = getAuthToken()
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
     getMotoPost: builder.query<MotoPost, string | number>({
       query: (motoPost) => ({
