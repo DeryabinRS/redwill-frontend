@@ -4,9 +4,7 @@ import * as ReactDOM from 'react-dom';
 
 // Ждём загрузки API и импортируем reactify-модуль
 const [ymaps3React] = await Promise.all([
-  // @ts-ignore - ymaps3 появляется глобально после загрузки скрипта
   ymaps3.import('@yandex/ymaps3-reactify'),
-  // @ts-ignore
   ymaps3.ready,
 ]);
 

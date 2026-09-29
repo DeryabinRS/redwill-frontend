@@ -1,10 +1,25 @@
 // src/hooks/useYmaps3.ts
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ComponentType } from 'react';
 
 export interface Ymaps3API {
   ready: Promise<void>;
-  import: (moduleName: string) => Promise<any>;
+  import: (moduleName: string) => Promise<unknown>;
 }
+
+type YmapsComponent = ComponentType<Record<string, unknown>>;
+
+export type Ymaps3Reactify = {
+  module: (ymaps3: unknown) => {
+    YMap: YmapsComponent;
+    YMapDefaultSchemeLayer: YmapsComponent;
+    YMapDefaultFeaturesLayer: YmapsComponent;
+    YMapMarker: YmapsComponent;
+    YMapControls: YmapsComponent;
+    YMapZoomControl: YmapsComponent;
+    YMapListener: YmapsComponent;
+  };
+  useDefault: (coords: [number, number]) => unknown;
+};
 
 declare global {
   interface Window {
@@ -15,7 +30,7 @@ declare global {
 export function useYmaps3() {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const [reactify, setReactify] = useState<any>(null);
+  const [reactify, setReactify] = useState<Ymaps3Reactify | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,7 +54,9 @@ export function useYmaps3() {
         await window.ymaps3!.ready;
 
         // Импортируем reactify-модуль
-        const ymaps3React = await window.ymaps3!.import('@yandex/ymaps3-reactify');
+        const ymaps3React = (await window.ymaps3!.import('@yandex/ymaps3-reactify')) as {
+          reactify: { bindTo: (react: unknown, reactDom: unknown) => unknown };
+        };
         
         if (!isMounted) return;
         
@@ -47,7 +64,7 @@ export function useYmaps3() {
         const reactified = ymaps3React.reactify.bindTo(
           await import('react'),
           await import('react-dom')
-        );
+        ) as Ymaps3Reactify;
         
         setReactify(reactified);
         setIsReady(true);
