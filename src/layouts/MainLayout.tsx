@@ -132,7 +132,7 @@ function MainLayout() {
 					<Typography.Title level={2} style={{ margin: '6px 0', flexShrink: 0 }}>
 						<Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
 							<div style={{ display: 'flex', alignItems: 'center' }}>
-								<img width={80} src="/img/logo.png" alt={SITE_NAME} />
+								<img width={80} src="/img/logo.svg" alt={SITE_NAME} />
 							</div>
 						</Link>
 					</Typography.Title>
@@ -190,7 +190,7 @@ function MainLayout() {
 				</Drawer>
 			)}
 
-			<Content>
+			<Content style={{ padding: 8 }}>
 				<Outlet />
 			</Content>
 			<Footer style={{ textAlign: 'center' }}>© {new Date().getFullYear()} {SITE_NAME}</Footer>

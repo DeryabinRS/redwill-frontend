@@ -1,4 +1,4 @@
-import { Alert, Card, Col, Divider, Row, Skeleton, Space, Typography } from 'antd'
+﻿import { Alert, Card, Col, Divider, Row, Skeleton, Space, Typography } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, LinkOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { Link, useParams } from 'react-router-dom'
