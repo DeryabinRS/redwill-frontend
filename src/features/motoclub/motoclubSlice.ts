@@ -10,6 +10,7 @@ export type MotoclubMember = {
 
 export type MotoclubManagedMember = MotoclubMember & {
   email: string
+  profile_link: string
   verified: string | null
   joined_at: string
   is_admin: number
