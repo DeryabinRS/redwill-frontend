@@ -1,0 +1,139 @@
+/* Глобальный тёмный фон сайта */
+body {
+  background-color: #0a0a0c;
+}
+
+.ant-layout {
+  background-color: #0a0a0c !important;
+  background-image:
+    linear-gradient(180deg, rgba(10, 10, 12, 0.5), rgba(8, 8, 10, 0.94)),
+    linear-gradient(160deg, rgba(30, 30, 34, 0.98), rgba(8, 8, 10, 0.98)) !important;
+}
+
+/* Анимированный фон-слой */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Красное пульсирующее свечение */
+.site-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 78% 16%, rgba(205, 46, 44, 0.32), transparent 42%),
+    radial-gradient(circle at 10% 92%, rgba(205, 46, 44, 0.16), transparent 40%),
+    radial-gradient(circle at 50% 120%, rgba(205, 46, 44, 0.18), transparent 55%);
+  animation: site-glow 8s ease-in-out infinite alternate;
+}
+
+/* Сетка, уходящая в затемнение */
+.site-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 26px 26px;
+  opacity: 0.22;
+  -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 78%);
+}
+
+/* Движущиеся вертикальные «скоростные» полосы */
+.site-bg__speedlines {
+  position: absolute;
+  inset: -40% 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 0 1px,
+    transparent 1px 90px
+  );
+  animation: site-speedlines 6s linear infinite;
+}
+
+/* Пробегающий световой блик */
+.site-bg__sweep {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -30%;
+  width: 140px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  transform: skewX(-18deg);
+  animation: site-sweep 9s ease-in-out infinite;
+}
+
+/* Всплывающие частицы */
+.site-bg__particle {
+  position: absolute;
+  bottom: -10px;
+  border-radius: 50%;
+  background: rgba(255, 139, 138, 0.7);
+  box-shadow: 0 0 12px rgba(205, 46, 44, 0.8);
+  opacity: 0;
+  animation: site-rise 9s linear infinite;
+}
+
+@keyframes site-glow {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes site-speedlines {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 90px 0;
+  }
+}
+
+@keyframes site-sweep {
+  0%,
+  55% {
+    transform: translateX(0) skewX(-18deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(2200px) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes site-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-420px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-bg * {
+    animation: none !important;
+  }
+}

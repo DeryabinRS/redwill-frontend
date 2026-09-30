@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Col, Row, Skeleton, Space, Typography } from 'antd'
-import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
+import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutlined, ThunderboltOutlined, ToolOutlined } from '@ant-design/icons'
 // import { useTranslation } from 'react-i18next'
 import PostFeed from '../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
@@ -11,6 +11,7 @@ import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoc
 import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
 import { useGetMotoPostListQuery, type MotoPost } from '@features/motoPost/motoPostSlice'
 import { useGetServiceStationListQuery, type ServiceStation } from '@features/serviceStation/serviceStationSlice'
+import './Home.css'
 
 const RESOURCE_PREVIEW_LIMIT = 12
 
@@ -47,26 +48,24 @@ function Home() {
   ];
 
   const renderCard = () => cardData.map((item, index) => (
-    <Col key={item.title} xs={12} lg={6} xl={4}>
-      <Link to={item.link}>
-        <div className="card-stripes" style={{ height: '100%' }}>
-            <div className="stripe-bg"></div>
-            <div className="stripe-border"></div>
-            <div className="card-number">{String(index + 1).padStart(2, '0')}</div>
-            <div className="content">
-              <div className="card-switch-icon">{item.icon}</div>
-              <div>
-                <Typography.Title level={5} className="card-switch-title">
-                  {item.title}
-                </Typography.Title>
-                <Typography.Paragraph className="card-switch-description">
-                  {item.desc}
-                </Typography.Paragraph>
-              </div>
+    <Link key={item.title} to={item.link} className="home-menu-card">
+      <div className="card-stripes" style={{ height: '100%' }}>
+          <div className="stripe-bg"></div>
+          <div className="stripe-border"></div>
+          <div className="card-number">{String(index + 1).padStart(2, '0')}</div>
+          <div className="content">
+            <div className="card-switch-icon">{item.icon}</div>
+            <div>
+              <Typography.Title level={5} className="card-switch-title">
+                {item.title}
+              </Typography.Title>
+              <Typography.Paragraph className="card-switch-description">
+                {item.desc}
+              </Typography.Paragraph>
             </div>
-        </div>
-      </Link>
-    </Col>
+          </div>
+      </div>
+    </Link>
   ));
 
   const randomMotoclubs = useMemo(() => getRandomResourceItems(motoclubsData?.data || []), [motoclubsData?.data])
@@ -163,13 +162,24 @@ function Home() {
 
   return (
     <>
-      <section className="section section__header" style={{ padding: '16px 0' }}>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="route-tile-panel">
-            <Row gutter={[12, 12]}>
+      <section className="home-hero">
+        <div className="container home-hero__inner">
+          <span className="home-hero__eyebrow">
+            <ThunderboltOutlined /> Мотосообщество
+          </span>
+          <h1 className="home-hero__title">
+            MOTO
+            <span className="home-hero__title-accent">WING</span>
+            <span className="home-page__wheel" />
+          </h1>
+          <p className="home-hero__subtitle">
+            События, клубы, маршруты и сервис — всё для тех, кто живёт дорогой.
+          </p>
+          <section className="section section__header home-menu-section">
+            <div className="route-tile-panel">
               {renderCard()}
-            </Row>
-          </div>
+            </div>
+          </section>
         </div>
       </section>
 
@@ -199,7 +209,6 @@ function Home() {
           </Row>
         </div>
       </section>
-
     </>
   )
 }

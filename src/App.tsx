@@ -7,6 +7,7 @@ import AuthLayout from './layouts/AuthLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
 import AppInitializer from './components/AppInitializer'
+import SiteBackground from './components/SiteBackground/SiteBackground'
 import Home from './pages/Home'
 import About from './pages/About'
 import Login from './pages/Auth/Login'
@@ -57,6 +58,7 @@ function AppContent() {
   
   return (
     <ConfigProvider theme={antThemeConfig}>
+      <SiteBackground />
       <AppInitializer>
         <Routes>
           <Route element={<MainLayout />}>
