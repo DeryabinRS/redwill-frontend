@@ -148,11 +148,6 @@ function Home() {
                   <span>{item.name}</span>
                 </Link>
               ))}
-              {block.items.length === 0 && (
-                <Typography.Text className="shell__empty">
-                  Пока нет опубликованных элементов с изображениями.
-                </Typography.Text>
-              )}
             </div>
           )}
         </ShellSection>
