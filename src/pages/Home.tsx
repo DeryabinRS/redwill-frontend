@@ -170,6 +170,7 @@ function Home() {
           <h1 className="home-hero__title">
             MOTO
             <span className="home-hero__title-accent">WING</span>
+            <span className="home-page__wing" />
             <span className="home-page__wheel" />
           </h1>
           <p className="home-hero__subtitle">

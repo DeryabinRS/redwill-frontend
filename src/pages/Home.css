@@ -10,7 +10,7 @@
 /* Декоративное крутящееся «колесо» */
 .home-page__wheel {
   position: absolute;
-  left: 64%;
+  left: 74%;
   top: 50%;
   margin-left: 12px;
   transform: translateY(-50%);
@@ -42,6 +42,21 @@
     linear-gradient(0deg, transparent 49.4%, rgba(255, 255, 255, 0.16) 50%, transparent 50.6%);
 }
 
+/* Схематичное крыло (как в logo.svg) */
+.home-page__wing {
+  position: absolute;
+  left: 79%;
+  top: calc(50% - 175px);
+  width: 340px;
+  height: 330px;
+  transform: rotate(18deg);
+  transform-origin: center;
+  background: url('/img/wing.svg') no-repeat center / contain;
+  opacity: 0.9;
+  z-index: -1;
+  pointer-events: none;
+}
+
 /* Контент */
 .home-hero__inner {
   position: relative;
@@ -71,6 +86,7 @@
 
 .home-hero__title {
   position: relative;
+  isolation: isolate;
   margin: 0;
   color: #f5f5f5;
   font-family: 'Oswald', 'Arial Narrow', sans-serif;
@@ -119,10 +135,10 @@
 
 @keyframes hero-wheel-spin {
   from {
-    transform: translateY(-50%) rotate(0deg);
+    transform: translateY(-50%) rotate(-0deg);
   }
   to {
-    transform: translateY(-50%) rotate(360deg);
+    transform: translateY(-50%) rotate(-360deg);
   }
 }
 
