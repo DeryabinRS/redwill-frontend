@@ -1,4 +1,4 @@
-import { Card, Col, Row, Space, Typography } from 'antd'
+import { Card, Col, Divider, Row, Space, Typography } from 'antd'
 import { CoffeeOutlined, EnvironmentOutlined, MailOutlined, ScheduleOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 
@@ -17,9 +17,9 @@ function About() {
           />
 
           <ShellSection label="о проекте">
-            <Row gutter={[8, 8]}>
+            <Row gutter={[8, 8]} align="stretch">
               <Col xs={24} lg={14}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                   <Title level={3}>Что такое MotoWing</Title>
                   <Paragraph>
                     MotoWing объединяет информацию, которая может быть полезна райдерам: календарь
@@ -36,7 +36,7 @@ function About() {
               </Col>
 
               <Col xs={24} lg={10}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                   <Title level={3}>Контакты</Title>
                   <Space orientation="vertical" size="middle">
                     <Space>
@@ -47,13 +47,24 @@ function About() {
                       По вопросам проекта, сотрудничества и предложений по развитию.
                     </Text>
                   </Space>
+
+                  <Divider style={{ margin: '16px 0' }} />
+
+                  <Title level={4} style={{ marginTop: 0 }}>Поддержи проект</Title>
+                  <Space size="small" wrap>
+                    <img src="/img/tbank.webp" alt="Т-Банк" style={{ height: 30, borderRadius: 8 }} />
+                    <img src="/img/sberbank.webp" alt="Сбербанк" style={{ height: 30, borderRadius: 8 }} />
+                  </Space>
+                  <Paragraph style={{ marginTop: 12, marginBottom: 0 }}>
+                    <a href="tel:+79234323303">+7 (923) 432 33 03</a> — Дерябин Роман
+                  </Paragraph>
                 </Card>
               </Col>
             </Row>
 
-            <Row gutter={[8, 8]} style={{ marginTop: 8 }}>
+            <Row gutter={[8, 8]} style={{ marginTop: 8 }} align="stretch">
               <Col xs={24} sm={12} lg={6}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                   <Space orientation="vertical">
                     <ScheduleOutlined style={{ fontSize: 28 }} />
                     <Title level={4}>События</Title>
@@ -62,7 +73,7 @@ function About() {
                 </Card>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                   <Space orientation="vertical">
                     <TeamOutlined style={{ fontSize: 28 }} />
                     <Title level={4}>Мотоклубы</Title>
@@ -71,7 +82,7 @@ function About() {
                 </Card>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                   <Space orientation="vertical">
                     <CoffeeOutlined style={{ fontSize: 28 }} />
                     <Title level={4}>Мото-бары</Title>
@@ -80,7 +91,7 @@ function About() {
                 </Card>
               </Col>
               <Col xs={24} sm={12} lg={6}>
-                <Card>
+                <Card style={{ height: '100%' }}>
                   <Space orientation="vertical">
                     <ToolOutlined style={{ fontSize: 28 }} />
                     <Title level={4}>СТО и точки</Title>
