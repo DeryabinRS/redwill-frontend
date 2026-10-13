@@ -29,7 +29,7 @@ function PostCard({
   return (
     <Card
       size="small"
-      className={compact ? 'post-card post-card--compact' : 'post-card'}
+      className={compact ? 'post-card post-card--compact post-card--event' : 'post-card'}
       hoverable
       onClick={() => navigate(`/posts/${post.id}`)}
       cover={

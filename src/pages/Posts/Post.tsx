@@ -36,6 +36,7 @@ function Post() {
     data: postData,
     isLoading,
     isError,
+    error,
   } = useGetPostQuery(post as string, {
     skip: shouldSkipQuery,
   })
@@ -63,12 +64,14 @@ function Post() {
   }
 
   if (isError || !postData) {
+    const isPendingModeration = !!error && typeof error === 'object' && 'status' in error && error.status === 403
+
     return (
       <div className="container" style={{ marginTop: 8 }}>
         <Alert
-          type="error"
+          type={isPendingModeration ? 'warning' : 'error'}
           showIcon
-          message="Не удалось загрузить пост"
+          message={isPendingModeration ? 'Пост ещё не прошел модерацию' : 'Не удалось загрузить пост'}
         />
       </div>
     )

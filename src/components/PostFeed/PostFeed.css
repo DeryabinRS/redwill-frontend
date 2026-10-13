@@ -98,3 +98,34 @@
 .post-card--compact .ant-card-body {
   padding: 10px 12px;
 }
+
+.post-card--event.ant-card {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.post-card--event .ant-card-cover {
+  display: flex;
+  align-items: center;
+  flex: 0 0 120px;
+  width: 120px;
+  margin: 0;
+}
+
+.post-card--event .post-card-image-container,
+.post-card--event .post-card-image-placeholder {
+  width: 120px;
+  height: 120px;
+}
+
+.post-card--event .post-card-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+.post-card--event .ant-card-body {
+  flex: 1;
+  min-width: 0;
+}

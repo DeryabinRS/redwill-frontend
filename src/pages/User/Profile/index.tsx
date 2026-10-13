@@ -127,7 +127,7 @@ function Profile() {
             </div>
             <div className="profile-shell__meta">
               {/* {city ? <span className="profile-shell__chip">{city}</span> : null} */}
-              {userInfo.roles?.length
+              {/* {userInfo.roles?.length
                 ? userInfo.roles.slice(0, 2).map((role) => (
                     <span key={role} className="profile-shell__chip profile-shell__chip--accent">
                       {role}
@@ -135,7 +135,7 @@ function Profile() {
                   ))
                 : (
                     <span className="profile-shell__chip">ID {userInfo.id}</span>
-                  )}
+                  )} */}
             </div>
           </header>
 
