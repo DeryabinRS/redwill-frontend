@@ -17,7 +17,7 @@ import {
 import UserJoinedMotoclubs from '../JoinedMotoclubs'
 import '../JoinedMotoclubs/JoinedMotoclubs.css'
 
-const MAX_JOINED_MOTOCLUBS = 3
+const MAX_JOINED_MOTOCLUBS = 2
 
 type ProfileJoinedMotoclubsProps = {
   userId: number

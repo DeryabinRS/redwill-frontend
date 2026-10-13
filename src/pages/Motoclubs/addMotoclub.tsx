@@ -9,11 +9,12 @@ import {
   useGetMotoclubListQuery,
   type Motoclub,
 } from '../../features/motoclub/motoclubSlice'
+import { useGetUserInfoQuery } from '../../features/user/userSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 
-const MAX_JOINED_MOTOCLUBS = 3
+const MAX_CREATED_MOTOCLUBS = 1
 
 type FormValues = {
   name: string
@@ -41,6 +42,7 @@ function AddMotoclub() {
   const { data: joinedData } = useGetJoinedMotoclubsQuery({
     pagination: { page: 1, per_page: 100 },
   })
+  const { data: currentUser } = useGetUserInfoQuery()
   const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetMotoclubListQuery({
     pagination: { page: 1, per_page: 100 },
   })
@@ -49,7 +51,8 @@ function AddMotoclub() {
     label: motoclub.address ? `${motoclub.name} (${motoclub.address})` : motoclub.name,
   }))
   const backPath = pathname.startsWith('/dashboard') ? '/dashboard/motoclubs' : '/profile'
-  const canCreate = (joinedData?.data?.length ?? 0) < MAX_JOINED_MOTOCLUBS
+  const ownedCount = (joinedData?.data ?? []).filter((m) => m.user_id === currentUser?.id).length
+  const canCreate = ownedCount < MAX_CREATED_MOTOCLUBS
 
   const noScriptPattern = /^(?!.*<script|javascript:|on\w+=).*$/i
 
@@ -64,7 +67,7 @@ function AddMotoclub() {
 
   const onSubmit = async (values: FormValues) => {
     if (!canCreate) {
-      message.warning(t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS }))
+      message.warning(t('profile.motoclubCreateLimit'))
       return
     }
     try {
@@ -98,7 +101,7 @@ function AddMotoclub() {
       <Typography.Title level={2}>Добавить мотоклуб</Typography.Title>
       {!canCreate ? (
         <Typography.Paragraph type="warning">
-          {t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS })}
+          {t('profile.motoclubCreateLimit')}
         </Typography.Paragraph>
       ) : null}
       <Card>

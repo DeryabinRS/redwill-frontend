@@ -7,7 +7,7 @@ import {
   useJoinMotoclubMutation,
 } from '@features/motoclub/motoclubSlice'
 
-const MAX_JOINED_MOTOCLUBS = 3
+const MAX_JOINED_MOTOCLUBS = 2
 
 type UserJoinedMotoclubsProps = {
   onJoined?: () => void
