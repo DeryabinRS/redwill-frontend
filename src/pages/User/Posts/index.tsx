@@ -6,7 +6,7 @@ import PostCard from '@components/PostFeed/PostCard'
 import ProfileListSection from '../Profile/ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
-const PAGE_SIZE = 4
+const PAGE_SIZE = 6
 
 function UserPosts() {
   const { message } = AntdApp.useApp()

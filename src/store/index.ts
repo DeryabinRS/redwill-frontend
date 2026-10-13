@@ -9,6 +9,7 @@ import { serviceStationApi } from '../features/serviceStation/serviceStationSlic
 import { motorcycleApi } from '../features/motorcycle/motorcycleSlice'
 import { notificationApi } from '../features/notification/notificationSlice'
 import { friendApi } from '../features/friend/friendSlice'
+import { ratingApi } from '../features/rating/ratingSlice'
 
 const appSlice = createSlice({
   name: 'app',
@@ -35,6 +36,7 @@ export const store = configureStore({
     [motorcycleApi.reducerPath]: motorcycleApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [friendApi.reducerPath]: friendApi.reducer,
+    [ratingApi.reducerPath]: ratingApi.reducer,
   },
   devTools: import.meta.env.DEV,
   middleware: (getDefaultMiddleware) =>
@@ -49,6 +51,7 @@ export const store = configureStore({
       motorcycleApi.middleware,
       notificationApi.middleware,
       friendApi.middleware,
+      ratingApi.middleware,
     ),
 })
 

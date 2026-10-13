@@ -27,6 +27,8 @@ export type Post = {
   user_id: number
   created_at: string
   updated_at: string
+  stars_count?: number
+  is_starred?: boolean
   user?: {
     login?: string | null
     profile?: {

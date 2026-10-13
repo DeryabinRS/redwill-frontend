@@ -14,6 +14,8 @@ export type ServiceStation = {
   publication_status: number
   created_at: string
   updated_at: string
+  stars_count?: number
+  is_starred?: boolean
 }
 
 type ServiceStationResponse = {

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetMotoPostQuery } from '@features/motoPost/motoPostSlice'
 import MapView from '@components/YandexMapV3/MapView'
+import StarRating from '@components/StarRating'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -63,9 +64,17 @@ function MotoPost() {
 
           <Col xs={24} md={logoSrc ? 16 : 24}>
             <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-              <Title level={3} style={{ margin: 0 }}>
-                {motoPostData.name}
-              </Title>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <Title level={3} style={{ margin: 0 }}>
+                  {motoPostData.name}
+                </Title>
+                <StarRating
+                  type="moto-post"
+                  id={motoPostData.id}
+                  starsCount={motoPostData.stars_count ?? 0}
+                  isStarred={Boolean(motoPostData.is_starred)}
+                />
+              </div>
               <Divider style={{ margin: 0 }} />
 
               <Space orientation="vertical" size={8}>

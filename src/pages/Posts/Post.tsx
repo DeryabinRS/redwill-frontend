@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetPostQuery, type Post as PostData } from '@features/post/postSlice'
 import MapView from '@components/YandexMapV3/MapView'
+import StarRating from '@components/StarRating'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -91,9 +92,17 @@ function Post() {
 
           <Col xs={24} md={imageSrc ? 14 : 24}>
             <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-              <Title level={3} style={{ margin: 0 }}>
-                {postData.title}
-              </Title>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <Title level={3} style={{ margin: 0 }}>
+                  {postData.title}
+                </Title>
+                <StarRating
+                  type="post"
+                  id={postData.id}
+                  starsCount={postData.stars_count ?? 0}
+                  isStarred={Boolean(postData.is_starred)}
+                />
+              </div>
               {(() => {
                 const authorName =
                   postData.user?.profile?.nick_name?.trim() ||

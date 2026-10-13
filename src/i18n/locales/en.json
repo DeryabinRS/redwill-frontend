@@ -115,5 +115,9 @@
     "friendRemoveError": "Failed to remove friend",
     "friendRemoveConfirmTitle": "Remove from friends?",
     "loadError": "Failed to load user data"
+  },
+  "rating": {
+    "add": "Add star",
+    "remove": "Remove star"
   }
 }

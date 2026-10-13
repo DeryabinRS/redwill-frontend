@@ -5,6 +5,7 @@ import { API_URL } from '@config/constants'
 import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import PostFeed from '@components/PostFeed/PostFeed'
+import StarRating from '@components/StarRating'
 import { isAuthenticated } from '@utils/auth'
 
 const { Title, Text, Paragraph } = Typography
@@ -115,9 +116,17 @@ function Motoclub() {
 
           <Col xs={24} md={logoSrc ? 16 : 24}>
             <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-              <Title level={3} style={{ margin: 0 }}>
-                {motoclubData.name}
-              </Title>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+                <Title level={3} style={{ margin: 0 }}>
+                  {motoclubData.name}
+                </Title>
+                <StarRating
+                  type="motoclub"
+                  id={motoclubData.id}
+                  starsCount={motoclubData.stars_count ?? 0}
+                  isStarred={Boolean(motoclubData.is_starred)}
+                />
+              </div>
               <Divider style={{ margin: 0 }} />
 
               <Space orientation="vertical" size={8}>

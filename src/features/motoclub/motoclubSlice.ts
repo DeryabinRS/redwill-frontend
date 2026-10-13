@@ -47,6 +47,8 @@ export type Motoclub = {
   publication_status: number
   created_at: string
   updated_at: string
+  stars_count?: number
+  is_starred?: boolean
   parent?: Pick<Motoclub, 'id' | 'name' | 'logo'> | null
   children?: Pick<Motoclub, 'id' | 'name' | 'logo' | 'parent_id'>[]
   members?: MotoclubMember[]
