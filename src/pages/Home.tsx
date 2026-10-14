@@ -140,7 +140,7 @@ function Home() {
               {block.items.map((item) => (
                 <Link
                   key={`${block.link}-${item.id}`}
-                  to={`${block.link}/${item.id}`}
+                  to={`${block.link}/${item.slug}`}
                   className="home-resource-gallery__item"
                   title={item.name}
                 >
