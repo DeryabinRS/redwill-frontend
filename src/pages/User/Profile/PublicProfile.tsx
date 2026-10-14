@@ -203,7 +203,7 @@ function PublicProfile() {
                           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}
                         >
                           {isPublished ? (
-                            <Link to={`/motoclubs/${club.id}`} title={club.name}>
+                            <Link to={`/motoclubs/${club.slug}`} title={club.name}>
                               {tile}
                             </Link>
                           ) : (

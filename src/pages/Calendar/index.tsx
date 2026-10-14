@@ -9,6 +9,7 @@ import { useGetPostListQuery, type Post } from '../../features/post/postSlice'
 import PostCard from '../../components/PostFeed/PostCard'
 import PostFeed from '../../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
+import Seo from '@components/Seo'
 import './Calendar.css'
 
 dayjs.locale('ru')
@@ -92,6 +93,11 @@ function CalendarPage() {
 
   return (
     <>
+      <Seo
+        title="Мотокалендарь"
+        description="Календарь мотособытий, мероприятий и встреч мотосообщества."
+        path="/calendar"
+      />
       <section className="section events-calendar-page">
         <div className="container">
           <div className="title_page">

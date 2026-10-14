@@ -35,7 +35,7 @@ function UserMotobarCard({
       className="post-card post-card--compact"
       hoverable
       onClick={() => {
-        if (canView) navigate(`/motobars/${motobar.id}`)
+        if (canView) navigate(`/motobars/${motobar.slug}`)
       }}
       cover={
         motobar.logo ? (
@@ -72,7 +72,7 @@ function UserMotobarCard({
               disabled={!canView}
               icon={<EyeFilled />}
               size="small"
-              onClick={() => navigate(`/motobars/${motobar.id}`)}
+              onClick={() => navigate(`/motobars/${motobar.slug}`)}
             />
             <Popconfirm
               title="Удалить мото-бар?"

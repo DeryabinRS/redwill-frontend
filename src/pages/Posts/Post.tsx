@@ -6,11 +6,13 @@ import { API_URL } from '@config/constants'
 import { useGetPostQuery, type Post as PostData } from '@features/post/postSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
 
 type PostMotoclub = {
   id: number
+  slug: string
   name: string
   logo: string | null
 }
@@ -79,8 +81,33 @@ function Post() {
 
   const postDetails = postData as PostWithMotoclubs
   const imageSrc = postDetails.image ? `${API_URL}${postDetails.image}` : null
+  const plainContent = (postDetails.content || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  const description = (plainContent || postData.title).slice(0, 160)
+  const eventJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: postData.title,
+    description: plainContent || undefined,
+    startDate: postData.date_start || undefined,
+    endDate: postData.date_end || postData.date_start || undefined,
+    image: imageSrc || undefined,
+    location: postData.location
+      ? { '@type': 'Place', name: postData.location, address: postData.address || undefined }
+      : undefined,
+    organizer: postDetails.motoclubs?.length
+      ? { '@type': 'Organization', name: postDetails.motoclubs[0].name }
+      : undefined,
+  }
   return (
     <div className="container">
+      <Seo
+        title={postData.title}
+        description={description}
+        path={`/posts/${postData.slug}`}
+        image={imageSrc || undefined}
+        type="article"
+        jsonLd={eventJsonLd}
+      />
       <Card style={{ marginTop: 8 }}>
         <Row gutter={[24, 24]}>
           {imageSrc && (
@@ -164,7 +191,7 @@ function Post() {
                       {postDetails.motoclubs.map((motoclub) => (
                         <Link
                           key={motoclub.id}
-                          to={`/motoclubs/${motoclub.id}`}
+                          to={`/motoclubs/${motoclub.slug}`}
                           title={motoclub.name}
                           style={{
                             display: 'inline-flex',

@@ -102,11 +102,11 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
                 role="button"
                 tabIndex={0}
                 title={motoclub.name}
-                onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
+                onClick={() => navigate(`/motoclubs/${motoclub.slug}`)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault()
-                    navigate(`/motoclubs/${motoclub.id}`)
+                    navigate(`/motoclubs/${motoclub.slug}`)
                   }
                 }}
               >

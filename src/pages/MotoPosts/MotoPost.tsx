@@ -5,6 +5,7 @@ import { API_URL } from '@config/constants'
 import { useGetMotoPostQuery } from '@features/motoPost/motoPostSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -48,8 +49,31 @@ function MotoPost() {
 
   const logoSrc = motoPostData.logo ? `${API_URL}${motoPostData.logo}` : null
 
+  const plainDesc = (motoPostData.desc || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  const description = (plainDesc || motoPostData.name).slice(0, 160)
+  const motoPostJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: motoPostData.name,
+    description: plainDesc || undefined,
+    image: logoSrc || undefined,
+    url: motoPostData.website || undefined,
+    telephone: motoPostData.phone || undefined,
+    address: motoPostData.address
+      ? { '@type': 'PostalAddress', streetAddress: motoPostData.address }
+      : undefined,
+  }
+
   return (
     <div className="container">
+      <Seo
+        title={motoPostData.name}
+        description={description}
+        path={`/moto-posts/${motoPostData.slug}`}
+        image={logoSrc || undefined}
+        type="website"
+        jsonLd={motoPostJsonLd}
+      />
       <Card style={{ marginTop: 8 }}>
         <Row gutter={[24, 24]}>
           {logoSrc && (

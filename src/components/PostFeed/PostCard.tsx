@@ -31,7 +31,7 @@ function PostCard({
       size="small"
       className={compact ? 'post-card post-card--compact post-card--event' : 'post-card'}
       hoverable
-      onClick={() => navigate(`/posts/${post.id}`)}
+      onClick={() => navigate(`/posts/${post.slug}`)}
       cover={
         post.image ? (
           <div className="post-card-image-container">

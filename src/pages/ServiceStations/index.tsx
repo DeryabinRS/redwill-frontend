@@ -20,7 +20,7 @@ function ServiceStationCard({ serviceStation }: { serviceStation: ServiceStation
       size="small"
       className="post-card motoclub-list-card"
       hoverable
-      onClick={() => navigate(`/service-stations/${serviceStation.id}`)}
+      onClick={() => navigate(`/service-stations/${serviceStation.slug}`)}
       cover={
         serviceStation.logo ? (
           <div className="post-card-image-container" style={{ height: 160, marginTop: 8 }}>
@@ -112,7 +112,7 @@ function ServiceStations() {
           title: serviceStation.name,
           location: serviceStation.location,
           logo: serviceStation.logo ? `${API_URL}${serviceStation.logo}` : null,
-          href: `/service-stations/${serviceStation.id}`,
+          href: `/service-stations/${serviceStation.slug}`,
         })),
     [mapServiceStations],
   )

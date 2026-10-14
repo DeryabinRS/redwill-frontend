@@ -20,7 +20,7 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
       size="small"
       className="post-card motoclub-list-card"
       hoverable
-      onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
+      onClick={() => navigate(`/motoclubs/${motoclub.slug}`)}
       cover={
         motoclub.logo ? (
           <div className="post-card-image-container" style={{ height: 160, marginTop: 8 }}>
@@ -118,7 +118,7 @@ function Motoclubs() {
           title: motoclub.name,
           location: motoclub.location,
           logo: motoclub.logo ? `${API_URL}${motoclub.logo}` : null,
-          href: `/motoclubs/${motoclub.id}`,
+          href: `/motoclubs/${motoclub.slug}`,
         })),
     [mapMotoclubs],
   )

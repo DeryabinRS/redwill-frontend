@@ -1,12 +1,18 @@
 import { Card, Col, Divider, Row, Space, Typography } from 'antd'
 import { CoffeeOutlined, EnvironmentOutlined, MailOutlined, ScheduleOutlined, TeamOutlined, ToolOutlined } from '@ant-design/icons'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
+import Seo from '@components/Seo'
 
 const { Paragraph, Text, Title } = Typography
 
 function About() {
   return (
     <section className="section" style={{ padding: '8px 0' }}>
+      <Seo
+        title="О проекте"
+        description="MotoWing — платформа для мотосообщества: события, мотоклубы, мото-бары, мото-посты и СТО."
+        path="/about"
+      />
       <div className="container">
         <Shell>
           <ShellHeader

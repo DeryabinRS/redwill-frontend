@@ -1,90 +1,147 @@
-import { Button, Card, Space, Table, Tag, Typography } from 'antd'
-import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
-import { EyeFilled } from '@ant-design/icons'
+import { App as AntdApp, Button, Card, Pagination, Popconfirm, Space, Typography } from 'antd'
+import { DeleteOutlined, EyeFilled, ShopOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import dayjs from 'dayjs'
-import { useGetUserMotoPostsQuery, type MotoPost } from '@features/motoPost/motoPostSlice'
-import { moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { API_URL } from '@config/constants'
+import {
+  useDeleteMotoPostMutation,
+  useGetUserMotoPostsQuery,
+  type MotoPost,
+} from '@features/motoPost/motoPostSlice'
+import { ProfileCardStatusBadges } from '@components/ProfileCardOverlays'
+import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
+import ProfileListSection from '../Profile/ProfileListSection'
+import '@components/PostFeed/PostFeed.css'
 
-function UserMotoPosts() {
+const { Title, Text } = Typography
+const PAGE_SIZE = 4
+
+function UserMotoPostCard({
+  motoPost,
+  onDelete,
+  isDeleting,
+}: {
+  motoPost: MotoPost
+  onDelete: (id: number) => void
+  isDeleting: boolean
+}) {
   const navigate = useNavigate()
-  const [pagination, setPagination] = useState({ page: 1, per_page: 10 })
-  const { data: motoPostsData, isLoading: motoPostsLoading } = useGetUserMotoPostsQuery({ pagination })
-
-  const handleTableChange = (tablePagination: TablePaginationConfig) => {
-    setPagination({
-      page: tablePagination.current || 1,
-      per_page: tablePagination.pageSize || 10,
-    })
-  }
-
-  const columns: ColumnsType<MotoPost> = [
-    { title: 'Название', dataIndex: 'name', key: 'name' },
-    {
-      title: 'Дата',
-      dataIndex: 'created_at',
-      key: 'created_at',
-      width: 110,
-      render: (value: string) => dayjs(value).format('DD.MM.YYYY'),
-    },
-    {
-      title: 'Публикация',
-      dataIndex: 'publication_status',
-      key: 'publication_status',
-      width: 120,
-      render: (value: number) =>
-        value === 1 ? <Tag color="green">Опубликован</Tag> : <Tag color="red">Не опубликован</Tag>,
-    },
-    {
-      title: 'Модерация',
-      dataIndex: 'moderation_status',
-      key: 'moderation_status',
-      width: 160,
-      render: (value?: number) => {
-        const option = moderationStatusOptions.find((item) => item.value === value)
-        if (!option) return <Tag>—</Tag>
-        return <Tag color={moderationStatusTagColor[value ?? 0] ?? 'default'}>{option.label}</Tag>
-      },
-    },
-    {
-      title: '',
-      key: 'actions',
-      width: 30,
-      render: (_value, record) => (
-        <Space size="small" wrap>
-          <Button
-            disabled={record.publication_status !== 1 || record.moderation_status !== 2}
-            icon={<EyeFilled />}
-            size="small"
-            onClick={() => navigate(`/moto-posts/${record.id}`)}
-          />
-        </Space>
-      ),
-    },
-  ]
+  const canView = motoPost.publication_status === 1 && motoPost.moderation_status === 2
 
   return (
-    <Card size="small" style={{ marginTop: 8 }}>
-      <Typography.Title level={4} style={{ marginTop: 0 }}>
-        Мото-посты
-      </Typography.Title>
-      <Table<MotoPost>
-        size="small"
-        rowKey="id"
-        loading={motoPostsLoading}
-        dataSource={motoPostsData?.data || []}
-        columns={columns}
-        onChange={handleTableChange}
-        pagination={{
-          current: motoPostsData?.current_page || pagination.page,
-          pageSize: motoPostsData?.per_page || pagination.per_page,
-          total: motoPostsData?.total || 0,
-          showSizeChanger: true,
-          showTotal: (total) => `Всего: ${total}`,
-        }}
-      />
+    <Card
+      size="small"
+      className="post-card post-card--compact"
+      hoverable
+      onClick={() => {
+        if (canView) navigate(`/moto-posts/${motoPost.slug}`)
+      }}
+      cover={
+        motoPost.logo ? (
+          <div className="post-card-image-container">
+            <img
+              src={`${API_URL}${motoPost.logo}`}
+              alt={motoPost.name}
+              className="post-card-image"
+              loading="lazy"
+              style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)' }}
+            />
+          </div>
+        ) : (
+          <div className="post-card-image-placeholder">
+            <ShopOutlined style={{ fontSize: 28, color: '#d9d9d9' }} />
+          </div>
+        )
+      }
+    >
+      <div className="profile-card-body">
+        <ProfileCardStatusBadges
+          publicationStatus={motoPost.publication_status}
+          moderationStatus={motoPost.moderation_status}
+        />
+        <Space orientation="vertical" size={8} style={{ width: '100%' }}>
+          <Title level={5} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+            {motoPost.name}
+          </Title>
+          <Text type="secondary" className="profile-card-meta">
+            {motoPost.address?.trim() || `Создан: ${dayjs(motoPost.created_at).format('DD.MM.YYYY')}`}
+          </Text>
+          <Space className="profile-card-actions" size="small" wrap onClick={(event) => event.stopPropagation()}>
+            <Button
+              disabled={!canView}
+              icon={<EyeFilled />}
+              size="small"
+              onClick={() => navigate(`/moto-posts/${motoPost.slug}`)}
+            />
+            <Popconfirm
+              title="Удалить мото-пост?"
+              description={DELETE_CONFIRM_DESCRIPTION}
+              okText="Удалить"
+              cancelText="Отмена"
+              okButtonProps={{ danger: true, loading: isDeleting }}
+              onConfirm={() => onDelete(motoPost.id)}
+            >
+              <Button danger icon={<DeleteOutlined />} size="small" />
+            </Popconfirm>
+          </Space>
+        </Space>
+      </div>
     </Card>
+  )
+}
+
+function UserMotoPosts() {
+  const { message } = AntdApp.useApp()
+  const [page, setPage] = useState(1)
+  const { data: motoPostsData, isLoading, isError } = useGetUserMotoPostsQuery({
+    pagination: { page, per_page: PAGE_SIZE },
+  })
+  const [deleteMotoPost, { isLoading: isDeleting }] = useDeleteMotoPostMutation()
+
+  const motoPosts = motoPostsData?.data || []
+  const total = motoPostsData?.total ?? 0
+
+  const handleDeleteMotoPost = async (motoPostId: number) => {
+    try {
+      await deleteMotoPost(motoPostId).unwrap()
+      message.success('Мото-пост удалён')
+    } catch {
+      message.error('Не удалось удалить мото-пост')
+    }
+  }
+
+  if (isLoading || isError || total === 0) {
+    return null
+  }
+
+  return (
+    <ProfileListSection
+      title="Мото-посты"
+      count={total}
+      pagination={
+        total > PAGE_SIZE ? (
+          <Pagination
+            className="profile-list-section__pagination"
+            size="small"
+            current={motoPostsData?.current_page || page}
+            pageSize={PAGE_SIZE}
+            total={total}
+            onChange={setPage}
+            showSizeChanger={false}
+          />
+        ) : null
+      }
+    >
+      {motoPosts.map((motoPost) => (
+        <UserMotoPostCard
+          key={motoPost.id}
+          motoPost={motoPost}
+          isDeleting={isDeleting}
+          onDelete={(id) => void handleDeleteMotoPost(id)}
+        />
+      ))}
+    </ProfileListSection>
   )
 }
 

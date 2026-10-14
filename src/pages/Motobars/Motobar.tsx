@@ -5,6 +5,7 @@ import { API_URL } from '@config/constants'
 import { useGetMotobarQuery } from '@features/motobar/motobarSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -48,8 +49,31 @@ function Motobar() {
 
   const logoSrc = motobarData.logo ? `${API_URL}${motobarData.logo}` : null
 
+  const plainDesc = (motobarData.desc || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  const description = (plainDesc || motobarData.name).slice(0, 160)
+  const barJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BarOrPub',
+    name: motobarData.name,
+    description: plainDesc || undefined,
+    image: logoSrc || undefined,
+    url: motobarData.website || undefined,
+    telephone: motobarData.phone || undefined,
+    address: motobarData.address
+      ? { '@type': 'PostalAddress', streetAddress: motobarData.address }
+      : undefined,
+  }
+
   return (
     <div className="container">
+      <Seo
+        title={motobarData.name}
+        description={description}
+        path={`/motobars/${motobarData.slug}`}
+        image={logoSrc || undefined}
+        type="website"
+        jsonLd={barJsonLd}
+      />
       <Card style={{ marginTop: 8 }}>
         <Row gutter={[24, 24]}>
           {logoSrc && (

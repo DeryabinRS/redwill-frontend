@@ -5,6 +5,7 @@ import { API_URL } from '@config/constants'
 import { useGetServiceStationQuery } from '@features/serviceStation/serviceStationSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -48,8 +49,31 @@ function ServiceStation() {
 
   const logoSrc = serviceStationData.logo ? `${API_URL}${serviceStationData.logo}` : null
 
+  const plainDesc = (serviceStationData.desc || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  const description = (plainDesc || serviceStationData.name).slice(0, 160)
+  const stoJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'AutoRepair',
+    name: serviceStationData.name,
+    description: plainDesc || undefined,
+    image: logoSrc || undefined,
+    url: serviceStationData.website || undefined,
+    telephone: serviceStationData.phone || undefined,
+    address: serviceStationData.address
+      ? { '@type': 'PostalAddress', streetAddress: serviceStationData.address }
+      : undefined,
+  }
+
   return (
     <div className="container">
+      <Seo
+        title={serviceStationData.name}
+        description={description}
+        path={`/service-stations/${serviceStationData.slug}`}
+        image={logoSrc || undefined}
+        type="website"
+        jsonLd={stoJsonLd}
+      />
       <Card style={{ marginTop: 8 }}>
         <Row gutter={[24, 24]}>
           {logoSrc && (

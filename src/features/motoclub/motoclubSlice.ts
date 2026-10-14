@@ -31,6 +31,7 @@ export type Motoclub = {
   user_id?: number
   parent_id: number | null
   name: string
+  slug: string
   desc: string | null
   birthday: string | null
   logo: string | null
@@ -49,8 +50,8 @@ export type Motoclub = {
   updated_at: string
   stars_count?: number
   is_starred?: boolean
-  parent?: Pick<Motoclub, 'id' | 'name' | 'logo'> | null
-  children?: Pick<Motoclub, 'id' | 'name' | 'logo' | 'parent_id'>[]
+  parent?: Pick<Motoclub, 'id' | 'slug' | 'name' | 'logo'> | null
+  children?: Pick<Motoclub, 'id' | 'slug' | 'name' | 'logo' | 'parent_id'>[]
   members?: MotoclubMember[]
   verified_members_count?: number
   pending_members_count?: number

@@ -4,6 +4,7 @@ import { baseQuery } from '../../api/baseQuery'
 export type Motobar = {
   id: number
   name: string
+  slug: string
   desc: string | null
   website: string | null
   logo: string | null

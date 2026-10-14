@@ -35,7 +35,7 @@ function UserServiceStationCard({
       className="post-card post-card--compact"
       hoverable
       onClick={() => {
-        if (canView) navigate(`/service-stations/${serviceStation.id}`)
+        if (canView) navigate(`/service-stations/${serviceStation.slug}`)
       }}
       cover={
         serviceStation.logo ? (
@@ -74,7 +74,7 @@ function UserServiceStationCard({
               disabled={!canView}
               icon={<EyeFilled />}
               size="small"
-              onClick={() => navigate(`/service-stations/${serviceStation.id}`)}
+              onClick={() => navigate(`/service-stations/${serviceStation.slug}`)}
             />
             <Popconfirm
               title="Удалить СТО?"

@@ -6,12 +6,14 @@ import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import PostFeed from '@components/PostFeed/PostFeed'
 import StarRating from '@components/StarRating'
+import Seo from '@components/Seo'
 import { isAuthenticated } from '@utils/auth'
 
 const { Title, Text, Paragraph } = Typography
 
 type MotoclubLinkItem = {
   id: number
+  slug: string
   name: string
   logo?: string | null
 }
@@ -19,7 +21,7 @@ type MotoclubLinkItem = {
 function MotoclubLogoLink({ item }: { item: MotoclubLinkItem }) {
   return (
     <Link
-      to={`/motoclubs/${item.id}`}
+      to={`/motoclubs/${item.slug}`}
       title={item.name}
       style={{
         display: 'inline-flex',
@@ -100,8 +102,31 @@ function Motoclub() {
   const verifiedMembers = (motoclubData.members ?? []).filter((member) => member.verified !== null)
   const isAuthenticatedUser = isAuthenticated()
 
+  const plainDesc = (motoclubData.desc || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+  const description = (plainDesc || motoclubData.name).slice(0, 160)
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: motoclubData.name,
+    description: plainDesc || undefined,
+    logo: logoSrc || undefined,
+    url: motoclubData.website || undefined,
+    telephone: motoclubData.phone || undefined,
+    address: motoclubData.address
+      ? { '@type': 'PostalAddress', streetAddress: motoclubData.address }
+      : undefined,
+  }
+
   return (
     <div className="container">
+      <Seo
+        title={motoclubData.name}
+        description={description}
+        path={`/motoclubs/${motoclubData.slug}`}
+        image={logoSrc || undefined}
+        type="website"
+        jsonLd={orgJsonLd}
+      />
       <Card style={{ marginTop: 8 }}>
         <Row gutter={[24, 24]}>
           {logoSrc && (

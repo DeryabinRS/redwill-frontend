@@ -48,7 +48,7 @@ function UserMotoclubCard({
       className="post-card post-card--compact"
       hoverable
       onClick={() => {
-        if (canView) navigate(`/motoclubs/${motoclub.id}`)
+        if (canView) navigate(`/motoclubs/${motoclub.slug}`)
       }}
       cover={
         motoclub.logo ? (
@@ -88,7 +88,7 @@ function UserMotoclubCard({
               disabled={!canView}
               icon={<EyeFilled />}
               size="small"
-              onClick={() => navigate(`/motoclubs/${motoclub.id}`)}
+              onClick={() => navigate(`/motoclubs/${motoclub.slug}`)}
             />
             <Button
               icon={<TeamOutlined />}

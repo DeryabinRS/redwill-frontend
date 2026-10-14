@@ -10,6 +10,7 @@ export type PostCategory = {
 export type Post = {
   id: number
   title: string
+  slug: string
   content: string
   post_category_id: number
   publication_status?: number
@@ -44,6 +45,7 @@ export type Post = {
   motoclub_ids?: number[]
   motoclubs?: {
     id: number
+    slug: string
     name: string
     logo: string | null
   }[]
