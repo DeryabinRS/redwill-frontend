@@ -117,7 +117,7 @@ function UserMotoPosts() {
 
   return (
     <ProfileListSection
-      title="Мото-посты"
+      title="Байк-посты"
       count={total}
       pagination={
         total > PAGE_SIZE ? (

@@ -39,6 +39,8 @@ export type Motoclub = {
   social_link: string | null
   phone: string | null
   email: string | null
+  has_moto_post?: boolean
+  has_service_station?: boolean
   address: string | null
   city: string | null
   state: string | null

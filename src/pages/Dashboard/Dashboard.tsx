@@ -59,7 +59,7 @@ function Dashboard() {
       loading: isLoadingMotobars,
     },
     {
-      title: 'Мото-посты',
+      title: 'Байк-посты',
       value: motoPostsData?.total || 0,
       icon: <ShopOutlined />,
       loading: isLoadingMotoPosts,

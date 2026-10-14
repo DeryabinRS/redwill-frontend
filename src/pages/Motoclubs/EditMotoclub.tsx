@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Checkbox, Col, DatePicker, Form, Input, Row, Select, Skeleton, Space, Switch, Typography } from 'antd'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
@@ -27,6 +27,8 @@ type FormValues = {
   social_link?: string
   phone?: string
   email?: string
+  has_moto_post?: boolean
+  has_service_station?: boolean
   address?: string
   location?: string
   publication_status?: boolean
@@ -97,6 +99,8 @@ function EditMotoclub() {
       social_link: motoclubData.social_link || '',
       phone: motoclubData.phone || '',
       email: motoclubData.email || '',
+      has_moto_post: Boolean(motoclubData.has_moto_post),
+      has_service_station: Boolean(motoclubData.has_service_station),
       address: motoclubData.address || '',
       location: motoclubData.location || '',
       ...(showModerationFields
@@ -169,6 +173,8 @@ function EditMotoclub() {
       appendString(formData, 'email', values.email)
       appendString(formData, 'address', values.address)
       appendString(formData, 'location', values.location)
+      formData.append('has_moto_post', values.has_moto_post ? '1' : '0')
+      formData.append('has_service_station', values.has_service_station ? '1' : '0')
 
       if (showModerationFields) {
         formData.append('publication_status', values.publication_status ? '1' : '0')
@@ -176,8 +182,10 @@ function EditMotoclub() {
       }
 
       await updateMotoclub({ motoclub, payload: formData }).unwrap()
+      const isPublishedAndApproved =
+        motoclubData?.publication_status === 1 && motoclubData?.moderation_status === 2
       message.success(
-        showModerationFields
+        showModerationFields || isPublishedAndApproved
           ? 'Мотоклуб обновлен'
           : 'Мотоклуб обновлен и отправлен на модерацию',
       )
@@ -351,6 +359,19 @@ function EditMotoclub() {
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
                   >
                     <Input placeholder="+7..." />
+                  </Form.Item>
+                </Col>
+              </Row>
+
+              <Row gutter={16} style={{ marginBottom: 8 }}>
+                <Col xs={24} md={12}>
+                  <Form.Item name="has_moto_post" valuePropName="checked">
+                    <Checkbox>Наличие байк-поста</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item name="has_service_station" valuePropName="checked">
+                    <Checkbox>Наличие СТО</Checkbox>
                   </Form.Item>
                 </Col>
               </Row>

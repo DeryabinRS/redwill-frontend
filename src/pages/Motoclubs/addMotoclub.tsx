@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { App as AntdApp, Button, Card, Col, DatePicker, Form, Input, Row, Select, Space, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Checkbox, Col, DatePicker, Form, Input, Row, Select, Space, Typography } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
@@ -26,6 +26,8 @@ type FormValues = {
   social_link?: string
   phone?: string
   email?: string
+  has_moto_post?: boolean
+  has_service_station?: boolean
   address: string
   location: string
 }
@@ -82,6 +84,8 @@ function AddMotoclub() {
       appendString(formData, 'email', values.email)
       formData.append('address', sanitizeInput(values.address))
       formData.append('location', sanitizeInput(values.location))
+      formData.append('has_moto_post', values.has_moto_post ? '1' : '0')
+      formData.append('has_service_station', values.has_service_station ? '1' : '0')
 
       if (logo && logo.startsWith('data:image')) {
         const file = await base64ToFile(logo, `motoclub_${Date.now()}.webp`)
@@ -221,6 +225,20 @@ function AddMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Row gutter={16} style={{ marginBottom: 8 }}>
+                <Col xs={24} md={12}>
+                  <Form.Item name="has_moto_post" valuePropName="checked">
+                    <Checkbox>Наличие байк-поста</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col xs={24} md={12}>
+                  <Form.Item name="has_service_station" valuePropName="checked">
+                    <Checkbox>Наличие СТО</Checkbox>
+                  </Form.Item>
+                </Col>
+              </Row>
+
               <Form.Item label="Город" required>
                 <Space.Compact style={{ width: '100%' }}>
                   <Form.Item

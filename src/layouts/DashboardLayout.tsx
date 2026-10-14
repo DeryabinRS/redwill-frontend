@@ -89,7 +89,7 @@ function DashboardLayout() {
     {
       key: 'moto-posts',
       icon: <ShopOutlined />,
-      label: <NavLink to="/dashboard/moto-posts" onClick={handleMenuClick}>Мото-посты</NavLink>,
+      label: <NavLink to="/dashboard/moto-posts" onClick={handleMenuClick}>Байк-посты</NavLink>,
     },
     {
       key: 'service-stations',

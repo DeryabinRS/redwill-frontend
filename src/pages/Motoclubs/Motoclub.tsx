@@ -1,5 +1,5 @@
-import { Alert, Card, Col, Divider, Row, Skeleton, Space, Typography } from 'antd'
-import { EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons'
+import { Alert, Card, Col, Divider, Row, Skeleton, Space, Tooltip, Typography } from 'antd'
+import { EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, ShopOutlined, ToolOutlined } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
@@ -141,16 +141,32 @@ function Motoclub() {
 
           <Col xs={24} md={logoSrc ? 16 : 24}>
             <Space orientation="vertical" size="middle" style={{ width: '100%' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12, flexWrap: 'wrap' }}>
                 <Title level={3} style={{ margin: 0 }}>
                   {motoclubData.name}
                 </Title>
-                <StarRating
-                  type="motoclub"
-                  id={motoclubData.id}
-                  starsCount={motoclubData.stars_count ?? 0}
-                  isStarred={Boolean(motoclubData.is_starred)}
-                />
+                <Space size="middle" align="center">
+                  {motoclubData.has_moto_post ? (
+                    <Tooltip title="Есть байк-пост">
+                      <span className="shell__chip shell__chip--accent">
+                        <ShopOutlined />
+                      </span>
+                    </Tooltip>
+                  ) : null}
+                  {motoclubData.has_service_station ? (
+                    <Tooltip title="Есть СТО">
+                      <span className="shell__chip shell__chip--accent">
+                        <ToolOutlined />
+                      </span>
+                    </Tooltip>
+                  ) : null}
+                  <StarRating
+                    type="motoclub"
+                    id={motoclubData.id}
+                    starsCount={motoclubData.stars_count ?? 0}
+                    isStarred={Boolean(motoclubData.is_starred)}
+                  />
+                </Space>
               </div>
               <Divider style={{ margin: 0 }} />
 

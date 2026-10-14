@@ -43,7 +43,7 @@ function Home() {
     {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} />, link: '/calendar' },
     {title: 'Мотоклубы', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} />, link: '/motoclubs' },
     {title: 'Мото-бары', desc: '', icon: <CoffeeOutlined style={{ fontSize: 28 }} />, link: '/motobars' },
-    {title: 'Мото-посты', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/moto-posts' },
+    {title: 'Байк-посты', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/moto-posts' },
     {title: 'СТО', desc: '', icon: <ToolOutlined style={{ fontSize: 28 }} />, link: '/service-stations' },
   ];
 
@@ -96,7 +96,7 @@ function Home() {
       isLoading: isLoadingMotobars,
     },
     {
-      title: 'Мото-посты',
+      title: 'Байк-посты',
       description: 'Ночлег и отдых на маршрутах.',
       link: '/moto-posts',
       createLink: '/moto-posts/create',

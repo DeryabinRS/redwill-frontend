@@ -124,7 +124,7 @@ function MotoPosts() {
       <Shell>
         <ShellHeader
           eyebrow="места"
-          title="Мото-посты"
+          title="Байк-посты"
           subtitle="Карта и список мото-постов сообщества."
           actions={<span className="shell__chip shell__chip--accent"><ShopOutlined /></span>}
         />
