@@ -73,7 +73,7 @@ function About() {
                 <Card style={{ height: '100%' }}>
                   <Space orientation="vertical">
                     <ScheduleOutlined style={{ fontSize: 28 }} />
-                    <Title level={4}>События</Title>
+                    <Title level={4}>МотоКалендарь</Title>
                     <Text type="secondary">Календарь ближайших мероприятий мотосообщества.</Text>
                   </Space>
                 </Card>

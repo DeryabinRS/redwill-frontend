@@ -106,7 +106,7 @@ function CalendarPage() {
                 мероприятия
               </Typography.Text>
               <Typography.Title level={1} className="events-calendar-title">
-                Календарь
+                МотоКалендарь
               </Typography.Title>
               <Typography.Paragraph className="events-calendar-description">
                 События мотосообщества на выбранный месяц.

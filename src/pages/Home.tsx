@@ -40,7 +40,7 @@ function Home() {
     pagination: { page: 1, per_page: 100 },
   })
   const cardData = [
-    {title: 'Календарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} />, link: '/calendar' },
+    {title: 'МотоКалендарь', desc: '', icon: <ScheduleOutlined style={{ fontSize: 28 }} />, link: '/calendar' },
     {title: 'Мотоклубы', desc: '', icon: <TeamOutlined style={{ fontSize: 28 }} />, link: '/motoclubs' },
     {title: 'Мото-бары', desc: '', icon: <CoffeeOutlined style={{ fontSize: 28 }} />, link: '/motobars' },
     {title: 'Байк-посты', desc: '', icon: <ShopOutlined style={{ fontSize: 28 }} />, link: '/moto-posts' },
