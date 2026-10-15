@@ -17,6 +17,8 @@ import {
   useUploadMotoclubLogoMutation,
   type Motoclub,
 } from '@features/motoclub/motoclubSlice'
+import { useGetUserMotoPostsQuery } from '@features/motoPost/motoPostSlice'
+import { useGetUserServiceStationsQuery } from '@features/serviceStation/serviceStationSlice'
 
 type FormValues = {
   name: string
@@ -29,6 +31,8 @@ type FormValues = {
   email?: string
   has_moto_post?: boolean
   has_service_station?: boolean
+  moto_post_id?: number | null
+  service_station_id?: number | null
   address?: string
   location?: string
   publication_status?: boolean
@@ -47,6 +51,24 @@ function EditMotoclub() {
   const [updateMotoclub, { isLoading: isUpdating }] = useUpdateMotoclubMutation()
   const [uploadMotoclubLogo, { isLoading: isUploadingLogo }] = useUploadMotoclubLogoMutation()
   const { data: userInfo } = useGetUserInfoQuery()
+  const { data: motoPostsData, isLoading: isLoadingMotoPosts } = useGetUserMotoPostsQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
+  const { data: serviceStationsData, isLoading: isLoadingServiceStations } = useGetUserServiceStationsQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
+  const motoPostOptions = (motoPostsData?.data || []).map((m) => ({ value: m.id, label: m.name }))
+  const serviceStationOptions = (serviceStationsData?.data || []).map((s) => ({ value: s.id, label: s.name }))
+  const hasMotoPost = Form.useWatch('has_moto_post', form)
+  const hasServiceStation = Form.useWatch('has_service_station', form)
+
+  useEffect(() => {
+    if (!hasMotoPost) form.setFieldValue('moto_post_id', undefined)
+  }, [hasMotoPost, form])
+
+  useEffect(() => {
+    if (!hasServiceStation) form.setFieldValue('service_station_id', undefined)
+  }, [hasServiceStation, form])
 
   const isDashboard = pathname.startsWith('/dashboard')
   const isStaff = Boolean(userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor'))
@@ -101,6 +123,8 @@ function EditMotoclub() {
       email: motoclubData.email || '',
       has_moto_post: Boolean(motoclubData.has_moto_post),
       has_service_station: Boolean(motoclubData.has_service_station),
+      moto_post_id: motoclubData.moto_post_id ?? undefined,
+      service_station_id: motoclubData.service_station_id ?? undefined,
       address: motoclubData.address || '',
       location: motoclubData.location || '',
       ...(showModerationFields
@@ -175,6 +199,8 @@ function EditMotoclub() {
       appendString(formData, 'location', values.location)
       formData.append('has_moto_post', values.has_moto_post ? '1' : '0')
       formData.append('has_service_station', values.has_service_station ? '1' : '0')
+      formData.append('moto_post_id', values.moto_post_id ? String(values.moto_post_id) : '')
+      formData.append('service_station_id', values.service_station_id ? String(values.service_station_id) : '')
 
       if (showModerationFields) {
         formData.append('publication_status', values.publication_status ? '1' : '0')
@@ -365,14 +391,24 @@ function EditMotoclub() {
 
               <Row gutter={16} style={{ marginBottom: 8 }}>
                 <Col xs={24} md={12}>
-                  <Form.Item name="has_moto_post" valuePropName="checked">
+                  <Form.Item name="has_moto_post" valuePropName="checked" style={{ marginBottom: 8 }}>
                     <Checkbox>Наличие байк-поста</Checkbox>
                   </Form.Item>
+                  {hasMotoPost && (
+                    <Form.Item name="moto_post_id" label="Байк-пост">
+                      <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите байк-пост" loading={isLoadingMotoPosts} options={motoPostOptions} />
+                    </Form.Item>
+                  )}
                 </Col>
                 <Col xs={24} md={12}>
-                  <Form.Item name="has_service_station" valuePropName="checked">
+                  <Form.Item name="has_service_station" valuePropName="checked" style={{ marginBottom: 8 }}>
                     <Checkbox>Наличие СТО</Checkbox>
                   </Form.Item>
+                  {hasServiceStation && (
+                    <Form.Item name="service_station_id" label="СТО">
+                      <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите СТО" loading={isLoadingServiceStations} options={serviceStationOptions} />
+                    </Form.Item>
+                  )}
                 </Col>
               </Row>
 

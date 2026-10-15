@@ -241,6 +241,87 @@ function Motoclub() {
         </Row>
       </Card>
 
+      {(motoclubData.moto_post || motoclubData.service_station) && (
+        <Card style={{ marginTop: 8 }}>
+          <Row gutter={[16, 16]}>
+            {motoclubData.moto_post ? (
+              <Col xs={24} md={12}>
+                <Title level={4} style={{ marginTop: 0, marginBottom: 8 }}>Байк-пост</Title>
+                <Link
+                  to={`/moto-posts/${motoclubData.moto_post.slug}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'inherit' }}
+                >
+                  {motoclubData.moto_post.logo ? (
+                    <img
+                      src={`${API_URL}${motoclubData.moto_post.logo}`}
+                      alt={motoclubData.moto_post.name}
+                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }}
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 8,
+                        background: 'rgba(127,127,127,0.15)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <ShopOutlined />
+                    </span>
+                  )}
+                  <div>
+                    <Text strong style={{ display: 'block' }}>{motoclubData.moto_post.name}</Text>
+                    {motoclubData.moto_post.address ? (
+                      <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.moto_post.address}</Text>
+                    ) : null}
+                  </div>
+                </Link>
+              </Col>
+            ) : null}
+            {motoclubData.service_station ? (
+              <Col xs={24} md={12}>
+                <Title level={4} style={{ marginTop: 0, marginBottom: 8 }}>СТО</Title>
+                <Link
+                  to={`/service-stations/${motoclubData.service_station.slug}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'inherit' }}
+                >
+                  {motoclubData.service_station.logo ? (
+                    <img
+                      src={`${API_URL}${motoclubData.service_station.logo}`}
+                      alt={motoclubData.service_station.name}
+                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }}
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 8,
+                        background: 'rgba(127,127,127,0.15)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <ToolOutlined />
+                    </span>
+                  )}
+                  <div>
+                    <Text strong style={{ display: 'block' }}>{motoclubData.service_station.name}</Text>
+                    {motoclubData.service_station.address ? (
+                      <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.service_station.address}</Text>
+                    ) : null}
+                  </div>
+                </Link>
+              </Col>
+            ) : null}
+          </Row>
+        </Card>
+      )}
+
       <Card style={{ marginTop: 8 }}>
         <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
           Ближайшие мероприятия мотоклуба

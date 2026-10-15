@@ -26,6 +26,17 @@ export type MotoclubMembersResponse = {
   members: MotoclubManagedMember[]
 }
 
+export type MotoclubLinkedPlace = {
+  id: number
+  slug: string
+  name: string
+  logo: string | null
+  address: string | null
+  phone: string | null
+  publication_status?: number
+  moderation_status?: number
+}
+
 export type Motoclub = {
   id: number
   user_id?: number
@@ -41,6 +52,10 @@ export type Motoclub = {
   email: string | null
   has_moto_post?: boolean
   has_service_station?: boolean
+  moto_post_id?: number | null
+  service_station_id?: number | null
+  moto_post?: MotoclubLinkedPlace | null
+  service_station?: MotoclubLinkedPlace | null
   address: string | null
   city: string | null
   state: string | null
