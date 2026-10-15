@@ -17,29 +17,30 @@
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 3px solid rgba(255, 255, 255, 0.22);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 42%);
   box-shadow:
-    0 0 0 34px rgba(255, 255, 255, 0.02),
-    0 0 0 72px rgba(205, 46, 44, 0.05);
+    0 0 0 16px rgba(0, 0, 0, 0.35),
+    0 0 0 18px rgba(255, 255, 255, 0.12),
+    0 0 0 38px rgba(255, 255, 255, 0.03),
+    0 0 0 72px rgba(205, 46, 44, 0.08);
   animation: hero-wheel-spin 26s linear infinite;
 }
 
 .home-page__wheel::before {
   content: '';
   position: absolute;
-  inset: 28px;
+  inset: 9%;
   border-radius: 50%;
-  border: 2px dashed rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.12);
 }
 
 .home-page__wheel::after {
   content: '';
   position: absolute;
-  inset: 64px;
+  inset: 0;
   border-radius: 50%;
-  background:
-    linear-gradient(90deg, transparent 49.4%, rgba(255, 255, 255, 0.16) 50%, transparent 50.6%),
-    linear-gradient(0deg, transparent 49.4%, rgba(255, 255, 255, 0.16) 50%, transparent 50.6%);
+  background: radial-gradient(circle, rgba(255, 255, 255, .1) 0 6%, transparent 7%), repeating-conic-gradient(rgba(255, 255, 255, 0.24) 0deg 1.5deg, transparent 0deg 24deg);
 }
 
 /* Схематичное крыло (как в logo.svg) */
@@ -53,7 +54,7 @@
   transform-origin: center;
   background: url('/img/wing.svg') no-repeat center / contain;
   opacity: 0.9;
-  z-index: -1;
+  z-index: 1;
   pointer-events: none;
 }
 
@@ -100,7 +101,9 @@
 }
 
 .home-hero__title-accent {
+  position: relative;
   color: #ff6b68;
+  z-index: 1;
 }
 
 @supports ((-webkit-background-clip: text) or (background-clip: text)) {
@@ -169,7 +172,12 @@
   .home-page__wheel {
     width: 120px;
     height: 120px;
-    box-shadow: 0 0 0 14px rgba(255, 255, 255, 0.02), 0 0 0 42px rgba(205, 46, 44, 0.05);
+    left: 82%;
+    box-shadow:
+      0 0 0 8px rgba(0, 0, 0, 0.45),
+      0 0 0 10px rgba(255, 255, 255, 0.22),
+      0 0 0 18px rgba(255, 255, 255, 0.03),
+      0 0 0 42px rgba(205, 46, 44, 0.08);
   }
 
   .home-page__wing {
@@ -190,13 +198,13 @@
   }
 
   .home-page__wheel {
-    /* display: none; */
+    left: 74%;
   }
   .home-page__wing {
-    width: 90px;
-    top: calc(50% - 48px);
+    width: 120px;
+    top: calc(28% - 48px);
     left: 88%;
-    height: 94px;
+    height: 110px;
   }
 }
 

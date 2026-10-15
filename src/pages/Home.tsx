@@ -190,7 +190,7 @@ function Home() {
                     Календарь
                   </ThemeButton>
                   <ThemeButton icon={<PlusOutlined />} onClick={() => navigate('/posts/create')}>
-                    Добавить событие
+                    Добавить
                   </ThemeButton>
                 </Space.Compact>
               }
