@@ -3,6 +3,7 @@ import { SITE_NAME, SITE_URL } from '@config/constants'
 
 type SeoProps = {
   title?: string
+  fullTitle?: string
   description?: string
   path?: string
   image?: string
@@ -59,13 +60,13 @@ function removeJsonLd(): void {
   if (el) el.remove()
 }
 
-function Seo({ title, description, path, image, type = 'website', jsonLd }: SeoProps) {
+function Seo({ title, fullTitle, description, path, image, type = 'website', jsonLd }: SeoProps) {
   useEffect(() => {
     const base = SITE_URL || ''
-    const fullTitle = title ? `${title} — ${SITE_NAME}` : SITE_NAME
+    const resolvedTitle = fullTitle || (title ? `${title} — ${SITE_NAME}` : SITE_NAME)
 
-    document.title = fullTitle
-    upsertMeta('property', 'og:title', fullTitle)
+    document.title = resolvedTitle
+    upsertMeta('property', 'og:title', resolvedTitle)
 
     if (description) {
       upsertMeta('name', 'description', description)
@@ -91,7 +92,7 @@ function Seo({ title, description, path, image, type = 'website', jsonLd }: SeoP
     } else {
       removeJsonLd()
     }
-  }, [title, description, path, image, type, jsonLd])
+  }, [title, fullTitle, description, path, image, type, jsonLd])
 
   return null
 }

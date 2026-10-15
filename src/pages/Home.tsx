@@ -5,6 +5,7 @@ import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutli
 // import { useTranslation } from 'react-i18next'
 import PostFeed from '../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
+import Seo from '@components/Seo'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
@@ -157,6 +158,11 @@ function Home() {
 
   return (
     <>
+      <Seo
+        fullTitle="MotoWing — платформа для мотосообщества"
+        description="Находите мотособытия, клубы, мото-бары, мото-посты и СТО. Добавляйте полезные места и события для райдеров."
+        path="/"
+      />
       <section className="home-hero">
         <div className="container home-hero__inner">
           <span className="home-hero__eyebrow">
