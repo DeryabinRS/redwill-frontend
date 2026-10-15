@@ -17,12 +17,12 @@
   width: 260px;
   height: 260px;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.22);
+  border: 3px solid rgba(255, 255, 255, 0.16);
   background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 42%);
   box-shadow:
     0 0 0 16px rgba(0, 0, 0, 0.35),
     0 0 0 18px rgba(255, 255, 255, 0.12),
-    0 0 0 38px rgba(255, 255, 255, 0.03),
+    0 0 0 38px rgba(255, 255, 255, 0.05),
     0 0 0 72px rgba(205, 46, 44, 0.08);
   animation: hero-wheel-spin 26s linear infinite;
 }
@@ -32,7 +32,7 @@
   position: absolute;
   inset: 9%;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .home-page__wheel::after {
@@ -40,7 +40,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(255, 255, 255, .1) 0 6%, transparent 7%), repeating-conic-gradient(rgba(255, 255, 255, 0.24) 0deg 1.5deg, transparent 0deg 24deg);
+  background: radial-gradient(circle, rgba(255, 255, 255, .1) 0 6%, transparent 7%), repeating-conic-gradient(rgba(255, 255, 255, 0.14) 0deg 1.5deg, transparent 0deg 24deg);
 }
 
 /* Схематичное крыло (как в logo.svg) */
@@ -182,15 +182,15 @@
 
   .home-page__wing {
     width: 190px;
-    top: calc(50% - 114px);
-    left: 85%;
+    top: calc(40% - 112px);
+    left: 84%;
     height: 224px;
   }
 }
 
 @media (max-width: 575px) {
   .home-hero {
-    padding: 48px 0 56px;
+    padding: 20px 0 56px;
   }
 
   .home-hero__subtitle {
@@ -198,12 +198,12 @@
   }
 
   .home-page__wheel {
-    left: 74%;
+    left: 70%;
   }
   .home-page__wing {
     width: 120px;
     top: calc(28% - 48px);
-    left: 88%;
+    left: 84%;
     height: 110px;
   }
 }
