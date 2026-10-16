@@ -44,6 +44,12 @@
   transition: transform 0.3s ease;
 }
 
+.post-card-image-container,
+.post-card-image,
+.post-card-image-placeholder {
+  border-radius: 0 !important;
+}
+
 .post-category-tag {
   position: absolute;
   top: 12px;

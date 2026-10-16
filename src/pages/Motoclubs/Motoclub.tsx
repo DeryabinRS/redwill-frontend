@@ -1,10 +1,11 @@
 import { Alert, Card, Col, Divider, Row, Skeleton, Space, Tooltip, Typography } from 'antd'
 import { CalendarOutlined, CoffeeOutlined, EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, ShopOutlined, ToolOutlined } from '@ant-design/icons'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import PostFeed from '@components/PostFeed/PostFeed'
+import '@components/PostFeed/PostFeed.css'
 import StarRating from '@components/StarRating'
 import Seo from '@components/Seo'
 import { isAuthenticated } from '@utils/auth'
@@ -60,6 +61,7 @@ function MotoclubLogoLink({ item }: { item: MotoclubLinkItem }) {
 
 function Motoclub() {
   const { motoclub } = useParams<{ motoclub: string }>()
+  const navigate = useNavigate()
   const shouldSkipQuery = !motoclub
 
   const {
@@ -258,116 +260,125 @@ function Motoclub() {
 
       {(motoclubData.moto_post || motoclubData.service_station || motoclubData.motobar) && (
         <Card style={{ marginTop: 8 }}>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[8, 8]}>
             {motoclubData.moto_post ? (
-              <Col xs={24} md={12}>
-                <Title level={4} style={{ marginTop: 0, marginBottom: 8 }}>Байк-пост</Title>
-                <Link
-                  to={`/moto-posts/${motoclubData.moto_post.slug}`}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'inherit' }}
+              <Col xs={24} md={24} xl={8}>
+                <Card
+                  size="small"
+                  className="post-card post-card--compact post-card--event"
+                  hoverable
+                  onClick={() => navigate(`/moto-posts/${motoclubData.moto_post!.slug}`)}
+                  cover={
+                    motoclubData.moto_post.logo ? (
+                      <div className="post-card-image-container">
+                        <img
+                          src={`${API_URL}${motoclubData.moto_post.logo}`}
+                          alt={motoclubData.moto_post.name}
+                          className="post-card-image"
+                          loading="lazy"
+                          style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)' }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="post-card-image-placeholder">
+                        <ShopOutlined style={{ fontSize: 28, color: '#d9d9d9' }} />
+                      </div>
+                    )
+                  }
                 >
-                  {motoclubData.moto_post.logo ? (
-                    <img
-                      src={`${API_URL}${motoclubData.moto_post.logo}`}
-                      alt={motoclubData.moto_post.name}
-                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }}
-                    />
-                  ) : (
-                    <span
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 8,
-                        background: 'rgba(127,127,127,0.15)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <ShopOutlined />
-                    </span>
-                  )}
-                  <div>
-                    <Text strong style={{ display: 'block' }}>{motoclubData.moto_post.name}</Text>
-                    {motoclubData.moto_post.address ? (
-                      <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.moto_post.address}</Text>
-                    ) : null}
+                  <div className="profile-card-body">
+                    <Space orientation="vertical" size="small" style={{ width: '100%' }}>
+                      <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+                        {motoclubData.moto_post.name}
+                      </Title>
+                      {motoclubData.moto_post.address ? (
+                        <div className="post-card-meta">
+                          <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.moto_post.address}</Text>
+                        </div>
+                      ) : null}
+                    </Space>
                   </div>
-                </Link>
+                </Card>
               </Col>
             ) : null}
             {motoclubData.service_station ? (
-              <Col xs={24} md={12}>
-                <Title level={4} style={{ marginTop: 0, marginBottom: 8 }}>СТО</Title>
-                <Link
-                  to={`/service-stations/${motoclubData.service_station.slug}`}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'inherit' }}
+              <Col xs={24} md={24} lg={12} xl={8}>
+                <Card
+                  size="small"
+                  className="post-card post-card--compact post-card--event"
+                  hoverable
+                  onClick={() => navigate(`/service-stations/${motoclubData.service_station!.slug}`)}
+                  cover={
+                    motoclubData.service_station.logo ? (
+                      <div className="post-card-image-container">
+                        <img
+                          src={`${API_URL}${motoclubData.service_station.logo}`}
+                          alt={motoclubData.service_station.name}
+                          className="post-card-image"
+                          loading="lazy"
+                          style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)' }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="post-card-image-placeholder">
+                        <ToolOutlined style={{ fontSize: 28, color: '#d9d9d9' }} />
+                      </div>
+                    )
+                  }
                 >
-                  {motoclubData.service_station.logo ? (
-                    <img
-                      src={`${API_URL}${motoclubData.service_station.logo}`}
-                      alt={motoclubData.service_station.name}
-                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }}
-                    />
-                  ) : (
-                    <span
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 8,
-                        background: 'rgba(127,127,127,0.15)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <ToolOutlined />
-                    </span>
-                  )}
-                  <div>
-                    <Text strong style={{ display: 'block' }}>{motoclubData.service_station.name}</Text>
-                    {motoclubData.service_station.address ? (
-                      <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.service_station.address}</Text>
-                    ) : null}
+                  <div className="profile-card-body">
+                    <Space orientation="vertical" size="small" style={{ width: '100%' }}>
+                      <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+                        {motoclubData.service_station.name}
+                      </Title>
+                      {motoclubData.service_station.address ? (
+                        <div className="post-card-meta">
+                          <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.service_station.address}</Text>
+                        </div>
+                      ) : null}
+                    </Space>
                   </div>
-                </Link>
+                </Card>
               </Col>
             ) : null}
             {motoclubData.motobar ? (
-              <Col xs={24} md={12}>
-                <Title level={4} style={{ marginTop: 0, marginBottom: 8 }}>Мото-бар</Title>
-                <Link
-                  to={`/motobars/${motoclubData.motobar.slug}`}
-                  style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'inherit' }}
+              <Col xs={24} md={24} lg={12} xl={8}>
+                <Card
+                  size="small"
+                  className="post-card post-card--compact post-card--event"
+                  hoverable
+                  onClick={() => navigate(`/motobars/${motoclubData.motobar!.slug}`)}
+                  cover={
+                    motoclubData.motobar.logo ? (
+                      <div className="post-card-image-container">
+                        <img
+                          src={`${API_URL}${motoclubData.motobar.logo}`}
+                          alt={motoclubData.motobar.name}
+                          className="post-card-image"
+                          loading="lazy"
+                          style={{ objectFit: 'contain', background: 'rgba(0,0,0,0.04)' }}
+                        />
+                      </div>
+                    ) : (
+                      <div className="post-card-image-placeholder">
+                        <CoffeeOutlined style={{ fontSize: 28, color: '#d9d9d9' }} />
+                      </div>
+                    )
+                  }
                 >
-                  {motoclubData.motobar.logo ? (
-                    <img
-                      src={`${API_URL}${motoclubData.motobar.logo}`}
-                      alt={motoclubData.motobar.name}
-                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }}
-                    />
-                  ) : (
-                    <span
-                      style={{
-                        width: 56,
-                        height: 56,
-                        borderRadius: 8,
-                        background: 'rgba(127,127,127,0.15)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <CoffeeOutlined />
-                    </span>
-                  )}
-                  <div>
-                    <Text strong style={{ display: 'block' }}>{motoclubData.motobar.name}</Text>
-                    {motoclubData.motobar.address ? (
-                      <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.motobar.address}</Text>
-                    ) : null}
+                  <div className="profile-card-body">
+                    <Space orientation="vertical" size="small" style={{ width: '100%' }}>
+                      <Title level={4} className="post-card-title" style={{ margin: 0, fontSize: 14, lineHeight: 1.2 }}>
+                        {motoclubData.motobar.name}
+                      </Title>
+                      {motoclubData.motobar.address ? (
+                        <div className="post-card-meta">
+                          <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.motobar.address}</Text>
+                        </div>
+                      ) : null}
+                    </Space>
                   </div>
-                </Link>
+                </Card>
               </Col>
             ) : null}
           </Row>
