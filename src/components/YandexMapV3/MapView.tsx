@@ -1,4 +1,4 @@
-import { Alert, Skeleton } from 'antd'
+import { Alert, Col, Modal, Row, Skeleton, Typography } from 'antd'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useYmaps3 } from '@hooks/useYmaps3'
@@ -10,6 +10,8 @@ export type MapViewMarker = {
   title: string
   logo?: string | null
   href?: string
+  address?: string | null
+  description?: string | null
 }
 
 export interface MapViewProps {
@@ -37,65 +39,55 @@ function getClusterStep(zoom: number) {
 }
 
 function groupMarkers(markers: ParsedMarker[], zoom: number) {
-  const exactGroups = new Map<string, ParsedMarker[]>()
-  markers.forEach((marker) => {
-    const key = `${marker.coords.lat.toFixed(6)}:${marker.coords.lng.toFixed(6)}`
-    exactGroups.set(key, [...(exactGroups.get(key) || []), marker])
-  })
-
   const step = getClusterStep(zoom)
-  if (step === 0) {
-    return [...exactGroups.entries()].map(([id, group]) => ({
-      id,
-      coords: {
-        lat: group.reduce((sum, marker) => sum + marker.coords.lat, 0) / group.length,
-        lng: group.reduce((sum, marker) => sum + marker.coords.lng, 0) / group.length,
-      },
-      markers: group,
-    }))
+  const tolerance = step === 0 ? 1e-6 : step
+
+  type Cluster = {
+    coords: { lat: number; lng: number }
+    markers: ParsedMarker[]
   }
 
-  const groups = new Map<string, ParsedMarker[]>()
+  const clusters: Cluster[] = []
+
   markers.forEach((marker) => {
-    const latKey = Math.round(marker.coords.lat / step)
-    const lngKey = Math.round(marker.coords.lng / step)
-    const key = `${latKey}:${lngKey}`
-    groups.set(key, [...(groups.get(key) || []), marker])
+    let target: Cluster | null = null
+
+    for (const cluster of clusters) {
+      const dLat = Math.abs(marker.coords.lat - cluster.coords.lat)
+      const dLng = Math.abs(marker.coords.lng - cluster.coords.lng)
+      if (dLat <= tolerance && dLng <= tolerance) {
+        target = cluster
+        break
+      }
+    }
+
+    if (target) {
+      target.markers.push(marker)
+      target.coords = {
+        lat: target.markers.reduce((sum, item) => sum + item.coords.lat, 0) / target.markers.length,
+        lng: target.markers.reduce((sum, item) => sum + item.coords.lng, 0) / target.markers.length,
+      }
+    } else {
+      clusters.push({
+        coords: { lat: marker.coords.lat, lng: marker.coords.lng },
+        markers: [marker],
+      })
+    }
   })
 
-  return [...groups.entries()].map(([id, group]) => ({
-    id,
-    coords: {
-      lat: group.reduce((sum, marker) => sum + marker.coords.lat, 0) / group.length,
-      lng: group.reduce((sum, marker) => sum + marker.coords.lng, 0) / group.length,
-    },
-    markers: group,
+  return clusters.map((cluster, index) => ({
+    id: `cluster-${index}`,
+    coords: cluster.coords,
+    markers: cluster.markers,
   }))
-}
-
-function getSpiderCoordinates(center: { lat: number; lng: number }, index: number, total: number, zoom: number) {
-  const angle = (Math.PI * 2 * index) / total - Math.PI / 2
-  const radius = Math.max(0.00400, 0.0026 / Math.max(zoom, 1))
-  return {
-    lat: center.lat + Math.sin(angle) * radius,
-    lng: center.lng + Math.cos(angle) * radius,
-  }
-}
-
-function getZoomToExpandCluster(markers: ParsedMarker[], currentZoom: number) {
-  for (let nextZoom = Math.floor(currentZoom) + 1; nextZoom <= 12; nextZoom += 1) {
-    if (groupMarkers(markers, nextZoom).length > 1 || getClusterStep(nextZoom) === 0) {
-      return nextZoom
-    }
-  }
-
-  return Math.min(currentZoom + 1, 20)
 }
 
 function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: MapViewProps) {
   const { isReady, error, reactify } = useYmaps3()
   const [zoom, setZoom] = useState(initialZoom)
   const [currentCenter, setCurrentCenter] = useState<[number, number] | null>(null)
+  const [selectedMarker, setSelectedMarker] = useState<ParsedMarker | null>(null)
+  const [clusterMarkers, setClusterMarkers] = useState<ParsedMarker[] | null>(null)
   const parsedMarkers = useMemo<ParsedMarker[]>(() => {
     if (markers?.length) {
       return markers
@@ -177,67 +169,120 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
             setCurrentCenter(event.location.center)
             setZoom(event.location.zoom)
           }}
+          onClick={() => setSelectedMarker(null)}
         />
-        {markerGroups.flatMap((group) => {
-          if (getClusterStep(zoom) === 0 && group.markers.length > 1) {
-            return group.markers.map((marker, index) => {
-              const spiderCoords = getSpiderCoordinates(group.coords, index, group.markers.length, zoom)
-              return (
-                <YMapMarker
-                  key={`${group.id}:${marker.id}:spider`}
-                  coordinates={[spiderCoords.lng, spiderCoords.lat]}
+        {markerGroups.map((group) => (
+          <YMapMarker
+            key={group.id}
+            coordinates={[group.coords.lng, group.coords.lat]}
+          >
+            <div style={{ transform: 'translate(-50%, -100%)' }}>
+              {group.markers.length > 1 ? (
+                <button
+                  type="button"
+                  title={group.markers.map((marker) => marker.title).join(', ')}
+                  onPointerDown={(event) => {
+                    event.stopPropagation()
+                  }}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    setClusterMarkers(group.markers)
+                  }}
+                  style={{
+                    width: 46,
+                    height: 46,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: '#cd2e2c',
+                    color: '#fff',
+                    fontWeight: 700,
+                    border: '3px solid #fff',
+                    boxShadow: '0 8px 20px rgba(0,0,0,.28)',
+                    cursor: 'pointer',
+                  }}
                 >
-                  <div style={{ transform: 'translate(-50%, -100%)' }}>
-                    <MotoclubMapMarker marker={{ ...marker, coords: spiderCoords }} />
-                  </div>
-                </YMapMarker>
-              )
-            })
-          }
+                  {group.markers.length}
+                </button>
+              ) : (
+                <MotoclubMapMarker marker={group.markers[0]} onClick={() => setSelectedMarker(group.markers[0])} />
+              )}
+            </div>
+          </YMapMarker>
+        ))}
 
-          return [
-            <YMapMarker
-              key={group.id}
-              coordinates={[group.coords.lng, group.coords.lat]}
+        {selectedMarker ? (
+          <YMapMarker
+            coordinates={[selectedMarker.coords.lng, selectedMarker.coords.lat]}
+            zIndex={2000}
+          >
+            <div
+              style={{ transform: 'translate(-50%, calc(-100% - 18px))' }}
+              onClick={(event) => event.stopPropagation()}
             >
-              <div style={{ transform: 'translate(-50%, -100%)' }}>
-                {group.markers.length > 1 ? (
-                  <button
-                    type="button"
-                    title={group.markers.map((marker) => marker.title).join(', ')}
-                    onPointerDown={(event) => {
-                      event.stopPropagation()
-                    }}
-                    onClick={(event) => {
-                      event.preventDefault()
-                      event.stopPropagation()
-                      setCurrentCenter([group.coords.lng, group.coords.lat])
-                      setZoom(getZoomToExpandCluster(group.markers, zoom))
-                    }}
-                    style={{
-                      width: 46,
-                      height: 46,
-                      borderRadius: '50%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      background: '#cd2e2c',
-                      color: '#fff',
-                      fontWeight: 700,
-                      border: '3px solid #fff',
-                      boxShadow: '0 8px 20px rgba(0,0,0,.28)',
-                      cursor: 'pointer',
-                    }}
-                  >
-                    {group.markers.length}
-                  </button>
-                ) : (
-                  <MotoclubMapMarker marker={group.markers[0]} />
-                )}
+              <div
+                style={{
+                  width: 240,
+                  background: '#fff',
+                  borderRadius: 10,
+                  boxShadow: '0 12px 32px rgba(0,0,0,.28)',
+                  overflow: 'hidden',
+                  position: 'relative',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setSelectedMarker(null)}
+                  aria-label="Закрыть"
+                  style={{
+                    position: 'absolute',
+                    top: 6,
+                    right: 6,
+                    zIndex: 2,
+                    width: 22,
+                    height: 22,
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: 'rgba(0,0,0,.45)',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontSize: 14,
+                    lineHeight: 1,
+                  }}
+                >
+                  ×
+                </button>
+                {selectedMarker.logo ? (
+                  <img
+                    src={selectedMarker.logo}
+                    alt={selectedMarker.title}
+                    style={{ width: '100%', height: 110, objectFit: 'cover', background: '#f5f5f5' }}
+                  />
+                ) : null}
+                <div style={{ padding: '10px 12px 12px' }}>
+                  <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.25, color: '#1a1a1a' }}>
+                    {selectedMarker.title}
+                  </div>
+                  {selectedMarker.address ? (
+                    <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
+                      {selectedMarker.address}
+                    </div>
+                  ) : null}
+                  {selectedMarker.href ? (
+                    <Link
+                      to={selectedMarker.href}
+                      style={{ display: 'inline-block', marginTop: 8, fontSize: 13, fontWeight: 600, color: '#cd2e2c' }}
+                    >
+                      Подробнее →
+                    </Link>
+                  ) : null}
+                </div>
               </div>
-            </YMapMarker>,
-          ]
-        })}
+            </div>
+          </YMapMarker>
+        ) : null}
       </YMap>
 
       <div
@@ -288,11 +333,105 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
           -
         </button>
       </div>
+
+      <ClusterModal markers={clusterMarkers} onClose={() => setClusterMarkers(null)} />
     </div>
   )
 }
 
-function MotoclubMapMarker({ marker }: { marker: ParsedMarker }) {
+function ClusterModal({ markers, onClose }: { markers: ParsedMarker[] | null; onClose: () => void }) {
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
+  useEffect(() => {
+    setSelectedIndex(0)
+  }, [markers])
+
+  const list = markers ?? []
+  const selected = list[selectedIndex]
+
+  return (
+    <Modal
+      open={list.length > 0}
+      onCancel={onClose}
+      footer={null}
+      width={640}
+      title={list.length > 1 ? `Объектов: ${list.length}` : undefined}
+    >
+      {selected ? (
+        <Row gutter={16}>
+          <Col span={10}>
+            <div
+              style={{
+                maxHeight: 360,
+                overflowY: 'auto',
+                paddingRight: 8,
+                borderRight: '1px solid #f0f0f0',
+              }}
+            >
+              {list.map((item, index) => (
+                <button
+                  key={String(item.id)}
+                  type="button"
+                  onClick={() => setSelectedIndex(index)}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    textAlign: 'left',
+                    padding: '8px 10px',
+                    marginBottom: 4,
+                    border: 'none',
+                    borderRadius: 6,
+                    background: index === selectedIndex ? '#cd2e2c' : 'transparent',
+                    color: index === selectedIndex ? '#fff' : 'var(--ant-color-text, #e5e7eb)',
+                    cursor: 'pointer',
+                    fontSize: 13,
+                    fontWeight: index === selectedIndex ? 600 : 400,
+                  }}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+          </Col>
+          <Col span={14}>
+            {selected.logo ? (
+              <img
+                src={selected.logo}
+                alt={selected.title}
+                style={{
+                  width: 50,
+                  height: 50,
+                  objectFit: 'contain',
+                  borderRadius: 8,
+                  marginBottom: 12,
+                  background: '#f5f5f5',
+                }}
+              />
+            ) : null}
+            <Typography.Title level={5} style={{ margin: 0 }}>
+              {selected.title}
+            </Typography.Title>
+            {selected.address ? (
+              <Typography.Text type="secondary" style={{ display: 'block', marginTop: 4 }}>
+                {selected.address}
+              </Typography.Text>
+            ) : null}
+            {selected.href ? (
+              <Link
+                to={selected.href}
+                style={{ display: 'inline-block', marginTop: 12, fontWeight: 600, color: '#cd2e2c' }}
+              >
+                Подробнее →
+              </Link>
+            ) : null}
+          </Col>
+        </Row>
+      ) : null}
+    </Modal>
+  )
+}
+
+function MotoclubMapMarker({ marker, onClick }: { marker: ParsedMarker; onClick?: () => void }) {
   const content = (
     <div>
       {marker.logo ? (
@@ -305,7 +444,7 @@ function MotoclubMapMarker({ marker }: { marker: ParsedMarker }) {
             background: '#fff',
             padding: '2px',
             boxShadow: '0 8px 20px rgba(0,0,0,.25)',
-        border: '1px solid rgba(0,0,0,.08)',
+            border: '1px solid rgba(0,0,0,.08)',
             borderRadius: '50%',
             objectFit: 'cover',
           }}
@@ -327,15 +466,25 @@ function MotoclubMapMarker({ marker }: { marker: ParsedMarker }) {
     </div>
   )
 
-  if (marker.href) {
-    return (
-      <Link to={marker.href} style={{ textDecoration: 'none' }}>
-        {content}
-      </Link>
-    )
-  }
-
-  return content
+  return (
+    <button
+      type="button"
+      onClick={(event) => {
+        event.preventDefault()
+        event.stopPropagation()
+        onClick?.()
+      }}
+      style={{
+        border: 'none',
+        background: 'transparent',
+        padding: 0,
+        cursor: 'pointer',
+        display: 'block',
+      }}
+    >
+      {content}
+    </button>
+  )
 }
 
 export default MapView

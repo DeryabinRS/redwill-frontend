@@ -119,6 +119,7 @@ function Motoclubs() {
           location: motoclub.location,
           logo: motoclub.logo ? `${API_URL}${motoclub.logo}` : null,
           href: `/motoclubs/${motoclub.slug}`,
+          address: motoclub.address,
         })),
     [mapMotoclubs],
   )

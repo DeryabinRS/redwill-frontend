@@ -113,6 +113,7 @@ function ServiceStations() {
           location: serviceStation.location,
           logo: serviceStation.logo ? `${API_URL}${serviceStation.logo}` : null,
           href: `/service-stations/${serviceStation.slug}`,
+          address: serviceStation.address,
         })),
     [mapServiceStations],
   )

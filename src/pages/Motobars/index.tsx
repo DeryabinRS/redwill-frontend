@@ -113,6 +113,7 @@ function Motobars() {
           location: motobar.location,
           logo: motobar.logo ? `${API_URL}${motobar.logo}` : null,
           href: `/motobars/${motobar.slug}`,
+          address: motobar.address,
         })),
     [mapMotobars],
   )

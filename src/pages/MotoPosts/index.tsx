@@ -113,6 +113,7 @@ function MotoPosts() {
           location: motoPost.location,
           logo: motoPost.logo ? `${API_URL}${motoPost.logo}` : null,
           href: `/moto-posts/${motoPost.slug}`,
+          address: motoPost.address,
         })),
     [mapMotoPosts],
   )
