@@ -52,10 +52,13 @@ export type Motoclub = {
   email: string | null
   has_moto_post?: boolean
   has_service_station?: boolean
+  has_motobar?: boolean
   moto_post_id?: number | null
   service_station_id?: number | null
+  motobar_id?: number | null
   moto_post?: MotoclubLinkedPlace | null
   service_station?: MotoclubLinkedPlace | null
+  motobar?: MotoclubLinkedPlace | null
   address: string | null
   city: string | null
   state: string | null

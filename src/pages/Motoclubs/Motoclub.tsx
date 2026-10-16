@@ -1,5 +1,5 @@
 import { Alert, Card, Col, Divider, Row, Skeleton, Space, Tooltip, Typography } from 'antd'
-import { EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, ShopOutlined, ToolOutlined } from '@ant-design/icons'
+import { CalendarOutlined, CoffeeOutlined, EnvironmentOutlined, GlobalOutlined, MailOutlined, PhoneOutlined, ShopOutlined, ToolOutlined } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubQuery } from '@features/motoclub/motoclubSlice'
@@ -8,6 +8,7 @@ import PostFeed from '@components/PostFeed/PostFeed'
 import StarRating from '@components/StarRating'
 import Seo from '@components/Seo'
 import { isAuthenticated } from '@utils/auth'
+import dayjs from 'dayjs'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -160,6 +161,13 @@ function Motoclub() {
                       </span>
                     </Tooltip>
                   ) : null}
+                  {motoclubData.has_motobar ? (
+                    <Tooltip title="Есть мото-бар">
+                      <span className="shell__chip shell__chip--accent">
+                        <CoffeeOutlined />
+                      </span>
+                    </Tooltip>
+                  ) : null}
                   <StarRating
                     type="motoclub"
                     id={motoclubData.id}
@@ -210,6 +218,13 @@ function Motoclub() {
                   </Space>
                 )}
 
+                {motoclubData.birthday && dayjs(motoclubData.birthday).isValid() && (
+                  <Space size={8}>
+                    <CalendarOutlined />
+                    <Text type="secondary">День рождения клуба: {dayjs(motoclubData.birthday).format('DD.MM.YYYY')}</Text>
+                  </Space>
+                )}
+
                 {motoclubData.parent_id && parent && (
                   <Space orientation="vertical" size={8}>
                     <Text strong>Родительский мотоклуб:</Text>
@@ -241,7 +256,7 @@ function Motoclub() {
         </Row>
       </Card>
 
-      {(motoclubData.moto_post || motoclubData.service_station) && (
+      {(motoclubData.moto_post || motoclubData.service_station || motoclubData.motobar) && (
         <Card style={{ marginTop: 8 }}>
           <Row gutter={[16, 16]}>
             {motoclubData.moto_post ? (
@@ -313,6 +328,43 @@ function Motoclub() {
                     <Text strong style={{ display: 'block' }}>{motoclubData.service_station.name}</Text>
                     {motoclubData.service_station.address ? (
                       <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.service_station.address}</Text>
+                    ) : null}
+                  </div>
+                </Link>
+              </Col>
+            ) : null}
+            {motoclubData.motobar ? (
+              <Col xs={24} md={12}>
+                <Title level={4} style={{ marginTop: 0, marginBottom: 8 }}>Мото-бар</Title>
+                <Link
+                  to={`/motobars/${motoclubData.motobar.slug}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'inherit' }}
+                >
+                  {motoclubData.motobar.logo ? (
+                    <img
+                      src={`${API_URL}${motoclubData.motobar.logo}`}
+                      alt={motoclubData.motobar.name}
+                      style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 8 }}
+                    />
+                  ) : (
+                    <span
+                      style={{
+                        width: 56,
+                        height: 56,
+                        borderRadius: 8,
+                        background: 'rgba(127,127,127,0.15)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <CoffeeOutlined />
+                    </span>
+                  )}
+                  <div>
+                    <Text strong style={{ display: 'block' }}>{motoclubData.motobar.name}</Text>
+                    {motoclubData.motobar.address ? (
+                      <Text type="secondary" style={{ fontSize: 12 }}>{motoclubData.motobar.address}</Text>
                     ) : null}
                   </div>
                 </Link>

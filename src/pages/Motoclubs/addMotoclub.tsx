@@ -3,18 +3,21 @@ import { App as AntdApp, Button, Card, Checkbox, Col, DatePicker, Form, Input, R
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
+import OptionalLabel from '../../components/OptionalLabel'
 import {
   useCreateMotoclubMutation,
   useGetJoinedMotoclubsQuery,
   useGetMotoclubListQuery,
   type Motoclub,
 } from '../../features/motoclub/motoclubSlice'
-import { useGetUserMotoPostsQuery } from '../../features/motoPost/motoPostSlice'
-import { useGetUserServiceStationsQuery } from '../../features/serviceStation/serviceStationSlice'
+import { useGetMotoPostListQuery } from '../../features/motoPost/motoPostSlice'
+import { useGetServiceStationListQuery } from '../../features/serviceStation/serviceStationSlice'
+import { useGetMotobarListQuery } from '../../features/motobar/motobarSlice'
 import { useGetUserInfoQuery } from '../../features/user/userSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
+import { BikePostHelper, StoHelper, BikeBarHelper } from './helpers'
 
 const MAX_CREATED_MOTOCLUBS = 1
 
@@ -30,8 +33,10 @@ type FormValues = {
   email?: string
   has_moto_post?: boolean
   has_service_station?: boolean
+  has_motobar?: boolean
   moto_post_id?: number
   service_station_id?: number
+  motobar_id?: number
   address: string
   location: string
 }
@@ -52,16 +57,21 @@ function AddMotoclub() {
   const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetMotoclubListQuery({
     pagination: { page: 1, per_page: 100 },
   })
-  const { data: motoPostsData, isLoading: isLoadingMotoPosts } = useGetUserMotoPostsQuery({
+  const { data: motoPostsData, isLoading: isLoadingMotoPosts } = useGetMotoPostListQuery({
     pagination: { page: 1, per_page: 100 },
   })
-  const { data: serviceStationsData, isLoading: isLoadingServiceStations } = useGetUserServiceStationsQuery({
+  const { data: serviceStationsData, isLoading: isLoadingServiceStations } = useGetServiceStationListQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
+  const { data: motobarsData, isLoading: isLoadingMotobars } = useGetMotobarListQuery({
     pagination: { page: 1, per_page: 100 },
   })
   const motoPostOptions = (motoPostsData?.data || []).map((m) => ({ value: m.id, label: m.name }))
   const serviceStationOptions = (serviceStationsData?.data || []).map((s) => ({ value: s.id, label: s.name }))
+  const motobarOptions = (motobarsData?.data || []).map((b) => ({ value: b.id, label: b.name }))
   const hasMotoPost = Form.useWatch('has_moto_post', form)
   const hasServiceStation = Form.useWatch('has_service_station', form)
+  const hasMotobar = Form.useWatch('has_motobar', form)
 
   useEffect(() => {
     if (!hasMotoPost) form.setFieldValue('moto_post_id', undefined)
@@ -70,6 +80,10 @@ function AddMotoclub() {
   useEffect(() => {
     if (!hasServiceStation) form.setFieldValue('service_station_id', undefined)
   }, [hasServiceStation, form])
+
+  useEffect(() => {
+    if (!hasMotobar) form.setFieldValue('motobar_id', undefined)
+  }, [hasMotobar, form])
   const parentOptions = (motoclubsData?.data || []).map((motoclub: Motoclub) => ({
     value: motoclub.id,
     label: motoclub.address ? `${motoclub.name} (${motoclub.address})` : motoclub.name,
@@ -108,8 +122,10 @@ function AddMotoclub() {
       formData.append('location', sanitizeInput(values.location))
       formData.append('has_moto_post', values.has_moto_post ? '1' : '0')
       formData.append('has_service_station', values.has_service_station ? '1' : '0')
+      formData.append('has_motobar', values.has_motobar ? '1' : '0')
       formData.append('moto_post_id', values.moto_post_id ? String(values.moto_post_id) : '')
       formData.append('service_station_id', values.service_station_id ? String(values.service_station_id) : '')
+      formData.append('motobar_id', values.motobar_id ? String(values.motobar_id) : '')
 
       if (logo && logo.startsWith('data:image')) {
         const file = await base64ToFile(logo, `motoclub_${Date.now()}.webp`)
@@ -166,7 +182,7 @@ function AddMotoclub() {
                 <Input placeholder="Название мотоклуба" />
               </Form.Item>
 
-              <Form.Item name="parent_id" label="Родительский мотоклуб (необязательно)">
+              <Form.Item name="parent_id" label={<OptionalLabel text="Родительский мотоклуб" />}>
                 <Select
                   allowClear
                   showSearch
@@ -179,7 +195,7 @@ function AddMotoclub() {
 
               <Form.Item
                 name="desc"
-                label="Описание"
+                label={<OptionalLabel text="Описание" />}
                 rules={[
                   { max: 500, message: 'Максимум 500 символов' },
                   { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -195,7 +211,7 @@ function AddMotoclub() {
                 />
               </Form.Item>
 
-              <Form.Item name="birthday" label="День рождения клуба">
+              <Form.Item name="birthday" label={<OptionalLabel text="День рождения клуба" />}>
                 <DatePicker />
               </Form.Item>
 
@@ -203,7 +219,7 @@ function AddMotoclub() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="social_link"
-                    label="Ссылка на соц. сеть"
+                    label={<OptionalLabel text="Ссылка на соц. сеть" />}
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -215,7 +231,7 @@ function AddMotoclub() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="email"
-                    label="Email"
+                    label={<OptionalLabel text="Email" />}
                     rules={[
                       { type: 'email', message: 'Введите корректный email' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -230,7 +246,7 @@ function AddMotoclub() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="website"
-                    label="Сайт"
+                    label={<OptionalLabel text="Сайт" />}
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -242,7 +258,7 @@ function AddMotoclub() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="phone"
-                    label="Телефон"
+                    label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
                   >
                     <Input placeholder="+7..." />
@@ -251,24 +267,43 @@ function AddMotoclub() {
               </Row>
 
               <Row gutter={16} style={{ marginBottom: 8 }}>
-                <Col xs={24} md={12}>
+                <Col xs={24} md={8}>
                   <Form.Item name="has_moto_post" valuePropName="checked" style={{ marginBottom: 8 }}>
                     <Checkbox>Наличие байк-поста</Checkbox>
                   </Form.Item>
                   {hasMotoPost && (
-                    <Form.Item name="moto_post_id" label="Байк-пост">
-                      <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите байк-пост" loading={isLoadingMotoPosts} options={motoPostOptions} />
-                    </Form.Item>
+                    <>
+                      <BikePostHelper />
+                      <Form.Item name="moto_post_id" label={<OptionalLabel text="Байк-пост" />}>
+                        <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите байк-пост" loading={isLoadingMotoPosts} options={motoPostOptions} />
+                      </Form.Item>
+                    </>
                   )}
                 </Col>
-                <Col xs={24} md={12}>
+                <Col xs={24} md={8}>
                   <Form.Item name="has_service_station" valuePropName="checked" style={{ marginBottom: 8 }}>
                     <Checkbox>Наличие СТО</Checkbox>
                   </Form.Item>
                   {hasServiceStation && (
-                    <Form.Item name="service_station_id" label="СТО">
-                      <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите СТО" loading={isLoadingServiceStations} options={serviceStationOptions} />
-                    </Form.Item>
+                    <>
+                      <StoHelper />
+                      <Form.Item name="service_station_id" label={<OptionalLabel text="СТО" />}>
+                        <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите СТО" loading={isLoadingServiceStations} options={serviceStationOptions} />
+                      </Form.Item>
+                    </>
+                  )}
+                </Col>
+                <Col xs={24} md={8}>
+                  <Form.Item name="has_motobar" valuePropName="checked" style={{ marginBottom: 8 }}>
+                    <Checkbox>Наличие мото-бара</Checkbox>
+                  </Form.Item>
+                  {hasMotobar && (
+                    <>
+                      <BikeBarHelper />
+                      <Form.Item name="motobar_id" label={<OptionalLabel text="Мото-бар" />}>
+                        <Select showSearch optionFilterProp="label" allowClear placeholder="Выберите мото-бар" loading={isLoadingMotobars} options={motobarOptions} />
+                      </Form.Item>
+                    </>
                   )}
                 </Col>
               </Row>
@@ -312,7 +347,7 @@ function AddMotoclub() {
               <Form.Item
                 name="location"
                 label="Координаты"
-                style={{ marginTop: 8, marginBottom: 8 }}
+                style={{ marginTop: 8, marginBottom: 8, display: 'none' }}
                 rules={[{ required: true, message: 'Выберите место через поиск' }]}
               >
                 <Input readOnly placeholder="Координаты будут получены автоматически" />

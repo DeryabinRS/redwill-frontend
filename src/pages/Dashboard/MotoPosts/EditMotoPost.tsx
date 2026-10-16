@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
+import OptionalLabel from '@components/OptionalLabel'
 import { API_URL } from '@config/constants'
 import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import {
@@ -191,7 +192,7 @@ function EditMotoPost() {
 
               <Form.Item
                 name="desc"
-                label="Описание"
+                label={<OptionalLabel text="Описание" />}
                 rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
               >
                 <Input.TextArea rows={4} placeholder="Краткое описание мото-поста" />
@@ -201,7 +202,7 @@ function EditMotoPost() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="website"
-                    label="Ссылка"
+                    label={<OptionalLabel text="Ссылка" />}
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -213,7 +214,7 @@ function EditMotoPost() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="phone"
-                    label="Телефон"
+                    label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
                   >
                     <Input placeholder="+7..." />

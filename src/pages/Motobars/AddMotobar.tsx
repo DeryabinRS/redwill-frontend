@@ -3,6 +3,7 @@ import { App as AntdApp, Button, Card, Col, Form, Input, Row, Space, Typography 
 import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
+import OptionalLabel from '../../components/OptionalLabel'
 import { useCreateMotobarMutation } from '../../features/motobar/motobarSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
 
@@ -93,7 +94,7 @@ function AddMotobar() {
 
               <Form.Item
                 name="desc"
-                label="Описание"
+                label={<OptionalLabel text="Описание" />}
                 rules={[
                   { max: 500, message: 'Максимум 500 символов' },
                   { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -113,7 +114,7 @@ function AddMotobar() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="website"
-                    label="Ссылка"
+                    label={<OptionalLabel text="Ссылка" />}
                     rules={[
                       { type: 'url', message: 'Введите корректный URL' },
                       { pattern: noScriptPattern, message: 'Недопустимые символы' },
@@ -125,7 +126,7 @@ function AddMotobar() {
                 <Col xs={24} md={12}>
                   <Form.Item
                     name="phone"
-                    label="Телефон"
+                    label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
                   >
                     <Input placeholder="+7..." />
