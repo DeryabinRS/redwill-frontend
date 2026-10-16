@@ -11,6 +11,7 @@ interface PostFeedProps {
   motoclubId?: number
   perPage?: number
   emptyText?: string
+  compact?: boolean
 }
 
 const PostFeed: React.FC<PostFeedProps> = ({
@@ -18,6 +19,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
   motoclubId,
   perPage = 12,
   emptyText = 'Мероприятия пока не добавлены',
+  compact = false,
 }) => {
   const { data, isLoading, isFetching, error } = useGetPostListQuery({
     pagination: { page: initialPage, per_page: perPage },
@@ -57,14 +59,14 @@ const PostFeed: React.FC<PostFeedProps> = ({
           <Col
             key={post.id}
             xs={24}
-            sm={24}
+            sm={compact ? 12 : 24}
             md={12}
             lg={8}
-            xl={6}
+            xl={compact ? 8 : 6}
             className={`post-feed-item animate-fade-in`}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <PostCard post={post} />
+            <PostCard post={post} compact={compact} />
           </Col>
         ))}
       </Row>

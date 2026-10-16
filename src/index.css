@@ -467,6 +467,11 @@ a:hover {
   .title_page__icon {
     display: none;
   }
+
+  .events-calendar-title {
+    font-size: 24px !important;
+    line-height: 1.25 !important;
+  }
 }
 
 
