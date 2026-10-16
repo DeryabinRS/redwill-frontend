@@ -260,6 +260,9 @@ function Motoclub() {
 
       {(motoclubData.moto_post || motoclubData.service_station || motoclubData.motobar) && (
         <Card style={{ marginTop: 8 }}>
+          <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
+            Рекомендации от мотоклуба
+          </Title>
           <Row gutter={[8, 8]}>
             {motoclubData.moto_post ? (
               <Col xs={24} md={24} xl={8}>
