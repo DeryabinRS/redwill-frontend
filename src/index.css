@@ -458,6 +458,12 @@ a:hover {
   opacity: 1;
 }
 
+
+/* Скрываем встроенную кнопку «Открыть Яндекс Карты» (брендинг/дистрибуция Яндекса) */
+ymaps3.ymaps3--controls_bottom.ymaps3--controls_left {
+  display: none !important;
+}
+
 .home-resource-card__empty {
   grid-column: 1 / -1;
   color: #a5a5a5;

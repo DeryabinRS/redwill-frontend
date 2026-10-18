@@ -132,7 +132,7 @@ function MotoPost() {
                 </Paragraph>
               )}
 
-              {motoPostData.location && <MapView location={motoPostData.location} zoom={7} />}
+              {motoPostData.location && <MapView location={motoPostData.location} zoom={14} />}
             </Space>
           </Col>
         </Row>

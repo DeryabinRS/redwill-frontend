@@ -1,7 +1,7 @@
 import { Alert, Col, Modal, Row, Skeleton, Typography } from 'antd'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useYmaps3 } from '@hooks/useYmaps3'
+import { useYmaps3, type YmapsRouteFeature } from '@hooks/useYmaps3'
 import { parseLocationCoordinates } from '@utils/mapLocation'
 
 export type MapViewMarker = {
@@ -21,6 +21,8 @@ export interface MapViewProps {
   height?: number
   /** Начальный масштаб карты */
   zoom?: number
+  /** Тип маршрута (по умолчанию — автомобильный) */
+  routeType?: 'driving' | 'walking' | 'transit' | 'truck'
 }
 
 type ParsedMarker = MapViewMarker & {
@@ -82,12 +84,16 @@ function groupMarkers(markers: ParsedMarker[], zoom: number) {
   }))
 }
 
-function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: MapViewProps) {
+function MapView({ location, markers, height = 400, zoom: initialZoom = 14, routeType = 'driving' }: MapViewProps) {
   const { isReady, error, reactify } = useYmaps3()
   const [zoom, setZoom] = useState(initialZoom)
   const [currentCenter, setCurrentCenter] = useState<[number, number] | null>(null)
   const [selectedMarker, setSelectedMarker] = useState<ParsedMarker | null>(null)
   const [clusterMarkers, setClusterMarkers] = useState<ParsedMarker[] | null>(null)
+  const [userPosition, setUserPosition] = useState<[number, number] | null>(null)
+  const [routeFeature, setRouteFeature] = useState<YmapsRouteFeature | null>(null)
+  const [isLocating, setIsLocating] = useState(false)
+  const [geoError, setGeoError] = useState('')
   const parsedMarkers = useMemo<ParsedMarker[]>(() => {
     if (markers?.length) {
       return markers
@@ -113,6 +119,68 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
   }, [parsedMarkers])
 
   const markerGroups = useMemo(() => groupMarkers(parsedMarkers, zoom), [parsedMarkers, zoom])
+
+  // Сбрасываем линию маршрута при смене выбранного маркера
+  useEffect(() => {
+    setRouteFeature(null)
+  }, [selectedMarker?.id])
+
+  const getUserPosition = useCallback((): Promise<[number, number] | null> => {
+    return new Promise((resolve) => {
+      if (!navigator.geolocation) {
+        setGeoError('Геолокация не поддерживается браузером')
+        resolve(null)
+        return
+      }
+      navigator.geolocation.getCurrentPosition(
+        (position) => resolve([position.coords.longitude, position.coords.latitude]),
+        (err) => {
+          setGeoError(
+            err.code === err.PERMISSION_DENIED
+              ? 'Доступ к геолокации запрещён'
+              : 'Не удалось определить местоположение',
+          )
+          resolve(null)
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
+      )
+    })
+  }, [])
+
+  const locateUser = useCallback(async () => {
+    setIsLocating(true)
+    setGeoError('')
+    const coords = await getUserPosition()
+    setIsLocating(false)
+    if (!coords) return
+    setUserPosition(coords)
+    setCurrentCenter(coords)
+    setZoom(13)
+  }, [getUserPosition])
+
+  const buildRoute = useCallback(
+    async (target: ParsedMarker) => {
+      const start = userPosition ?? (await getUserPosition())
+      if (!start) return
+      if (!userPosition) setUserPosition(start)
+
+      // Строим прямую линию на карте (без вызова API Маршрутизации)
+      const line: YmapsRouteFeature = {
+        geometry: {
+          type: 'LineString',
+          coordinates: [start, [target.coords.lng, target.coords.lat]],
+        },
+      }
+      setRouteFeature(line)
+      setGeoError('')
+
+      // Открываем Яндекс Карты с построенным маршрутом (бесплатно, без API-ключа)
+      const mode = routeType === 'walking' ? 'pd' : routeType === 'transit' ? 'mt' : 'auto'
+      const url = `https://yandex.ru/maps/?rtext=${start[1]},${start[0]}~${target.coords.lat},${target.coords.lng}&rtt=${mode}`
+      window.open(url, '_blank', 'noopener,noreferrer')
+    },
+    [getUserPosition, routeType, userPosition],
+  )
 
   useEffect(() => {
     if (!mapCenter) return
@@ -143,6 +211,7 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
     YMapDefaultFeaturesLayer,
     YMapMarker,
     YMapListener,
+    YMapFeature,
   } = reactify.module(window.ymaps3)
 
   return (
@@ -169,7 +238,10 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
             setCurrentCenter(event.location.center)
             setZoom(event.location.zoom)
           }}
-          onClick={() => setSelectedMarker(null)}
+          onClick={() => {
+            setSelectedMarker(null)
+            setRouteFeature(null)
+          }}
         />
         {markerGroups.map((group) => (
           <YMapMarker
@@ -212,6 +284,27 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
             </div>
           </YMapMarker>
         ))}
+
+        {routeFeature ? (
+          <YMapFeature
+            geometry={routeFeature.geometry}
+            style={{
+              stroke: [{ width: 3, color: '#1e66f5', dash: [8, 6] }],
+              simplificationRate: 0,
+            }}
+          />
+        ) : null}
+
+        {userPosition ? (
+          <YMapMarker coordinates={userPosition} zIndex={1500}>
+            <div style={{ transform: 'translate(-50%, -50%)' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="8.5" fill="#1e66f5" stroke="#fff" strokeWidth="3" />
+                <circle cx="12" cy="12" r="3" fill="#fff" />
+              </svg>
+            </div>
+          </YMapMarker>
+        ) : null}
 
         {selectedMarker ? (
           <YMapMarker
@@ -278,6 +371,27 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
                       Подробнее →
                     </Link>
                   ) : null}
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.preventDefault()
+                      event.stopPropagation()
+                      buildRoute(selectedMarker)
+                    }}
+                    style={{
+                      display: 'block',
+                      marginTop: 8,
+                      border: 'none',
+                      background: 'none',
+                      padding: 0,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: '#1e66f5',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    Маршрут в Яндекс Картах →
+                  </button>
                 </div>
               </div>
             </div>
@@ -332,7 +446,52 @@ function MapView({ location, markers, height = 400, zoom: initialZoom = 14 }: Ma
         >
           -
         </button>
+        <button
+          type="button"
+          onClick={locateUser}
+          disabled={isLocating}
+          aria-label="Моё местоположение"
+          title="Моё местоположение"
+          style={{
+            width: 28,
+            height: 28,
+            border: '1px solid #d9d9d9',
+            borderRadius: 6,
+            background: '#fff',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#64748b',
+          }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
+          </svg>
+        </button>
       </div>
+
+      {geoError ? (
+        <div
+          style={{
+            position: 'absolute',
+            left: 12,
+            top: 12,
+            zIndex: 2,
+            maxWidth: 280,
+            background: '#fff',
+            border: '1px solid #f3c2c2',
+            color: '#dc2626',
+            borderRadius: 6,
+            padding: '6px 10px',
+            fontSize: 12,
+            boxShadow: '0 4px 12px rgba(0,0,0,.12)',
+          }}
+        >
+          {geoError}
+        </div>
+      ) : null}
 
       <ClusterModal markers={clusterMarkers} onClose={() => setClusterMarkers(null)} />
     </div>
@@ -404,7 +563,6 @@ function ClusterModal({ markers, onClose }: { markers: ParsedMarker[] | null; on
                   objectFit: 'contain',
                   borderRadius: 8,
                   marginBottom: 12,
-                  background: '#f5f5f5',
                 }}
               />
             ) : null}

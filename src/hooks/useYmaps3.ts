@@ -1,9 +1,20 @@
 // src/hooks/useYmaps3.ts
 import { useState, useEffect, type ComponentType } from 'react';
 
+export type YmapsLngLat = [number, number]
+
+export interface YmapsRouteFeature {
+  geometry: {
+    type: 'LineString'
+    coordinates: YmapsLngLat[]
+  }
+}
+
 export interface Ymaps3API {
   ready: Promise<void>;
-  import: (moduleName: string) => Promise<unknown>;
+  import: ((moduleName: string) => Promise<unknown>) & {
+    registerCdn?: (cdnUrl: string, packages: string | string[]) => void
+  };
 }
 
 type YmapsComponent = ComponentType<Record<string, unknown>>;
@@ -17,6 +28,7 @@ export type Ymaps3Reactify = {
     YMapControls: YmapsComponent;
     YMapZoomControl: YmapsComponent;
     YMapListener: YmapsComponent;
+    YMapFeature: YmapsComponent;
   };
   useDefault: (coords: [number, number]) => unknown;
 };

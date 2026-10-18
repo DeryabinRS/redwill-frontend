@@ -132,7 +132,7 @@ function Motobar() {
                 </Paragraph>
               )}
 
-              {motobarData.location && <MapView location={motobarData.location} zoom={7} />}
+              {motobarData.location && <MapView location={motobarData.location} zoom={14} />}
             </Space>
           </Col>
         </Row>

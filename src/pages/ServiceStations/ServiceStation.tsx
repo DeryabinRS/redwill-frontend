@@ -132,7 +132,7 @@ function ServiceStation() {
                 </Paragraph>
               )}
 
-              {serviceStationData.location && <MapView location={serviceStationData.location} zoom={7} />}
+              {serviceStationData.location && <MapView location={serviceStationData.location} zoom={14} />}
             </Space>
           </Col>
         </Row>
