@@ -227,7 +227,7 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
           <Form.Item name="accommodation" valuePropName="checked">
             <Checkbox>{t('profile.accommodation')}</Checkbox>
           </Form.Item>
-          <small style={{ display: 'block', marginTop: -16, marginBottom: 16, color: 'rgba(0, 0, 0, 0.45)' }}>
+          <small style={{ display: 'block', marginTop: -16, marginBottom: 16 }}>
             {t('profile.accommodationNote')}
           </small>
           <Form.Item noStyle shouldUpdate>
