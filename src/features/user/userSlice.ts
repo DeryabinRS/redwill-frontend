@@ -63,6 +63,16 @@ export type PublicUserInfo = {
   friends_count?: number
 }
 
+export type HostUser = {
+  id: number
+  login: string
+  name: string
+  avatar: string | null
+  phone: string | null
+  accommodation_location: string | null
+  accommodation_address: string | null
+}
+
 export type UpdateUserProfilePayload = {
   first_name?: string | null
   last_name?: string | null
@@ -132,6 +142,10 @@ export const userApi = createApi({
       transformResponse: (response: { data: PublicUserInfo }) => response.data,
       providesTags: (_result, _error, id) => [{ type: 'User', id }],
     }),
+    getHostUsers: builder.query<HostUser[], void>({
+      query: () => ({ url: '/users/hosts', method: 'GET' }),
+      transformResponse: (response: { data: HostUser[] }) => response.data,
+    }),
     getAllUsers: builder.query<UsersListResponse, void>({
       query: () => ({ url: '/users', method: 'GET' }),
       transformResponse: (response: GetAllUsersResponse) => response.data_user_list,
@@ -162,6 +176,7 @@ export const {
   useGetUserQuery,
   useLazyGetUserQuery,
   useGetPublicUserProfileQuery,
+  useGetHostUsersQuery,
   useUpdateUserBanedMutation,
   useUploadUserAvatarMutation,
   useDeleteUserAvatarMutation,

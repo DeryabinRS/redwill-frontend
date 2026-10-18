@@ -1,11 +1,12 @@
-import { Card, Col, Empty, Input, Pagination, Row, Space, Spin, Typography } from 'antd'
-import { EnvironmentOutlined, GlobalOutlined, ShopOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { Avatar, Card, Col, Empty, Input, Modal, Pagination, Row, Space, Spin, Typography } from 'antd'
+import { EnvironmentOutlined, GlobalOutlined, PhoneOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
-import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
+import MapView, { type HostUserMarker, type MapViewMarker } from '@components/YandexMapV3/MapView'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { useGetMotoPostListQuery, type MotoPost } from '@features/motoPost/motoPostSlice'
+import { useGetHostUsersQuery } from '@features/user/userSlice'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text, Link: TypographyLink } = Typography
@@ -99,9 +100,13 @@ function MotoPosts() {
 
   const { data, isLoading, isFetching } = useGetMotoPostListQuery(listArgs)
   const { data: mapData } = useGetMotoPostListQuery(mapListArgs)
+  const { data: hostUsersData } = useGetHostUsersQuery()
+
+  const [selectedHost, setSelectedHost] = useState<HostUserMarker | null>(null)
 
   const motoPosts = data?.data ?? []
   const mapMotoPosts = mapData?.data ?? []
+  const hostUsers = hostUsersData ?? []
 
   const mapMarkers: MapViewMarker[] = useMemo(
     () =>
@@ -118,6 +123,21 @@ function MotoPosts() {
     [mapMotoPosts],
   )
 
+  const hostMarkers: HostUserMarker[] = useMemo(
+    () =>
+      hostUsers
+        .filter((host) => host.accommodation_location)
+        .map((host) => ({
+          id: host.id,
+          name: host.name,
+          location: host.accommodation_location,
+          address: host.accommodation_address,
+          avatar: host.avatar ? `${API_URL}${host.avatar}` : null,
+          phone: host.phone,
+        })),
+    [hostUsers],
+  )
+
   const total = data?.total ?? 0
 
   return (
@@ -131,8 +151,14 @@ function MotoPosts() {
         />
 
         <ShellSection label="карта">
-          {mapMarkers.length > 0 ? (
-            <MapView markers={mapMarkers} height={520} zoom={4} />
+          {mapMarkers.length > 0 || hostMarkers.length > 0 ? (
+            <MapView
+              markers={mapMarkers}
+              hostUsers={hostMarkers}
+              onHostClick={setSelectedHost}
+              height={520}
+              zoom={4}
+            />
           ) : (
             <Typography.Text type="secondary">Нет мото-постов с координатами для отображения на карте.</Typography.Text>
           )}
@@ -180,6 +206,45 @@ function MotoPosts() {
           )}
         </ShellSection>
       </Shell>
+
+      <Modal
+        open={Boolean(selectedHost)}
+        onCancel={() => setSelectedHost(null)}
+        footer={null}
+        title="Готов разместить мотопутешественников"
+      >
+        {selectedHost ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <Avatar
+                size={56}
+                src={selectedHost.avatar || undefined}
+                icon={<UserOutlined />}
+              />
+              <div style={{ minWidth: 0 }}>
+                <div style={{ fontWeight: 700, fontSize: 16, lineHeight: 1.3 }}>{selectedHost.name}</div>
+                <Link to={`/users/${selectedHost.id}`} style={{ fontSize: 13, color: '#cd2e2c' }}>
+                  Профиль →
+                </Link>
+              </div>
+            </div>
+
+            {selectedHost.address ? (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'flex-start', fontSize: 14 }}>
+                <EnvironmentOutlined style={{ marginTop: 3, color: '#64748b' }} />
+                <span>{selectedHost.address}</span>
+              </div>
+            ) : null}
+
+            {selectedHost.phone ? (
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 14 }}>
+                <PhoneOutlined style={{ color: '#64748b' }} />
+                <a href={`tel:${selectedHost.phone}`}>{selectedHost.phone}</a>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+      </Modal>
     </div>
   )
 }
