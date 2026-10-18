@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Checkbox, DatePicker, Flex, Form, Input, Modal, Tag } from 'antd'
+import { App as AntdApp, Button, Checkbox, DatePicker, Flex, Form, Input, Modal, Tag, Typography } from 'antd'
 import { EditOutlined, HomeOutlined } from '@ant-design/icons'
 import dayjs, { type Dayjs } from 'dayjs'
 import { useMemo, useState } from 'react'
@@ -7,6 +7,7 @@ import {
   useUpdateUserProfileMutation,
   type UserInfo,
 } from '@features/user/userSlice'
+import MapPicker from '@components/YandexMapV3/MapPicker'
 
 type ProfileFormValues = {
   first_name?: string
@@ -16,16 +17,46 @@ type ProfileFormValues = {
   phone?: string
   birthday?: Dayjs | null | undefined
   accommodation?: boolean
+  accommodation_location?: string
 }
 
 type ProfilePersonalFormProps = {
   userInfo: Pick<
     UserInfo,
-    'first_name' | 'last_name' | 'nick_name' | 'city' | 'phone' | 'birthday' | 'accommodation'
+    'first_name' | 'last_name' | 'nick_name' | 'city' | 'phone' | 'birthday' | 'accommodation' | 'accommodation_location' | 'accommodation_address'
   >
   displayName: string
   handleLabel: string
   readOnly?: boolean
+}
+
+type AccommodationMapFieldProps = {
+  value?: string
+  onChange?: (value: string) => void
+  address: string
+  onAddressChange: (value: string) => void
+}
+
+function AccommodationMapField({ value, onChange, address, onAddressChange }: AccommodationMapFieldProps) {
+  // Фиксируем начальную точку один раз при монтировании.
+  // Если передавать актуальный value как initialLocation, то при каждом клике
+  // MapPicker получит новый initialLocation и сбросит зум на 14 (см. useEffect в MapPicker).
+  const [initialLocation] = useState(value)
+
+  return (
+    <>
+      <MapPicker
+        initialLocation={initialLocation || undefined}
+        onChangeLocation={(val) => onChange?.(val)}
+        onChangeAddress={onAddressChange}
+      />
+      {address ? (
+        <Typography.Text type="secondary" style={{ display: 'block', marginTop: 6 }}>
+          {address}
+        </Typography.Text>
+      ) : null}
+    </>
+  )
 }
 
 export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOnly = false }: ProfilePersonalFormProps) {
@@ -33,7 +64,9 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
   const [form] = Form.useForm<ProfileFormValues>()
+  const accommodationChecked = Form.useWatch('accommodation', form)
   const [updateUserProfile, { isLoading }] = useUpdateUserProfileMutation()
+  const [accommodationAddress, setAccommodationAddress] = useState('')
 
   const filledFields = useMemo(() => {
     const fields: { label: string; value: string }[] = []
@@ -56,6 +89,15 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
 
   const showAccommodation = Number(userInfo.accommodation) === 1
 
+  const accommodationRequired = Boolean(accommodationChecked)
+
+  const requiredLabel = (text: string, required: boolean) => (
+    <span>
+      {text}
+      {required && <span style={{ color: '#ff4d4f', marginLeft: 4 }}>*</span>}
+    </span>
+  )
+
   const fillForm = () => {
     const birthdayValue =
       userInfo.birthday && dayjs(userInfo.birthday).isValid()
@@ -70,7 +112,9 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
       phone: userInfo.phone || '',
       birthday: birthdayValue,
       accommodation: Number(userInfo.accommodation) === 1,
+      accommodation_location: userInfo.accommodation_location || '',
     })
+    setAccommodationAddress(userInfo.accommodation_address || '')
   }
 
   const onSubmit = async (values: ProfileFormValues) => {
@@ -83,6 +127,8 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
         phone: values.phone?.trim() || null,
         birthday: values.birthday ? values.birthday.format('YYYY-MM-DD') : null,
         accommodation: values.accommodation ? 1 : null,
+        accommodation_location: values.accommodation ? (values.accommodation_location?.trim() || null) : null,
+        accommodation_address: values.accommodation ? (accommodationAddress.trim() || null) : null,
       }).unwrap()
       message.success(t('profile.profileUpdated'))
       setOpen(false)
@@ -118,9 +164,17 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
           )}
         </Flex>
         {showAccommodation ? (
-          <Tag icon={<HomeOutlined />} color="green">
-            {t('profile.accommodation')}
-          </Tag>
+          <>
+            <Tag icon={<HomeOutlined />} color="green">
+              {t('profile.accommodation')}
+            </Tag>
+            {userInfo.accommodation_address ? (
+              <div className="profile-shell__field">
+                <span className="profile-shell__field-label">{t('profile.accommodationAddress')}</span>
+                <p className="profile-shell__field-value">{userInfo.accommodation_address}</p>
+              </div>
+            ) : null}
+          </>
         ) : null}
       </Flex>
       <Modal
@@ -150,7 +204,21 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
           <Form.Item name="city" label={t('profile.city')}>
             <Input maxLength={255} />
           </Form.Item>
-          <Form.Item name="phone" label={t('profile.phone')}>
+          <Form.Item
+            name="phone"
+            label={requiredLabel(t('profile.phone'), accommodationRequired)}
+            dependencies={['accommodation']}
+            rules={[
+              ({ getFieldValue: getAccommodation }) => ({
+                validator(_rule: unknown, value: string | undefined) {
+                  if (getAccommodation('accommodation') && !value?.trim()) {
+                    return Promise.reject(new Error(t('profile.phoneRequired')))
+                  }
+                  return Promise.resolve()
+                },
+              }),
+            ]}
+          >
             <Input maxLength={50} />
           </Form.Item>
           <Form.Item name="birthday" label={t('profile.birthday')}>
@@ -158,6 +226,35 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
           </Form.Item>
           <Form.Item name="accommodation" valuePropName="checked">
             <Checkbox>{t('profile.accommodation')}</Checkbox>
+          </Form.Item>
+          <small style={{ display: 'block', marginTop: -16, marginBottom: 16, color: 'rgba(0, 0, 0, 0.45)' }}>
+            {t('profile.accommodationNote')}
+          </small>
+          <Form.Item noStyle shouldUpdate>
+            {({ getFieldValue }) =>
+              getFieldValue('accommodation') ? (
+                <Form.Item
+                  name="accommodation_location"
+                  label={requiredLabel(t('profile.accommodationLocation'), accommodationRequired)}
+                  dependencies={['accommodation']}
+                  rules={[
+                    ({ getFieldValue: getAccommodation }) => ({
+                      validator(_rule: unknown, value: string | undefined) {
+                        if (getAccommodation('accommodation') && !value) {
+                          return Promise.reject(new Error(t('profile.accommodationLocationRequired')))
+                        }
+                        return Promise.resolve()
+                      },
+                    }),
+                  ]}
+                >
+                  <AccommodationMapField
+                    address={accommodationAddress}
+                    onAddressChange={setAccommodationAddress}
+                  />
+                </Form.Item>
+              ) : null
+            }
           </Form.Item>
           <Flex justify="end" gap="small">
             <Button onClick={() => setOpen(false)}>{t('common.cancel')}</Button>

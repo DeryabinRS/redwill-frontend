@@ -33,6 +33,8 @@ export type UserInfo = {
   phone?: string | null
   birthday?: string | null
   accommodation?: number | null
+  accommodation_location?: string | null
+  accommodation_address?: string | null
   login: string
   email: string
   avatar?: string | null
@@ -53,6 +55,8 @@ export type PublicUserInfo = {
   phone: string | null
   birthday: string | null
   accommodation: number | null
+  accommodation_location: string | null
+  accommodation_address: string | null
   avatar: string | null
   roles: string[]
   is_friend: boolean
@@ -67,6 +71,8 @@ export type UpdateUserProfilePayload = {
   phone?: string | null
   birthday?: string | null
   accommodation?: number | null
+  accommodation_location?: string | null
+  accommodation_address?: string | null
 }
 
 type GetUserInfoResponse = {
