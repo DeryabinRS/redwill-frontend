@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Drawer, Grid, Layout, Menu, Typography } from 'antd'
+import { Badge, Button, Drawer, Grid, Layout, Menu, Typography } from 'antd'
 import type { MenuProps } from 'antd'
 import {
 	DashboardOutlined,
@@ -16,6 +16,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery } from '../features/user/userSlice'
+import { useGetModerationCountQuery } from '../features/dashboard/dashboardSlice'
 import { useAppDispatch } from '../store/hooks'
 import { resetClientState } from '../store'
 import { SITE_NAME } from '../config/constants'
@@ -51,6 +52,9 @@ function MainLayout() {
 	const closeDrawer = () => setDrawerOpen(false)
 
 	const hasAdminRole = userInfo?.roles.includes('admin') || userInfo?.roles.includes('editor')
+
+	const { data: moderationCounts } = useGetModerationCountQuery(undefined, { skip: !hasAdminRole })
+	const moderationCount = moderationCounts?.count ?? 0
 
 	const menuItems: MenuItem[] = [
 		{
@@ -90,7 +94,11 @@ function MainLayout() {
 		menuItems.push({
 			key: 'dashboard',
 			icon: <DashboardOutlined />,
-			label: <NavLink to="/dashboard" onClick={closeDrawer}>Dashboard</NavLink>,
+			label: (
+				<Badge count={moderationCount} offset={[8, 0]} size="small">
+					<NavLink to="/dashboard" onClick={closeDrawer}>Dashboard</NavLink>
+				</Badge>
+			),
 		})
 	}
 

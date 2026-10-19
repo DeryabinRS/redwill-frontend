@@ -89,7 +89,7 @@ function Dashboard() {
 
       <Row gutter={[8, 8]} style={{ marginTop: 8 }}>
         {stats.map((stat) => (
-          <Col key={stat.title} xs={24} sm={12} lg={8}>
+          <Col key={stat.title} xs={12} sm={12} lg={8}>
             <Card loading={stat.loading}>
               <Statistic
                 title={stat.title}

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Layout, Menu, Typography, Drawer, Button } from 'antd'
+import { Layout, Menu, Typography, Drawer, Button, Badge } from 'antd'
 import { 
   DashboardOutlined, 
   CoffeeOutlined,
@@ -17,6 +17,7 @@ import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-do
 import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery } from '../features/user/userSlice'
+import { useGetModerationCountQuery } from '../features/dashboard/dashboardSlice'
 import { useAppDispatch } from '../store/hooks'
 import { resetClientState } from '../store'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
@@ -36,6 +37,14 @@ function DashboardLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const userIsAuthenticated = isAuthenticated()
   useGetUserInfoQuery(undefined, { skip: !userIsAuthenticated })
+  const { data: moderationCounts } = useGetModerationCountQuery()
+  const pendingCounts = moderationCounts?.items ?? {
+    posts: 0,
+    motoclubs: 0,
+    motobars: 0,
+    moto_posts: 0,
+    service_stations: 0,
+  }
 
   // Определение мобильного экрана
   useEffect(() => {
@@ -74,27 +83,47 @@ function DashboardLayout() {
     {
       key: 'posts',
       icon: <FileTextOutlined />,
-      label: <NavLink to="/dashboard/posts" onClick={handleMenuClick}>Посты</NavLink>,
+      label: (
+        <Badge count={pendingCounts.posts} offset={[8, 0]} size="small">
+          <NavLink to="/dashboard/posts" onClick={handleMenuClick}>События</NavLink>
+        </Badge>
+      ),
     },
     {
       key: 'motoclubs',
       icon: <TeamOutlined />,
-      label: <NavLink to="/dashboard/motoclubs" onClick={handleMenuClick}>Мотоклубы</NavLink>,
+      label: (
+        <Badge count={pendingCounts.motoclubs} offset={[8, 0]} size="small">
+          <NavLink to="/dashboard/motoclubs" onClick={handleMenuClick}>Мотоклубы</NavLink>
+        </Badge>
+      ),
     },
     {
       key: 'motobars',
       icon: <CoffeeOutlined />,
-      label: <NavLink to="/dashboard/motobars" onClick={handleMenuClick}>Мотобары</NavLink>,
+      label: (
+        <Badge count={pendingCounts.motobars} offset={[8, 0]} size="small">
+          <NavLink to="/dashboard/motobars" onClick={handleMenuClick}>Мотобары</NavLink>
+        </Badge>
+      ),
     },
     {
       key: 'moto-posts',
       icon: <ShopOutlined />,
-      label: <NavLink to="/dashboard/moto-posts" onClick={handleMenuClick}>Байк-посты</NavLink>,
+      label: (
+        <Badge count={pendingCounts.moto_posts} offset={[8, 0]} size="small">
+          <NavLink to="/dashboard/moto-posts" onClick={handleMenuClick}>Байк-посты</NavLink>
+        </Badge>
+      ),
     },
     {
       key: 'service-stations',
       icon: <ToolOutlined />,
-      label: <NavLink to="/dashboard/service-stations" onClick={handleMenuClick}>СТО</NavLink>,
+      label: (
+        <Badge count={pendingCounts.service_stations} offset={[8, 0]} size="small">
+          <NavLink to="/dashboard/service-stations" onClick={handleMenuClick}>СТО</NavLink>
+        </Badge>
+      ),
     },
     {
       key: 'messages',

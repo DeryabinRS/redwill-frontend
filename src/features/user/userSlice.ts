@@ -146,8 +146,15 @@ export const userApi = createApi({
       query: () => ({ url: '/users/hosts', method: 'GET' }),
       transformResponse: (response: { data: HostUser[] }) => response.data,
     }),
-    getAllUsers: builder.query<UsersListResponse, void>({
-      query: () => ({ url: '/users', method: 'GET' }),
+    getAllUsers: builder.query<UsersListResponse, { search?: string; per_page?: number } | void>({
+      query: (args) => ({
+        url: '/users',
+        method: 'GET',
+        params: {
+          search: args?.search ?? '',
+          per_page: args?.per_page ?? 10,
+        },
+      }),
       transformResponse: (response: GetAllUsersResponse) => response.data_user_list,
       providesTags: ['Users'],
     }),

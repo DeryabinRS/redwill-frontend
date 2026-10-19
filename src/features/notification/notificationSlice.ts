@@ -46,6 +46,13 @@ export type UpdateNotificationPayload = {
   read_at?: string | null
 }
 
+export type SendDashboardMessagePayload = {
+  recipient_id: number
+  body: string
+  title?: string
+  send_email?: boolean
+}
+
 export const notificationApi = createApi({
   reducerPath: 'notificationApi',
   tagTypes: ['Notifications', 'NotificationsUnread', 'DashboardNotifications'],
@@ -110,6 +117,15 @@ export const notificationApi = createApi({
       }),
       invalidatesTags: ['DashboardNotifications', 'Notifications', 'NotificationsUnread'],
     }),
+    sendDashboardMessage: builder.mutation<UserNotification, SendDashboardMessagePayload>({
+      query: (body) => ({
+        url: '/dashboard/messages',
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response: { data: UserNotification }) => response.data,
+      invalidatesTags: ['DashboardNotifications', 'Notifications', 'NotificationsUnread'],
+    }),
   }),
 })
 
@@ -121,4 +137,5 @@ export const {
   useGetDashboardNotificationsQuery,
   useUpdateDashboardNotificationMutation,
   useDeleteDashboardNotificationMutation,
+  useSendDashboardMessageMutation,
 } = notificationApi
