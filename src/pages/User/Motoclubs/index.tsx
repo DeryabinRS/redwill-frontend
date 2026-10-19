@@ -15,7 +15,7 @@ import ProfileListSection from '../Profile/ProfileListSection'
 import '@components/PostFeed/PostFeed.css'
 
 const { Title, Text } = Typography
-const PAGE_SIZE = 4
+const PAGE_SIZE = 6
 
 function UserMotoclubCard({
   motoclub,
