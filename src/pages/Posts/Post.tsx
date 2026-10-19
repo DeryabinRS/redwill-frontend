@@ -19,6 +19,7 @@ type PostMotoclub = {
 
 type PostWithMotoclubs = PostData & {
   motoclubs?: PostMotoclub[]
+  motobars?: PostMotoclub[]
 }
 
 function formatTime(value?: string | null) {
@@ -80,6 +81,16 @@ function Post() {
   }
 
   const postDetails = postData as PostWithMotoclubs
+  const organizers = [
+    ...(postDetails.motoclubs || []).map((organizer) => ({
+      ...organizer,
+      href: `/motoclubs/${organizer.slug}`,
+    })),
+    ...(postDetails.motobars || []).map((organizer) => ({
+      ...organizer,
+      href: `/motobars/${organizer.slug}`,
+    })),
+  ]
   const imageSrc = postDetails.image ? `${API_URL}${postDetails.image}` : null
   const plainContent = (postDetails.content || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
   const description = (plainContent || postData.title).slice(0, 160)
@@ -96,7 +107,9 @@ function Post() {
       : undefined,
     organizer: postDetails.motoclubs?.length
       ? { '@type': 'Organization', name: postDetails.motoclubs[0].name }
-      : undefined,
+      : postDetails.motobars?.length
+        ? { '@type': 'Organization', name: postDetails.motobars[0].name }
+        : undefined,
   }
   return (
     <div className="container">
@@ -184,15 +197,15 @@ function Post() {
                   </Space>
                 )}
 
-                {postDetails.motoclubs && postDetails.motoclubs.length > 0 && (
+                {organizers.length > 0 && (
                   <Space orientation="vertical" size={8}>
-                    <Text strong>Организаторы (Мотоклубы):</Text>
+                    <Text strong>Организаторы:</Text>
                     <Space size={12} wrap>
-                      {postDetails.motoclubs.map((motoclub) => (
+                      {organizers.map((organizer) => (
                         <Link
-                          key={motoclub.id}
-                          to={`/motoclubs/${motoclub.slug}`}
-                          title={motoclub.name}
+                          key={organizer.href}
+                          to={organizer.href}
+                          title={organizer.name}
                           style={{
                             display: 'inline-flex',
                             alignItems: 'center',
@@ -200,10 +213,10 @@ function Post() {
                             color: 'inherit',
                           }}
                         >
-                          {motoclub.logo ? (
+                          {organizer.logo ? (
                             <img
-                              src={`${API_URL}${motoclub.logo}`}
-                              alt={motoclub.name}
+                              src={`${API_URL}${organizer.logo}`}
+                              alt={organizer.name}
                               style={{
                                 width: 80,
                               }}
@@ -222,7 +235,7 @@ function Post() {
                                 fontWeight: 600,
                               }}
                             >
-                              {motoclub.name.slice(0, 1).toUpperCase()}
+                              {organizer.name.slice(0, 1).toUpperCase()}
                             </span>
                           )}
                         </Link>

@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom';
 import dayjs from 'dayjs'
 import ImageCropper from '../../components/ImageCropper/ImageCropper';
 import { useCreatePostMutation } from '../../features/post/postSlice';
-import { useGetDashboardMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
+import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
+import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
 import MapPicker from '../../components/YandexMapV3/MapPicker';
 import { base64ToFile, sanitizeInput } from '../../utils/form';
 
@@ -19,6 +20,7 @@ type FormValues = {
 	location?: string
 	address?: string
 	motoclub_ids?: number[]
+	motobar_ids?: number[]
 	image: File
 	link?: string
 	date_start: dayjs.Dayjs
@@ -34,12 +36,19 @@ function AddPost() {
 	const [image, setImage] = useState('')
 	
 	const [ createPost, { isLoading: isSubmitting }] = useCreatePostMutation()
-	const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetDashboardMotoclubListQuery({
+	const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetMotoclubListQuery({
+		pagination: { page: 1, per_page: 100 },
+	})
+	const { data: motobarsData, isLoading: isLoadingMotobars } = useGetMotobarListQuery({
 		pagination: { page: 1, per_page: 100 },
 	})
 	const motoclubOptions = (motoclubsData?.data || []).map((motoclub: Motoclub) => ({
 		value: motoclub.id,
 		label: `${motoclub.name} ${motoclub.address ? `(${motoclub.address})` : ''}`,
+	}))
+	const motobarOptions = (motobarsData?.data || []).map((motobar: Motobar) => ({
+		value: motobar.id,
+		label: `${motobar.name} ${motobar.address ? `(${motobar.address})` : ''}`,
 	}))
 
 	const handleSubmit = async (values: FormValues) => {
@@ -55,6 +64,9 @@ function AddPost() {
 			if (values.link) formData.append('link', sanitizeInput(values.link))
 			values.motoclub_ids?.forEach((id) => {
 				formData.append('motoclub_ids[]', String(id))
+			})
+			values.motobar_ids?.forEach((id) => {
+				formData.append('motobar_ids[]', String(id))
 			})
 			
 			// Даты и время
@@ -144,6 +156,17 @@ function AddPost() {
 									loading={isLoadingMotoclubs}
 									options={motoclubOptions}
 									placeholder="Выберите мотоклубы"
+								/>
+							</Form.Item>
+							<Form.Item label="Организаторы (Мото-бары):" name="motobar_ids">
+								<Select
+									mode="multiple"
+									allowClear
+									showSearch
+									optionFilterProp="label"
+									loading={isLoadingMotobars}
+									options={motobarOptions}
+									placeholder="Выберите мото-бары"
 								/>
 							</Form.Item>
 							<MapPicker 

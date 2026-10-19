@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useGetDashboardPostQuery, useUpdatePostMutation, useUploadPostImageMutation } from '../../../features/post/postSlice'
 import { useGetDashboardMotoclubListQuery } from '@features/motoclub/motoclubSlice'
+import { useGetMotobarListQuery } from '@features/motobar/motobarSlice'
 import { API_URL } from '@config/constants'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
@@ -17,6 +18,7 @@ type FormValues = {
   location?: string
   address?: string
   motoclub_ids?: number[]
+  motobar_ids?: number[]
   publication_status: boolean
   moderation_status: 0 | 1 | 2 | 3
   date_start: dayjs.Dayjs
@@ -40,9 +42,16 @@ function UpdatePost() {
 
   const cropperValue = pendingImage || previewUrl
   const hasNewImageToUpload = Boolean(pendingImage && pendingImage.startsWith('data:image'))
+  const { data: motobarsData, isLoading: isLoadingMotobars } = useGetMotobarListQuery({
+    pagination: { page: 1, per_page: 100 },
+  })
   const motoclubOptions = (motoclubsData?.data || []).map((motoclub) => ({
     value: motoclub.id,
     label: motoclub.name,
+  }))
+  const motobarOptions = (motobarsData?.data || []).map((motobar) => ({
+    value: motobar.id,
+    label: motobar.name,
   }))
 
   const {
@@ -63,6 +72,7 @@ function UpdatePost() {
       location: postData.location || '',
       address: postData.address || '',
       motoclub_ids: postData.motoclub_ids || postData.motoclubs?.map((motoclub) => motoclub.id) || [],
+      motobar_ids: postData.motobar_ids || postData.motobars?.map((motobar) => motobar.id) || [],
       publication_status: Boolean(postData.publication_status),
       moderation_status: postData.moderation_status ?? 0,
       date_start: dayjs(postData.date_start),
@@ -118,6 +128,9 @@ function UpdatePost() {
       if (values.address) formData.append('address', sanitizeInput(values.address))
       values.motoclub_ids?.forEach((id) => {
         formData.append('motoclub_ids[]', String(id))
+      })
+      values.motobar_ids?.forEach((id) => {
+        formData.append('motobar_ids[]', String(id))
       })
       formData.append('publication_status', values.publication_status ? '1' : '0')
       formData.append('moderation_status', String(values.moderation_status))
@@ -214,6 +227,18 @@ function UpdatePost() {
                   loading={isLoadingMotoclubs}
                   options={motoclubOptions}
                   placeholder="Выберите мотоклубы"
+                />
+              </Form.Item>
+
+              <Form.Item label="Мото-бары" name="motobar_ids">
+                <Select
+                  mode="multiple"
+                  allowClear
+                  showSearch
+                  optionFilterProp="label"
+                  loading={isLoadingMotobars}
+                  options={motobarOptions}
+                  placeholder="Выберите мото-бары"
                 />
               </Form.Item>
 

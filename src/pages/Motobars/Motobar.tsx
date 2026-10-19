@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetMotobarQuery } from '@features/motobar/motobarSlice'
 import MapView from '@components/YandexMapV3/MapView'
+import PostFeed from '@components/PostFeed/PostFeed'
 import StarRating from '@components/StarRating'
 import Seo from '@components/Seo'
 
@@ -136,6 +137,17 @@ function Motobar() {
             </Space>
           </Col>
         </Row>
+      </Card>
+
+      <Card style={{ marginTop: 8 }}>
+        <Title level={4} style={{ marginTop: 0, marginBottom: 16 }}>
+          Ближайшие события мото-бара
+        </Title>
+        <PostFeed
+          motobarId={motobarData.id}
+          perPage={6}
+          emptyText="У этого мото-бара пока нет запланированных событий"
+        />
       </Card>
     </div>
   )

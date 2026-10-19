@@ -9,6 +9,7 @@ const { Text } = Typography
 interface PostFeedProps {
   initialPage?: number
   motoclubId?: number
+  motobarId?: number
   perPage?: number
   emptyText?: string
   compact?: boolean
@@ -17,6 +18,7 @@ interface PostFeedProps {
 const PostFeed: React.FC<PostFeedProps> = ({
   initialPage = 1,
   motoclubId,
+  motobarId,
   perPage = 12,
   emptyText = 'Мероприятия пока не добавлены',
   compact = false,
@@ -25,6 +27,7 @@ const PostFeed: React.FC<PostFeedProps> = ({
     pagination: { page: initialPage, per_page: perPage },
     post_category_ids: 2,
     motoclub_ids: motoclubId,
+    motobar_ids: motobarId,
   })
 
   const posts = useMemo(() => {
