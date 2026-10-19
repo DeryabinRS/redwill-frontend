@@ -48,6 +48,7 @@ export type Motoclub = {
   logo: string | null
   website: string | null
   social_link: string | null
+  links: string[] | null
   phone: string | null
   email: string | null
   has_moto_post?: boolean

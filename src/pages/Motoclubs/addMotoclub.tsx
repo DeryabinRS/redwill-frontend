@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
 import OptionalLabel from '../../components/OptionalLabel'
+import LinksInput from '../../components/LinksInput/LinksInput'
 import {
   useCreateMotoclubMutation,
   useGetJoinedMotoclubsQuery,
@@ -27,8 +28,7 @@ type FormValues = {
   desc?: string
   birthday?: string
   logo?: File
-  website?: string
-  social_link?: string
+  links?: string[]
   phone?: string
   email?: string
   has_moto_post?: boolean
@@ -114,8 +114,10 @@ function AddMotoclub() {
       if (values.parent_id) formData.append('parent_id', String(values.parent_id))
       appendString(formData, 'desc', values.desc)
       appendString(formData, 'birthday', values.birthday ? dayjs(values.birthday).format('YYYY-MM-DD') : undefined)
-      appendString(formData, 'website', values.website)
-      appendString(formData, 'social_link', values.social_link)
+      ;(values.links ?? []).forEach((link) => {
+        const trimmed = link.trim()
+        if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
+      })
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
       formData.append('address', sanitizeInput(values.address))
@@ -218,18 +220,6 @@ function AddMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="social_link"
-                    label={<OptionalLabel text="Ссылка на соц. сеть" />}
-                    rules={[
-                      { type: 'url', message: 'Введите корректный URL' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="https://vk.ru/..." />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="email"
                     label={<OptionalLabel text="Email" />}
                     rules={[
@@ -245,18 +235,6 @@ function AddMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="website"
-                    label={<OptionalLabel text="Сайт" />}
-                    rules={[
-                      { type: 'url', message: 'Введите корректный URL' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="https://example.com" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="phone"
                     label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
@@ -265,6 +243,10 @@ function AddMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Form.Item name="links" label={<OptionalLabel text="Ссылки" />}>
+                <LinksInput />
+              </Form.Item>
 
               <Row gutter={16} style={{ marginBottom: 8 }}>
                 <Col xs={24} md={8}>

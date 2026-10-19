@@ -21,6 +21,7 @@ export type Post = {
   longitude: number | null
   image: string
   link: string | null
+  links: string[] | null
   date_start: string
   date_end: string | null
   time_start: string | null

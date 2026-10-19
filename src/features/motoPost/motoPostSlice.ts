@@ -11,6 +11,7 @@ export type MotoPost = {
   address: string | null
   location: string | null
   phone: string | null
+  links: string[] | null
   moderation_status: number
   publication_status: number
   created_at: string

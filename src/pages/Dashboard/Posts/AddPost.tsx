@@ -7,12 +7,13 @@ import { useGetDashboardMotoclubListQuery } from '@features/motoclub/motoclubSli
 import ImageCropper from '../../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../../components/YandexMapV3/MapPicker'
 import { base64ToFile, sanitizeInput } from '../../../utils/form'
+import LinksInput from '@components/LinksInput/LinksInput'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
 type FormValues = {
   title: string
   content?: string
-  link?: string
+  links?: string[]
   location?: string
   address?: string
   motoclub_ids?: number[]
@@ -44,7 +45,10 @@ function AddPost() {
       formData.append('title', sanitizeInput(values.title))
       formData.append('post_category_id', '2')
       if (values.content) formData.append('content', sanitizeInput(values.content))
-      if (values.link) formData.append('link', sanitizeInput(values.link))
+      ;(values.links ?? []).forEach((link) => {
+        const trimmed = link.trim()
+        if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
+      })
       if (values.location) formData.append('location', sanitizeInput(values.location))
       if (values.address) formData.append('address', sanitizeInput(values.address))
       values.motoclub_ids?.forEach((id) => {
@@ -115,8 +119,8 @@ function AddPost() {
                 <Input.TextArea rows={4} />
               </Form.Item>
 
-              <Form.Item label="Ссылка" name="link">
-                <Input placeholder="https://example.com" />
+              <Form.Item label="Ссылки" name="links">
+                <LinksInput />
               </Form.Item>
 
               <Form.Item label="Организаторы (Мотоклубы):" name="motoclub_ids">

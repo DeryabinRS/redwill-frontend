@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import OptionalLabel from '@components/OptionalLabel'
+import LinksInput from '@components/LinksInput/LinksInput'
 import { API_URL } from '@config/constants'
 import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
@@ -28,8 +29,7 @@ type FormValues = {
   parent_id?: number | null
   desc?: string
   birthday?: dayjs.Dayjs
-  website?: string
-  social_link?: string
+  links?: string[]
   phone?: string
   email?: string
   has_moto_post?: boolean
@@ -131,8 +131,7 @@ function EditMotoclub() {
       parent_id: motoclubData.parent_id ?? null,
       desc: motoclubData.desc || '',
       birthday: motoclubData.birthday ? dayjs(motoclubData.birthday) : undefined,
-      website: motoclubData.website || '',
-      social_link: motoclubData.social_link || '',
+      links: motoclubData.links || [],
       phone: motoclubData.phone || '',
       email: motoclubData.email || '',
       has_moto_post: Boolean(motoclubData.has_moto_post),
@@ -207,8 +206,10 @@ function EditMotoclub() {
       formData.append('parent_id', values.parent_id ? String(values.parent_id) : '')
       appendString(formData, 'desc', values.desc)
       if (values.birthday) formData.append('birthday', values.birthday.format('YYYY-MM-DD'))
-      appendString(formData, 'website', values.website)
-      appendString(formData, 'social_link', values.social_link)
+      ;(values.links ?? []).forEach((link) => {
+        const trimmed = link.trim()
+        if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
+      })
       appendString(formData, 'phone', values.phone)
       appendString(formData, 'email', values.email)
       appendString(formData, 'address', values.address)
@@ -359,18 +360,6 @@ function EditMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="social_link"
-                    label={<OptionalLabel text="Ссылка на соц. сеть" />}
-                    rules={[
-                      { type: 'url', message: 'Введите корректный URL' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="https://vk.ru/..." />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="email"
                     label={<OptionalLabel text="Email" />}
                     rules={[
@@ -386,18 +375,6 @@ function EditMotoclub() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="website"
-                    label={<OptionalLabel text="Сайт" />}
-                    rules={[
-                      { type: 'url', message: 'Введите корректный URL' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="https://example.com" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="phone"
                     label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
@@ -406,6 +383,10 @@ function EditMotoclub() {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Form.Item name="links" label={<OptionalLabel text="Ссылки" />}>
+                <LinksInput />
+              </Form.Item>
 
               <Row gutter={16} style={{ marginBottom: 8 }}>
                 <Col xs={24} md={8}>

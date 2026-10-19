@@ -4,17 +4,18 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ImageCropper from '../../components/ImageCropper/ImageCropper'
 import MapPicker from '../../components/YandexMapV3/MapPicker'
 import OptionalLabel from '../../components/OptionalLabel'
+import LinksInput from '../../components/LinksInput/LinksInput'
 import { useCreateMotoPostMutation } from '../../features/motoPost/motoPostSlice'
 import { base64ToFile, sanitizeInput } from '../../utils/form'
 
 type FormValues = {
   name: string
   desc?: string
-  website?: string
   logo?: File
   address: string
   location: string
   phone?: string
+  links?: string[]
 }
 
 function AddMotoPost() {
@@ -37,8 +38,11 @@ function AddMotoPost() {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
-      appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
+      ;(values.links ?? []).forEach((link) => {
+        const trimmed = link.trim()
+        if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
+      })
       formData.append('address', sanitizeInput(values.address))
       formData.append('location', sanitizeInput(values.location))
 
@@ -111,18 +115,6 @@ function AddMotoPost() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="website"
-                    label={<OptionalLabel text="Ссылка" />}
-                    rules={[
-                      { type: 'url', message: 'Введите корректный URL' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="https://example.com" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="phone"
                     label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
@@ -131,6 +123,13 @@ function AddMotoPost() {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Form.Item
+                name="links"
+                label={<OptionalLabel text="Ссылки" />}
+              >
+                <LinksInput />
+              </Form.Item>
 
               <div>Чтобы получить координаты и название места, введите адрес или название заведения в поле поиска</div>
               <MapPicker

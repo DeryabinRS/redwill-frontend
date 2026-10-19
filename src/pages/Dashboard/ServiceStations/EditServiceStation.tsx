@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
 import OptionalLabel from '@components/OptionalLabel'
+import LinksInput from '@components/LinksInput/LinksInput'
 import { API_URL } from '@config/constants'
 import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
 import {
@@ -16,10 +17,10 @@ import {
 type FormValues = {
   name: string
   desc?: string
-  website?: string
   address?: string
   location?: string
   phone?: string
+  links?: string[]
   publication_status: boolean
   moderation_status: number
 }
@@ -51,10 +52,10 @@ function EditServiceStation() {
     form.setFieldsValue({
       name: serviceStationData.name,
       desc: serviceStationData.desc || '',
-      website: serviceStationData.website || '',
       address: serviceStationData.address || '',
       location: serviceStationData.location || '',
       phone: serviceStationData.phone || '',
+      links: serviceStationData.links || [],
       publication_status: Boolean(serviceStationData.publication_status),
       moderation_status: serviceStationData.moderation_status ?? 0,
     })
@@ -105,8 +106,11 @@ function EditServiceStation() {
       const formData = new FormData()
       formData.append('name', sanitizeInput(values.name))
       appendString(formData, 'desc', values.desc)
-      appendString(formData, 'website', values.website)
       appendString(formData, 'phone', values.phone)
+      ;(values.links ?? []).forEach((link) => {
+        const trimmed = link.trim()
+        if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
+      })
       appendString(formData, 'address', values.address)
       appendString(formData, 'location', values.location)
       formData.append('publication_status', values.publication_status ? '1' : '0')
@@ -201,18 +205,6 @@ function EditServiceStation() {
               <Row gutter={16}>
                 <Col xs={24} md={12}>
                   <Form.Item
-                    name="website"
-                    label={<OptionalLabel text="Ссылка" />}
-                    rules={[
-                      { type: 'url', message: 'Введите корректный URL' },
-                      { pattern: noScriptPattern, message: 'Недопустимые символы' },
-                    ]}
-                  >
-                    <Input placeholder="https://example.com" />
-                  </Form.Item>
-                </Col>
-                <Col xs={24} md={12}>
-                  <Form.Item
                     name="phone"
                     label={<OptionalLabel text="Телефон" />}
                     rules={[{ pattern: noScriptPattern, message: 'Недопустимые символы' }]}
@@ -221,6 +213,13 @@ function EditServiceStation() {
                   </Form.Item>
                 </Col>
               </Row>
+
+              <Form.Item
+                name="links"
+                label={<OptionalLabel text="Ссылки" />}
+              >
+                <LinksInput />
+              </Form.Item>
 
               <Space size="large" style={{ width: '100%' }}>
                 <Form.Item name="publication_status" label="Публикация" valuePropName="checked">

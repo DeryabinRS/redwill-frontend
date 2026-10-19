@@ -10,6 +10,7 @@ import { useCreatePostMutation } from '../../features/post/postSlice';
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
 import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
 import MapPicker from '../../components/YandexMapV3/MapPicker';
+import LinksInput from '../../components/LinksInput/LinksInput';
 import { base64ToFile, sanitizeInput } from '../../utils/form';
 
 const { Title } = Typography;
@@ -22,7 +23,7 @@ type FormValues = {
 	motoclub_ids?: number[]
 	motobar_ids?: number[]
 	image: File
-	link?: string
+	links?: string[]
 	date_start: dayjs.Dayjs
 	date_end?: dayjs.Dayjs
 	time_start?: dayjs.Dayjs
@@ -61,7 +62,10 @@ function AddPost() {
 			formData.append('post_category_id', '2')
 			if (values.location) formData.append('location', sanitizeInput(values.location))
 			if (values.address) formData.append('address', sanitizeInput(values.address))
-			if (values.link) formData.append('link', sanitizeInput(values.link))
+			;(values.links ?? []).forEach((link) => {
+				const trimmed = link.trim()
+				if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
+			})
 			values.motoclub_ids?.forEach((id) => {
 				formData.append('motoclub_ids[]', String(id))
 			})
@@ -137,15 +141,8 @@ function AddPost() {
 							>
 							<Input placeholder="Введите заголовок" />
 							</Form.Item>
-							<Form.Item
-								name="link"
-								label="Ссылка"
-								rules={[
-									{ type: 'url', message: 'Введите корректный URL' },
-									{ pattern: noScriptPattern, message: 'Недопустимые символы' },
-								]}
-							>
-								<Input placeholder="https://example.com" />
+							<Form.Item name="links" label="Ссылки">
+								<LinksInput />
 							</Form.Item>
 							<Form.Item label="Организаторы (Мотоклубы):" name="motoclub_ids">
 								<Select
