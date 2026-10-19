@@ -1,4 +1,4 @@
-import { App as AntdApp, Button, Card, Popconfirm, Space, Table, Tag, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Popconfirm, Space, Tag, Typography } from 'antd'
 import type { ColumnsType, TablePaginationConfig } from 'antd/es/table'
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import { useDeletePostMutation, useGetDashboardPostListQuery, type Post } from '@features/post/postSlice'
 import { DELETE_CONFIRM_DESCRIPTION, moderationStatusOptions, moderationStatusTagColor } from '@utils/form'
+import { ListBlock, ResponsiveList } from '@components/ResponsiveList/ResponsiveList'
 
 function Posts() {
   const { message } = AntdApp.useApp()
@@ -90,6 +91,44 @@ function Posts() {
     },
   ]
 
+  const renderModeration = (value?: number) => {
+    const option = moderationStatusOptions.find((o) => o.value === value)
+    if (!option) return <Tag>—</Tag>
+    return <Tag color={moderationStatusTagColor[value ?? 0] ?? 'default'}>{option.label}</Tag>
+  }
+
+  const renderItem = (record: Post) => (
+    <ListBlock
+      title={record.title}
+      extra={<Typography.Text type="secondary">#{record.id}</Typography.Text>}
+      actions={
+        <>
+          <Link to={`/dashboard/posts/${record.id}/edit`}>
+            <Button icon={<EditOutlined />} size="small" />
+          </Link>
+          <Popconfirm
+            title="Удалить пост?"
+            description={DELETE_CONFIRM_DESCRIPTION}
+            okText="Удалить"
+            cancelText="Отмена"
+            okButtonProps={{ danger: true, loading: isDeleting }}
+            onConfirm={() => handleDeletePost(record.id)}
+          >
+            <Button danger icon={<DeleteOutlined />} size="small" />
+          </Popconfirm>
+        </>
+      }
+    >
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginBottom: 4 }}>
+        <Tag color={record.publication_status === 1 ? 'green' : 'red'}>
+          {record.publication_status === 1 ? 'Опубликован' : 'Не опубликован'}
+        </Tag>
+        {renderModeration(record.moderation_status)}
+      </div>
+      <div>Дата: {dayjs(record.date_start).format('DD.MM.YYYY')}</div>
+    </ListBlock>
+  )
+
   return (
     <Card size="small">
       <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -103,11 +142,9 @@ function Posts() {
         </Link>
       </Space>
 
-      <Table
-        size="small"
-        rowKey="id"
+      <ResponsiveList
+        data={data?.data || []}
         loading={isLoading}
-        dataSource={data?.data || []}
         columns={columns}
         onChange={handleTableChange}
         pagination={{
@@ -117,6 +154,7 @@ function Posts() {
           showSizeChanger: true,
           showTotal: (total) => `Всего: ${total}`,
         }}
+        renderItem={renderItem}
       />
     </Card>
   )

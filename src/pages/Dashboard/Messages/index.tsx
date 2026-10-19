@@ -9,7 +9,6 @@ import {
   Popconfirm,
   Select,
   Space,
-  Table,
   Tag,
   Typography,
 } from 'antd'
@@ -26,6 +25,7 @@ import {
 } from '@features/notification/notificationSlice'
 import { useGetAllUsersQuery } from '@features/user/userSlice'
 import { DELETE_CONFIRM_DESCRIPTION } from '@utils/form'
+import { ListBlock, ResponsiveList } from '@components/ResponsiveList/ResponsiveList'
 
 type EditFormValues = {
   title: string
@@ -228,6 +228,52 @@ function DashboardMessages() {
     },
   ]
 
+  const renderItem = (record: UserNotification) => (
+    <ListBlock
+      title={record.title}
+      extra={<Typography.Text type="secondary">#{record.id}</Typography.Text>}
+      actions={
+        <>
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            aria-label="Редактировать"
+            onClick={() => openEdit(record)}
+          />
+          <Popconfirm
+            title="Удалить сообщение?"
+            description={DELETE_CONFIRM_DESCRIPTION}
+            okText="Удалить"
+            cancelText="Отмена"
+            okButtonProps={{ danger: true, loading: isDeleting }}
+            onConfirm={() => void onDelete(record.id)}
+          >
+            <Button type="text" danger icon={<DeleteOutlined />} aria-label="Удалить" />
+          </Popconfirm>
+        </>
+      }
+    >
+      <div>
+        {record.user ? (
+          <Space orientation="vertical" size={0}>
+            <Typography.Text>{record.user.login}</Typography.Text>
+            <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+              {record.user.email}
+            </Typography.Text>
+          </Space>
+        ) : (
+          <Typography.Text type="secondary">#{record.user_id}</Typography.Text>
+        )}
+      </div>
+      <div style={{ marginTop: 4, display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+        <Tag>{typeOptions.find((item) => item.value === record.type)?.label || record.type}</Tag>
+        {record.read_at ? <Tag color="green">Прочитано</Tag> : <Tag color="gold">Новое</Tag>}
+      </div>
+      {record.body ? <div style={{ marginTop: 4 }}>{record.body}</div> : null}
+      <div style={{ marginTop: 4 }}>{dayjs(record.created_at).format('DD.MM.YYYY HH:mm')}</div>
+    </ListBlock>
+  )
+
   return (
     <Card size="small">
       <Space style={{ width: '100%', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -239,11 +285,9 @@ function DashboardMessages() {
         </Button>
       </Space>
 
-      <Table
-        size="small"
-        rowKey="id"
+      <ResponsiveList
+        data={data?.data || []}
         loading={isLoading}
-        dataSource={data?.data}
         columns={columns}
         onChange={handleTableChange}
         pagination={{
@@ -253,6 +297,7 @@ function DashboardMessages() {
           showSizeChanger: true,
           showTotal: (total) => `Всего: ${total}`,
         }}
+        renderItem={renderItem}
       />
 
       <Modal
