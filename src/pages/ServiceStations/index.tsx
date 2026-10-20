@@ -1,5 +1,5 @@
 import { Card, Col, Empty, Input, Pagination, Row, Space, Spin, Typography } from 'antd'
-import { EnvironmentOutlined, GlobalOutlined, ToolOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, ToolOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
@@ -8,7 +8,7 @@ import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { useGetServiceStationListQuery, type ServiceStation } from '@features/serviceStation/serviceStationSlice'
 import '@components/PostFeed/PostFeed.css'
 
-const { Title, Text, Link: TypographyLink } = Typography
+const { Title, Text } = Typography
 
 const PAGE_SIZE_OPTIONS = [24, 50, 100] as const
 
@@ -53,7 +53,7 @@ function ServiceStationCard({ serviceStation }: { serviceStation: ServiceStation
                 </Text>
               </div>
             )}
-            {serviceStation.website && (
+            {/* {serviceStation.website && (
               <TypographyLink
                 href={serviceStation.website}
                 target="_blank"
@@ -63,7 +63,7 @@ function ServiceStationCard({ serviceStation }: { serviceStation: ServiceStation
                 <GlobalOutlined style={{ marginRight: 6 }} />
                 {serviceStation.website.replace(/^https?:\/\//i, '')}
               </TypographyLink>
-            )}
+            )} */}
           </Space>
         </div>
       </Space>

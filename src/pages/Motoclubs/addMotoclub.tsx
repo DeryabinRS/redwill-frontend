@@ -15,7 +15,7 @@ import { useGetMotoPostListQuery } from '../../features/motoPost/motoPostSlice'
 import { useGetServiceStationListQuery } from '../../features/serviceStation/serviceStationSlice'
 import { useGetMotobarListQuery } from '../../features/motobar/motobarSlice'
 import { useGetUserInfoQuery } from '../../features/user/userSlice'
-import { base64ToFile, sanitizeInput } from '../../utils/form'
+import { base64ToFile, sanitizeInput, validateLinksMaxLength } from '../../utils/form'
 import dayjs from 'dayjs'
 import { useTranslation } from 'react-i18next'
 import { BikePostHelper, StoHelper, BikeBarHelper } from './helpers'
@@ -244,7 +244,7 @@ function AddMotoclub() {
                 </Col>
               </Row>
 
-              <Form.Item name="links" label={<OptionalLabel text="Ссылки" />}>
+              <Form.Item name="links" label={<OptionalLabel text="Ссылки" />} rules={[{ validator: validateLinksMaxLength }]}>
                 <LinksInput />
               </Form.Item>
 

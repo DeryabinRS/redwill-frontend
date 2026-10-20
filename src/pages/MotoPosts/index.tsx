@@ -1,15 +1,16 @@
 import { Avatar, Card, Col, Empty, Input, Modal, Pagination, Row, Space, Spin, Typography } from 'antd'
-import { EnvironmentOutlined, GlobalOutlined, PhoneOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, PhoneOutlined, ShopOutlined, UserOutlined } from '@ant-design/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
 import MapView, { type HostUserMarker, type MapViewMarker } from '@components/YandexMapV3/MapView'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
+// import LinksList from '@components/LinksList/LinksList'
 import { useGetMotoPostListQuery, type MotoPost } from '@features/motoPost/motoPostSlice'
 import { useGetHostUsersQuery } from '@features/user/userSlice'
 import '@components/PostFeed/PostFeed.css'
 
-const { Title, Text, Link: TypographyLink } = Typography
+const { Title, Text } = Typography
 
 const PAGE_SIZE_OPTIONS = [24, 50, 100] as const
 
@@ -54,7 +55,7 @@ function MotoPostCard({ motoPost }: { motoPost: MotoPost }) {
                 </Text>
               </div>
             )}
-            {motoPost.website && (
+            {/* {motoPost.website && (
               <TypographyLink
                 href={motoPost.website}
                 target="_blank"
@@ -65,6 +66,11 @@ function MotoPostCard({ motoPost }: { motoPost: MotoPost }) {
                 {motoPost.website.replace(/^https?:\/\//i, '')}
               </TypographyLink>
             )}
+            <LinksList
+              links={motoPost.links}
+              compact
+              onLinkClick={(event) => event.stopPropagation()}
+            /> */}
           </Space>
         </div>
       </Space>

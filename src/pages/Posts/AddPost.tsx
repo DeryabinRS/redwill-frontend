@@ -11,7 +11,7 @@ import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoc
 import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
 import MapPicker from '../../components/YandexMapV3/MapPicker';
 import LinksInput from '../../components/LinksInput/LinksInput';
-import { base64ToFile, sanitizeInput } from '../../utils/form';
+import { base64ToFile, sanitizeInput, validateLinksMaxLength } from '../../utils/form';
 
 const { Title } = Typography;
 
@@ -141,7 +141,7 @@ function AddPost() {
 							>
 							<Input placeholder="Введите заголовок" />
 							</Form.Item>
-							<Form.Item name="links" label="Ссылки">
+							<Form.Item name="links" label="Ссылки" rules={[{ validator: validateLinksMaxLength }]}>
 								<LinksInput />
 							</Form.Item>
 							<Form.Item label="Организаторы (Мотоклубы):" name="motoclub_ids">
@@ -193,7 +193,7 @@ function AddPost() {
 									label="Дата начала"
 									rules={[{ required: true, message: 'Выберите дату начала' }]}
 								>
-									<DatePicker style={{ width: '100%' }} />
+									<DatePicker format="DD.MM.YYYY" style={{ width: '100%' }} />
 								</Form.Item>
 
 								<Form.Item
@@ -208,7 +208,7 @@ function AddPost() {
 									name="date_end"
 									label="Дата окончания"
 								>
-									<DatePicker style={{ width: '100%' }} />
+									<DatePicker format="DD.MM.YYYY" style={{ width: '100%' }} />
 								</Form.Item>
 
 								<Form.Item

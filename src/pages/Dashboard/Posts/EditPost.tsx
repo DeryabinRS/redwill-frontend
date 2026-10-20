@@ -8,7 +8,7 @@ import { useGetMotobarListQuery } from '@features/motobar/motobarSlice'
 import { API_URL } from '@config/constants'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import MapPicker from '@components/YandexMapV3/MapPicker'
-import { base64ToFile, moderationStatusOptions, sanitizeInput } from '@utils/form'
+import { base64ToFile, moderationStatusOptions, sanitizeInput, validateLinksMaxLength } from '@utils/form'
 import LinksInput from '@components/LinksInput/LinksInput'
 import { ArrowLeftOutlined } from '@ant-design/icons'
 
@@ -218,7 +218,7 @@ function UpdatePost() {
                 <Input.TextArea rows={4} />
               </Form.Item>
 
-              <Form.Item label="Ссылки" name="links">
+              <Form.Item label="Ссылки" name="links" rules={[{ validator: validateLinksMaxLength }]}>
                 <LinksInput />
               </Form.Item>
 
@@ -282,7 +282,7 @@ function UpdatePost() {
                   label="Дата начала"
                   rules={[{ required: true, message: 'Выберите дату' }]}
                 >
-                  <DatePicker />
+                  <DatePicker format="DD.MM.YYYY" />
                 </Form.Item>
                 <Form.Item name="time_start" label="Время начала">
                   <TimePicker format="HH:mm" />
@@ -291,7 +291,7 @@ function UpdatePost() {
 
               <Space.Compact>
                 <Form.Item name="date_end" label="Дата окончания">
-                  <DatePicker />
+                  <DatePicker format="DD.MM.YYYY" />
                 </Form.Item>
                 <Form.Item name="time_end" label="Время окончания">
                   <TimePicker format="HH:mm" />

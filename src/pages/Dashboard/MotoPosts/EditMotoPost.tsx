@@ -7,7 +7,7 @@ import MapPicker from '@components/YandexMapV3/MapPicker'
 import OptionalLabel from '@components/OptionalLabel'
 import LinksInput from '@components/LinksInput/LinksInput'
 import { API_URL } from '@config/constants'
-import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
+import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput, validateLinksMaxLength } from '@utils/form'
 import {
   useGetDashboardMotoPostQuery,
   useUpdateMotoPostMutation,
@@ -217,6 +217,7 @@ function EditMotoPost() {
               <Form.Item
                 name="links"
                 label={<OptionalLabel text="Ссылки" />}
+                rules={[{ validator: validateLinksMaxLength }]}
               >
                 <LinksInput />
               </Form.Item>

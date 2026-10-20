@@ -5,6 +5,7 @@ import { API_URL } from '@config/constants'
 import { useGetMotoPostQuery } from '@features/motoPost/motoPostSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import LinksList from '@components/LinksList/LinksList'
 import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
@@ -117,6 +118,8 @@ function MotoPost() {
                     </a>
                   </Space>
                 )}
+
+                <LinksList links={motoPostData.links} />
 
                 {motoPostData.phone && (
                   <Space size={8}>

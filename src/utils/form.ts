@@ -48,3 +48,12 @@ export const sanitizeInput = (value: string): string => {
 		.replace(/(href|src)\s*=\s*["']?javascript:[^"'\s>]*/gi, '$1=""')
 		.trim()
 }
+
+export const validateLinksMaxLength = (_: unknown, value: unknown) => {
+	const links = Array.isArray(value) ? value : []
+	const tooLong = links.some((link) => typeof link === 'string' && link.length > 255)
+
+	return tooLong
+		? Promise.reject(new Error('Ссылка не должна превышать 255 символов'))
+		: Promise.resolve()
+}

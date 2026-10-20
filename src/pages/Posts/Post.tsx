@@ -6,6 +6,7 @@ import { API_URL } from '@config/constants'
 import { useGetPostQuery, type Post as PostData } from '@features/post/postSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import LinksList from '@components/LinksList/LinksList'
 import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
@@ -252,6 +253,8 @@ function Post() {
                     </a>
                   </Space>
                 )}
+
+                <LinksList links={postData.links} />
               </Space>
 
               {postData.content && (

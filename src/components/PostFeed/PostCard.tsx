@@ -4,6 +4,7 @@ import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import type { Post } from '../../features/post/postSlice'
 import { API_URL } from '../../config/constants'
+// import LinksList from '../LinksList/LinksList'
 import { ProfileCardStatusBadges } from '../ProfileCardOverlays'
 import { DELETE_CONFIRM_DESCRIPTION } from '../../utils/form'
 
@@ -77,6 +78,12 @@ function PostCard({
                   </Text>
                 </div>
               )}
+
+              {/* <LinksList
+                links={post.links}
+                compact
+                onLinkClick={(event) => event.stopPropagation()}
+              /> */}
             </Space>
           </div>
 

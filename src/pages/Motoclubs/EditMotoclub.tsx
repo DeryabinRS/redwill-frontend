@@ -8,7 +8,7 @@ import MapPicker from '@components/YandexMapV3/MapPicker'
 import OptionalLabel from '@components/OptionalLabel'
 import LinksInput from '@components/LinksInput/LinksInput'
 import { API_URL } from '@config/constants'
-import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput } from '@utils/form'
+import { base64ToFile, logoDataUrlToFileName, moderationStatusOptions, sanitizeInput, validateLinksMaxLength } from '@utils/form'
 import { useGetUserInfoQuery } from '@features/user/userSlice'
 import {
   useGetDashboardMotoclubListQuery,
@@ -384,7 +384,7 @@ function EditMotoclub() {
                 </Col>
               </Row>
 
-              <Form.Item name="links" label={<OptionalLabel text="Ссылки" />}>
+              <Form.Item name="links" label={<OptionalLabel text="Ссылки" />} rules={[{ validator: validateLinksMaxLength }]}>
                 <LinksInput />
               </Form.Item>
 

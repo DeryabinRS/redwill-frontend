@@ -6,6 +6,7 @@ import { useGetMotobarQuery } from '@features/motobar/motobarSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import PostFeed from '@components/PostFeed/PostFeed'
 import StarRating from '@components/StarRating'
+import LinksList from '@components/LinksList/LinksList'
 import Seo from '@components/Seo'
 
 const { Title, Text, Paragraph } = Typography
@@ -118,6 +119,8 @@ function Motobar() {
                     </a>
                   </Space>
                 )}
+
+                <LinksList links={motobarData.links} />
 
                 {motobarData.phone && (
                   <Space size={8}>

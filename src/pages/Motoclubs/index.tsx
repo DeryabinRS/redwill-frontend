@@ -1,14 +1,15 @@
 import { Card, Col, Empty, Input, Pagination, Row, Space, Spin, Typography } from 'antd'
-import { EnvironmentOutlined, GlobalOutlined, ShopOutlined } from '@ant-design/icons'
+import { EnvironmentOutlined, ShopOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
 import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
+// import LinksList from '@components/LinksList/LinksList'
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
 import '@components/PostFeed/PostFeed.css'
 
-const { Title, Text, Link: TypographyLink } = Typography
+const { Title, Text } = Typography
 
 const PAGE_SIZE_OPTIONS = [100, 200, 500] as const
 
@@ -52,7 +53,7 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
                 </Text>
               </div>
             )}
-            {motoclub.website && (
+            {/* {motoclub.website && (
               <div className="post-card-location" style={{ minWidth: 0, width: '100%' }}>
                 <GlobalOutlined className="post-card-icon" />
                 <TypographyLink
@@ -69,7 +70,12 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
                   {motoclub.website.replace(/^https?:\/\//i, '')}
                 </TypographyLink>
               </div>
-            )}
+            )} */}
+            {/* <LinksList
+              links={motoclub.links}
+              compact
+              onLinkClick={(event) => event.stopPropagation()}
+            /> */}
           </Space>
         </div>
       </Space>

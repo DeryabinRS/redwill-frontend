@@ -1,14 +1,15 @@
 import { Card, Col, Empty, Input, Pagination, Row, Space, Spin, Typography } from 'antd'
-import { CoffeeOutlined, EnvironmentOutlined, GlobalOutlined } from '@ant-design/icons'
+import { CoffeeOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import { useNavigate } from 'react-router-dom'
 import { useDeferredValue, useEffect, useMemo, useState } from 'react'
 import { API_URL } from '@config/constants'
 import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
+// import LinksList from '@components/LinksList/LinksList'
 import { useGetMotobarListQuery, type Motobar } from '@features/motobar/motobarSlice'
 import '@components/PostFeed/PostFeed.css'
 
-const { Title, Text, Link: TypographyLink } = Typography
+const { Title, Text } = Typography
 
 const PAGE_SIZE_OPTIONS = [24, 50, 100] as const
 
@@ -53,7 +54,7 @@ function MotobarCard({ motobar }: { motobar: Motobar }) {
                 </Text>
               </div>
             )}
-            {motobar.website && (
+            {/* {motobar.website && (
               <TypographyLink
                 href={motobar.website}
                 target="_blank"
@@ -63,7 +64,12 @@ function MotobarCard({ motobar }: { motobar: Motobar }) {
                 <GlobalOutlined style={{ marginRight: 6 }} />
                 {motobar.website.replace(/^https?:\/\//i, '')}
               </TypographyLink>
-            )}
+            )} */}
+            {/* <LinksList
+              links={motobar.links}
+              compact
+              onLinkClick={(event) => event.stopPropagation()}
+            /> */}
           </Space>
         </div>
       </Space>

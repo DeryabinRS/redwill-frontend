@@ -7,6 +7,7 @@ import MapView from '@components/YandexMapV3/MapView'
 import PostFeed from '@components/PostFeed/PostFeed'
 import '@components/PostFeed/PostFeed.css'
 import StarRating from '@components/StarRating'
+import LinksList from '@components/LinksList/LinksList'
 import Seo from '@components/Seo'
 import { isAuthenticated } from '@utils/auth'
 import dayjs from 'dayjs'
@@ -205,6 +206,8 @@ function Motoclub() {
                     </a>
                   </Space>
                 )}
+
+                <LinksList links={motoclubData.links} />
 
                 {motoclubData.phone && (
                   <Space size={8}>

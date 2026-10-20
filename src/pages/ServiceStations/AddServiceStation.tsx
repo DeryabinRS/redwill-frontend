@@ -6,7 +6,7 @@ import MapPicker from '../../components/YandexMapV3/MapPicker'
 import OptionalLabel from '../../components/OptionalLabel'
 import LinksInput from '../../components/LinksInput/LinksInput'
 import { useCreateServiceStationMutation } from '../../features/serviceStation/serviceStationSlice'
-import { base64ToFile, sanitizeInput } from '../../utils/form'
+import { base64ToFile, sanitizeInput, validateLinksMaxLength } from '../../utils/form'
 
 type FormValues = {
   name: string
@@ -127,6 +127,7 @@ function AddServiceStation() {
               <Form.Item
                 name="links"
                 label={<OptionalLabel text="Ссылки" />}
+                rules={[{ validator: validateLinksMaxLength }]}
               >
                 <LinksInput />
               </Form.Item>
