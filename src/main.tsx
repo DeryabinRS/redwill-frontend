@@ -12,6 +12,7 @@ import './styles/shell.css'
 import './i18n'
 import App from './App.tsx'
 import ScrollToTop from './components/ScrollToTop'
+import YandexMetrika from './components/YandexMetrika'
 import { Provider } from 'react-redux'
 import { store } from './store'
 
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')!).render(
         <AntdApp>
           <BrowserRouter>
             <ScrollToTop />
+            <YandexMetrika />
             <App />
           </BrowserRouter>
         </AntdApp>
