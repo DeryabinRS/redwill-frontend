@@ -635,7 +635,7 @@ function ClusterModal({ markers, onClose, onBuildRoute }: {
                 <img
                   src={selected.avatar}
                   alt={selected.title}
-                  style={{ width: 50, height: 50, objectFit: 'cover', borderRadius: '50%', marginBottom: 12 }}
+                  style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: '50%', marginBottom: 12 }}
                 />
               ) : (
                 <UserOutlined style={{ fontSize: 48, color: '#16a34a', marginBottom: 12 }} />
@@ -644,7 +644,7 @@ function ClusterModal({ markers, onClose, onBuildRoute }: {
               <img
                 src={selected.logo}
                 alt={selected.title}
-                style={{ width: 50, height: 50, objectFit: 'contain', borderRadius: 8, marginBottom: 12 }}
+                style={{ width: 100, height: 100, objectFit: 'contain', borderRadius: 8, marginBottom: 12 }}
               />
             ) : null}
             <Typography.Title level={5} style={{ margin: 0 }}>

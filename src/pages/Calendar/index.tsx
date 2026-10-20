@@ -215,7 +215,7 @@ function CalendarPage() {
               Добавить событие
             </ThemeButton>
           </Space.Compact>
-          <PostFeed compact />
+          <PostFeed compact perPage={24} paginated />
         </div>
       </section>
     </>

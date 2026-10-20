@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import { Col, Typography, Row, Spin } from 'antd'
+import { useMemo, useState } from 'react'
+import { Col, Pagination, Row, Spin, Typography } from 'antd'
 import { useGetPostListQuery } from '../../features/post/postSlice'
 import PostCard from './PostCard'
 import './PostFeed.css'
@@ -13,6 +13,7 @@ interface PostFeedProps {
   perPage?: number
   emptyText?: string
   compact?: boolean
+  paginated?: boolean
 }
 
 const PostFeed: React.FC<PostFeedProps> = ({
@@ -22,12 +23,16 @@ const PostFeed: React.FC<PostFeedProps> = ({
   perPage = 12,
   emptyText = 'Мероприятия пока не добавлены',
   compact = false,
+  paginated = false,
 }) => {
+  const [page, setPage] = useState(initialPage)
+
   const { data, isLoading, isFetching, error } = useGetPostListQuery({
-    pagination: { page: initialPage, per_page: perPage },
+    pagination: { page, per_page: perPage },
     post_category_ids: 2,
     motoclub_ids: motoclubId,
     motobar_ids: motobarId,
+    sort: 'date_start',
   })
 
   const posts = useMemo(() => {
@@ -46,6 +51,8 @@ const PostFeed: React.FC<PostFeedProps> = ({
       })
       .slice(0, perPage)
   }, [data?.data, perPage])
+
+  const total = data?.total ?? 0
 
   if (error) {
     return (
@@ -82,6 +89,17 @@ const PostFeed: React.FC<PostFeedProps> = ({
         <div className="post-feed-empty">
           <Text type="secondary">{emptyText}</Text>
         </div>
+      )}
+
+      {paginated && total > perPage && (
+        <Pagination
+          style={{ marginTop: 16, textAlign: 'center' }}
+          current={page}
+          pageSize={perPage}
+          total={total}
+          showSizeChanger={false}
+          onChange={(nextPage) => setPage(nextPage)}
+        />
       )}
     </div>
   )

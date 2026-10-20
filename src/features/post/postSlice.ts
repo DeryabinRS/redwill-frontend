@@ -117,6 +117,7 @@ type GetPostListArgs = {
   motobar_ids?: number | number[]
   min_start_date?: string
   max_start_date?: string
+  sort?: string
 }
 
 export const postApi = createApi({
@@ -129,7 +130,7 @@ export const postApi = createApi({
       transformResponse: (response: GetCategoriesResponse) => response.data,
     }),
     getPostList: builder.query<GetPostListResponse, GetPostListArgs>({
-      query: ({ pagination, post_category_ids, motoclub_ids, motobar_ids, min_start_date, max_start_date }) => ({ 
+      query: ({ pagination, post_category_ids, motoclub_ids, motobar_ids, min_start_date, max_start_date, sort }) => ({ 
         url: '/posts', 
         params: { 
           page: pagination?.page, 
@@ -139,6 +140,7 @@ export const postApi = createApi({
           motobar_ids,
           min_start_date: min_start_date ?? dayjs().format('YYYY-MM-DD'),
           max_start_date,
+          sort,
         },
       }),
       transformResponse: (response: { 
