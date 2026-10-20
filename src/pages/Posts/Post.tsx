@@ -1,4 +1,4 @@
-﻿import { Alert, Card, Col, Divider, Row, Skeleton, Space, Typography } from 'antd'
+﻿import { Alert, Card, Col, Divider, Image, Row, Skeleton, Space, Typography } from 'antd'
 import { CalendarOutlined, EnvironmentOutlined, LinkOutlined, UserOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { Link, useParams } from 'react-router-dom'
@@ -126,7 +126,7 @@ function Post() {
         <Row gutter={[24, 24]}>
           {imageSrc && (
             <Col xs={24} md={10}>
-              <img
+              <Image
                 src={imageSrc}
                 alt={postData.title}
                 style={{ width: '100%', borderRadius: 8, objectFit: 'cover' }}
