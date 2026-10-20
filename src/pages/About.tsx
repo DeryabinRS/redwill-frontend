@@ -10,7 +10,7 @@ function About() {
     <section className="section" style={{ padding: '8px 0' }}>
       <Seo
         title="О проекте"
-        description="MotoWing — платформа для мотосообщества: события, мотоклубы, мото-бары, мото-посты и СТО."
+        description="MotoWing — платформа мотосообщества: события, мотокалендарь, мотоклубы, мото-бары, мото-посты и СТО."
         path="/about"
       />
       <div className="container">
@@ -18,7 +18,7 @@ function About() {
           <ShellHeader
             eyebrow="о проекте"
             title="MotoWing"
-            subtitle="Платформа для мотосообщества, где можно находить события, клубы, места отдыха, полезные точки на маршрутах и сервисы для мотоциклов."
+            subtitle="Платформа мотосообщества, где можно находить события, мотокалендарь, клубы, места отдыха, полезные точки на маршрутах и сервисы для мотоциклов."
             actions={<span className="shell__chip shell__chip--accent"><TeamOutlined /></span>}
           />
 
