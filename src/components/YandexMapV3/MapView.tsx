@@ -291,6 +291,7 @@ function MapView({ location, markers, hostUsers, onHostClick, height = 400, zoom
           center: currentCenter || [mapCenter.lng, mapCenter.lat],
           zoom,
         }}
+        behaviors={['drag', 'dblClick', 'pinchZoom']}
       >
         <YMapDefaultSchemeLayer />
         <YMapDefaultFeaturesLayer />
