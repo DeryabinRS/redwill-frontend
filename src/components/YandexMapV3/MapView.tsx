@@ -427,6 +427,11 @@ function MapView({ location, markers, hostUsers, onHostClick, height = 400, zoom
                   <div style={{ fontWeight: 700, fontSize: 14, lineHeight: 1.25, color: '#1a1a1a' }}>
                     {selectedMarker.title}
                   </div>
+                  {selectedMarker.description ? (
+                    <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
+                      {selectedMarker.description}
+                    </div>
+                  ) : null}
                   {selectedMarker.address ? (
                     <div style={{ fontSize: 12, color: '#64748b', marginTop: 4 }}>
                       {selectedMarker.address}
@@ -650,6 +655,11 @@ function ClusterModal({ markers, onClose, onBuildRoute }: {
             <Typography.Title level={5} style={{ margin: 0 }}>
               {selected.title}
             </Typography.Title>
+            {selected.description ? (
+              <Typography.Text type="secondary" style={{ display: 'block', marginTop: 4 }}>
+                {selected.description}
+              </Typography.Text>
+            ) : null}
             {selected.address ? (
               <Typography.Text type="secondary" style={{ display: 'block', marginTop: 4 }}>
                 {selected.address}

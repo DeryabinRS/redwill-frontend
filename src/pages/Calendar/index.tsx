@@ -10,6 +10,8 @@ import PostCard from '../../components/PostFeed/PostCard'
 import PostFeed from '../../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
 import Seo from '@components/Seo'
+import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
+import { API_URL } from '@config/constants'
 import './Calendar.css'
 
 dayjs.locale('ru')
@@ -21,6 +23,40 @@ function isPostActiveOnDate(post: Post, date: Dayjs) {
   const endDate = dayjs(post.date_end || post.date_start).endOf('day')
 
   return !date.endOf('day').isBefore(startDate) && !date.startOf('day').isAfter(endDate)
+}
+
+function formatTime(value?: string | null) {
+  if (!value) return null
+
+  const [hours, minutes] = value.split(':')
+  if (!hours || !minutes) return value
+
+  return dayjs().hour(Number(hours)).minute(Number(minutes)).format('HH:mm')
+}
+
+function formatEventDateTime(post: Post) {
+  const parts: string[] = []
+
+  if (post.date_start) {
+    let date = dayjs(post.date_start).format('DD.MM.YYYY')
+    if (post.date_end && post.date_end !== post.date_start) {
+      date += ` — ${dayjs(post.date_end).format('DD.MM.YYYY')}`
+    }
+    parts.push(date)
+  }
+
+  const timeStart = formatTime(post.time_start)
+  const timeEnd = formatTime(post.time_end)
+
+  if (timeStart || timeEnd) {
+    if (timeStart && timeEnd) {
+      parts.push(`${timeStart} — ${timeEnd}`)
+    } else {
+      parts.push(timeStart || timeEnd || '')
+    }
+  }
+
+  return parts.length ? parts.join(', ') : null
 }
 
 function CalendarPage() {
@@ -54,6 +90,27 @@ function CalendarPage() {
   const selectedDatePosts = useMemo(
     () => posts.filter((post) => isPostActiveOnDate(post, selectedDate)),
     [posts, selectedDate],
+  )
+
+  const { data: mapPostsData, isLoading: isLoadingMapPosts } = useGetPostListQuery({
+    pagination: { page: 1, per_page: 500 },
+    post_category_ids: EVENT_CATEGORY_ID,
+  })
+
+  const mapMarkers: MapViewMarker[] = useMemo(
+    () =>
+      (mapPostsData?.data ?? [])
+        .filter((post) => post.location)
+        .map((post) => ({
+          id: post.id,
+          title: post.title,
+          location: post.location,
+          logo: post.image ? `${API_URL}${post.image}` : null,
+          href: `/posts/${post.slug}`,
+          address: post.address,
+          description: formatEventDateTime(post),
+        })),
+    [mapPostsData?.data],
   )
 
   const getPostsForDate = (date: Dayjs) => posts.filter((post) => isPostActiveOnDate(post, date))
@@ -215,7 +272,25 @@ function CalendarPage() {
               Добавить событие
             </ThemeButton>
           </Space.Compact>
-          <PostFeed compact perPage={24} paginated />
+          <PostFeed compact perPage={12} paginated />
+        </div>
+      </section>
+      <section className='section'>
+        <div className="container" style={{ paddingTop: 20 }}>
+         <Typography.Title level={3} style={{ marginBottom: 20 }}>
+            Карта событий
+          </Typography.Title>
+          {isLoadingMapPosts ? (
+            <Card>
+              <Spin />
+            </Card>
+          ) : mapMarkers.length > 0 ? (
+            <MapView markers={mapMarkers} height={520} zoom={4} />
+          ) : (
+            <Typography.Text type="secondary">
+              Нет событий с координатами для отображения на карте.
+            </Typography.Text>
+          )}
         </div>
       </section>
     </>
