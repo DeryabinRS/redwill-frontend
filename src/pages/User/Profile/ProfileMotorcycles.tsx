@@ -11,7 +11,6 @@ import {
 } from 'antd'
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   useCreateUserMotorcycleMutation,
   useDeleteUserMotorcycleMutation,
@@ -30,7 +29,6 @@ type FormValues = {
 }
 
 function ProfileMotorcycles() {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
   const [makeId, setMakeId] = useState<string>()
@@ -55,7 +53,7 @@ function ProfileMotorcycles() {
 
   const onOpenAdd = () => {
     if (!canAddMore) {
-      message.warning(t('profile.motorcycleLimit', { count: MAX_MOTORCYCLES }))
+      message.warning(`Можно добавить не более ${MAX_MOTORCYCLES} мотоциклов`)
       return
     }
     setOpen(true)
@@ -63,7 +61,7 @@ function ProfileMotorcycles() {
 
   const onSubmit = async (values: FormValues) => {
     if (!canAddMore) {
-      message.warning(t('profile.motorcycleLimit', { count: MAX_MOTORCYCLES }))
+      message.warning(`Можно добавить не более ${MAX_MOTORCYCLES} мотоциклов`)
       return
     }
     try {
@@ -72,31 +70,31 @@ function ProfileMotorcycles() {
         motorcycle_model_id: values.motorcycle_model_id,
         mileage: values.mileage ?? null,
       }).unwrap()
-      message.success(t('profile.motorcycleAdded'))
+      message.success('Мотоцикл добавлен')
       setOpen(false)
     } catch {
-      message.error(t('profile.motorcycleAddError'))
+      message.error('Не удалось добавить мотоцикл')
     }
   }
 
   const onDelete = async (id: number) => {
     try {
       await deleteMotorcycle(id).unwrap()
-      message.success(t('profile.motorcycleDeleted'))
+      message.success('Мотоцикл удалён')
     } catch {
-      message.error(t('profile.motorcycleDeleteError'))
+      message.error('Не удалось удалить мотоцикл')
     }
   }
 
   return (
     <section className="profile-shell__section">
       <div className="profile-shell__section-label">
-        {t('profile.motorcycles')}
+        {'Мои мотоциклы'}
         <Button
           size="small"
           icon={<PlusOutlined />}
-          aria-label={t('profile.motorcycleAdd')}
-          title={canAddMore ? t('profile.motorcycleAdd') : t('profile.motorcycleLimit', { count: MAX_MOTORCYCLES })}
+          aria-label={'Добавить мотоцикл'}
+          title={canAddMore ? 'Добавить мотоцикл' : `Можно добавить не более ${MAX_MOTORCYCLES} мотоциклов`}
           onClick={onOpenAdd}
           disabled={!canAddMore}
           style={{ marginLeft: 4 }}
@@ -106,7 +104,7 @@ function ProfileMotorcycles() {
       {isLoading ? (
         <Spin size="small" />
       ) : motorcycles.length === 0 ? (
-        <p className="profile-shell__empty">{t('profile.motorcycleEmpty')}</p>
+        <p className="profile-shell__empty">{'Мотоциклы пока не добавлены'}</p>
       ) : (
         <div className="profile-motorcycles-list">
           {motorcycles.map((motorcycle) => (
@@ -117,21 +115,21 @@ function ProfileMotorcycles() {
                 </div>
                 {motorcycle.mileage != null ? (
                   <div className="profile-motorcycle-item__meta">
-                    {t('profile.motorcycleMileage')}: {motorcycle.mileage.toLocaleString('ru-RU')} {t('profile.motorcycleMileageUnit')}
+                    {'Пробег'}: {motorcycle.mileage.toLocaleString('ru-RU')} {'км'}
                   </div>
                 ) : null}
               </div>
-              <Tooltip title={t('common.delete')}>
+              <Tooltip title={'Удалить'}>
                 <span>
                   <Popconfirm
-                    title={t('profile.motorcycleDeleteConfirmTitle')}
+                    title={'Удалить мотоцикл?'}
                     description={DELETE_CONFIRM_DESCRIPTION}
-                    okText={t('common.delete')}
-                    cancelText={t('common.cancel')}
+                    okText={'Удалить'}
+                    cancelText={'Отмена'}
                     okButtonProps={{ danger: true, loading: isDeleting }}
                     onConfirm={() => void onDelete(motorcycle.id)}
                   >
-                    <button type="button" className="profile-motorcycle-item__remove" aria-label={t('common.delete')}>
+                    <button type="button" className="profile-motorcycle-item__remove" aria-label={'Удалить'}>
                       <CloseOutlined />
                     </button>
                   </Popconfirm>
@@ -143,7 +141,7 @@ function ProfileMotorcycles() {
       )}
 
       <Modal
-        title={t('profile.motorcycleAdd')}
+        title={'Добавить мотоцикл'}
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
@@ -156,14 +154,14 @@ function ProfileMotorcycles() {
         >
           <Form.Item
             name="motorcycle_make_id"
-            label={t('profile.motorcycleMake')}
-            rules={[{ required: true, message: t('profile.motorcycleMakeRequired') }]}
+            label={'Производитель'}
+            rules={[{ required: true, message: 'Выберите производителя' }]}
           >
             <Select
               showSearch
               optionFilterProp="label"
               loading={makesLoading}
-              placeholder={t('profile.motorcycleMakePlaceholder')}
+              placeholder={'Выберите производителя'}
               options={makes}
               onChange={(value: string) => {
                 setMakeId(value)
@@ -173,30 +171,30 @@ function ProfileMotorcycles() {
           </Form.Item>
           <Form.Item
             name="motorcycle_model_id"
-            label={t('profile.motorcycleModel')}
-            rules={[{ required: true, message: t('profile.motorcycleModelRequired') }]}
+            label={'Модель'}
+            rules={[{ required: true, message: 'Выберите модель' }]}
           >
             <Select
               showSearch
               optionFilterProp="label"
               disabled={!makeId}
               loading={modelsLoading}
-              placeholder={t('profile.motorcycleModelPlaceholder')}
+              placeholder={'Выберите модель'}
               options={models}
             />
           </Form.Item>
-          <Form.Item name="mileage" label={t('profile.motorcycleMileage')}>
+          <Form.Item name="mileage" label={'Пробег'}>
             <InputNumber
               min={0}
               max={9999999}
               style={{ width: '100%' }}
-              placeholder={t('profile.motorcycleMileagePlaceholder')}
+              placeholder={'Укажите пробег'}
             />
           </Form.Item>
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-            <Button onClick={() => setOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setOpen(false)}>{'Отмена'}</Button>
             <Button type="primary" htmlType="submit" loading={isCreating}>
-              {t('common.add')}
+              {'Добавить'}
             </Button>
           </div>
         </Form>

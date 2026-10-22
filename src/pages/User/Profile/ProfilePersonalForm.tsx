@@ -2,7 +2,6 @@ import { App as AntdApp, Button, Checkbox, DatePicker, Flex, Form, Input, Modal,
 import { EditOutlined, HomeOutlined } from '@ant-design/icons'
 import dayjs, { type Dayjs } from 'dayjs'
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   useUpdateUserProfileMutation,
   type UserInfo,
@@ -60,7 +59,6 @@ function AccommodationMapField({ value, onChange, address, onAddressChange }: Ac
 }
 
 export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOnly = false }: ProfilePersonalFormProps) {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
   const [form] = Form.useForm<ProfileFormValues>()
@@ -72,20 +70,20 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
     const fields: { label: string; value: string }[] = []
 
     if (userInfo.city?.trim()) {
-      fields.push({ label: t('profile.city'), value: userInfo.city.trim() })
+      fields.push({ label: 'Город', value: userInfo.city.trim() })
     }
     if (userInfo.phone?.trim()) {
-      fields.push({ label: t('profile.phone'), value: userInfo.phone.trim() })
+      fields.push({ label: 'Телефон', value: userInfo.phone.trim() })
     }
     if (userInfo.birthday && dayjs(userInfo.birthday).isValid()) {
       fields.push({
-        label: t('profile.birthday'),
+        label: 'Дата рождения',
         value: dayjs(userInfo.birthday).format('DD.MM.YYYY'),
       })
     }
 
     return fields
-  }, [userInfo, t])
+  }, [userInfo])
 
   const showAccommodation = Number(userInfo.accommodation) === 1
 
@@ -130,10 +128,10 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
         accommodation_location: values.accommodation ? (values.accommodation_location?.trim() || null) : null,
         accommodation_address: values.accommodation ? (accommodationAddress.trim() || null) : null,
       }).unwrap()
-      message.success(t('profile.profileUpdated'))
+      message.success('Профиль сохранён')
       setOpen(false)
     } catch {
-      message.error(t('profile.profileUpdateError'))
+      message.error('Не удалось сохранить профиль')
     }
   }
 
@@ -141,7 +139,7 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
     <>
       <div className="profile-shell__dossier-head">
         <div className="profile-shell__section-label">
-          {t('profile.personalInfo')}
+          {'Личная информация'}
           {!readOnly && <Button icon={<EditOutlined />} size="small" onClick={() => setOpen(true)} />}
         </div>
       </div>
@@ -153,7 +151,7 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
         </div>
         <Flex gap="middle" wrap="wrap">
           {filledFields.length === 0 && !showAccommodation ? (
-            <p className="profile-shell__empty">{t('profile.personalInfoEmpty')}</p>
+            <p className="profile-shell__empty">{'Данные пока не заполнены'}</p>
           ) : (
             filledFields.map((field) => (
               <div key={`${field.label}-${field.value}`} className="profile-shell__field">
@@ -166,11 +164,11 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
         {showAccommodation ? (
           <>
             <Tag icon={<HomeOutlined />} color="green">
-              {t('profile.accommodation')}
+              {'Готов разместить мотопутешественников'}
             </Tag>
             {userInfo.accommodation_address ? (
               <div className="profile-shell__field">
-                <span className="profile-shell__field-label">{t('profile.accommodationAddress')}</span>
+                <span className="profile-shell__field-label">{'Адрес размещения'}</span>
                 <p className="profile-shell__field-value">{userInfo.accommodation_address}</p>
               </div>
             ) : null}
@@ -178,7 +176,7 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
         ) : null}
       </Flex>
       <Modal
-        title={t('profile.personalInfo')}
+        title={'Личная информация'}
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
@@ -192,27 +190,27 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
           layout="vertical"
           onFinish={(values) => void onSubmit(values)}
         >
-          <Form.Item name="first_name" label={t('profile.firstName')}>
+          <Form.Item name="first_name" label={'Имя'}>
             <Input maxLength={255} />
           </Form.Item>
-          <Form.Item name="last_name" label={t('profile.lastName')}>
+          <Form.Item name="last_name" label={'Фамилия'}>
             <Input maxLength={255} />
           </Form.Item>
-          <Form.Item name="nick_name" label={t('profile.nickName')}>
+          <Form.Item name="nick_name" label={'Ник'}>
             <Input maxLength={255} />
           </Form.Item>
-          <Form.Item name="city" label={t('profile.city')}>
+          <Form.Item name="city" label={'Город'}>
             <Input maxLength={255} />
           </Form.Item>
           <Form.Item
             name="phone"
-            label={requiredLabel(t('profile.phone'), accommodationRequired)}
+            label={requiredLabel('Телефон', accommodationRequired)}
             dependencies={['accommodation']}
             rules={[
               ({ getFieldValue: getAccommodation }) => ({
                 validator(_rule: unknown, value: string | undefined) {
                   if (getAccommodation('accommodation') && !value?.trim()) {
-                    return Promise.reject(new Error(t('profile.phoneRequired')))
+                    return Promise.reject(new Error('Укажите телефон'))
                   }
                   return Promise.resolve()
                 },
@@ -221,27 +219,27 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
           >
             <Input maxLength={50} />
           </Form.Item>
-          <Form.Item name="birthday" label={t('profile.birthday')}>
+          <Form.Item name="birthday" label={'Дата рождения'}>
             <DatePicker style={{ width: '100%' }} format="DD.MM.YYYY" allowClear />
           </Form.Item>
           <Form.Item name="accommodation" valuePropName="checked">
-            <Checkbox>{t('profile.accommodation')}</Checkbox>
+            <Checkbox>{'Готов разместить мотопутешественников'}</Checkbox>
           </Form.Item>
           <small style={{ display: 'block', marginTop: -16, marginBottom: 16 }}>
-            {t('profile.accommodationNote')}
+            {'Соглашаясь с данным пунктом ваша информация будет доступна на карте'}
           </small>
           <Form.Item noStyle shouldUpdate>
             {({ getFieldValue }) =>
               getFieldValue('accommodation') ? (
                 <Form.Item
                   name="accommodation_location"
-                  label={requiredLabel(t('profile.accommodationLocation'), accommodationRequired)}
+                  label={requiredLabel('Местоположение на карте', accommodationRequired)}
                   dependencies={['accommodation']}
                   rules={[
                     ({ getFieldValue: getAccommodation }) => ({
                       validator(_rule: unknown, value: string | undefined) {
                         if (getAccommodation('accommodation') && !value) {
-                          return Promise.reject(new Error(t('profile.accommodationLocationRequired')))
+                          return Promise.reject(new Error('Укажите местоположение на карте'))
                         }
                         return Promise.resolve()
                       },
@@ -257,9 +255,9 @@ export function ProfilePersonalForm({ userInfo, displayName, handleLabel, readOn
             }
           </Form.Item>
           <Flex justify="end" gap="small">
-            <Button onClick={() => setOpen(false)}>{t('common.cancel')}</Button>
+            <Button onClick={() => setOpen(false)}>{'Отмена'}</Button>
             <Button type="primary" htmlType="submit" loading={isLoading}>
-              {t('common.save')}
+              {'Сохранить'}
             </Button>
           </Flex>
         </Form>

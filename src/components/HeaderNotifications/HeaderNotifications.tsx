@@ -3,7 +3,6 @@ import { BellOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import {
   useGetNotificationsQuery,
   useGetUnreadNotificationsCountQuery,
@@ -14,7 +13,6 @@ import './HeaderNotifications.css'
 import { renderHTML } from '@utils/form'
 
 function HeaderNotifications() {
-  const { t } = useTranslation()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const { data: unreadCount = 0 } = useGetUnreadNotificationsCountQuery(undefined, {
@@ -45,7 +43,7 @@ function HeaderNotifications() {
   const content = (
     <div className="header-notifications">
       {notifications.length === 0 && !isFetching ? (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('notifications.empty')} />
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={'Оповещений пока нет'} />
       ) : (
         <Spin spinning={isFetching}>
           <Listy
@@ -83,7 +81,7 @@ function HeaderNotifications() {
       )}
       <div className="header-notifications__footer">
         <Link to="/notifications" onClick={() => setOpen(false)}>
-          {t('notifications.viewAll')}
+          {'Смотреть все'}
         </Link>
       </div>
     </div>
@@ -102,7 +100,7 @@ function HeaderNotifications() {
         <Button
           type="text"
           icon={<BellOutlined />}
-          aria-label={t('notifications.title')}
+          aria-label={'Оповещения'}
         />
       </Badge>
     </Popover>

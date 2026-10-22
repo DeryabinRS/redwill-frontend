@@ -1,7 +1,6 @@
 import { App as AntdApp, Avatar, Button, List, Modal, Popconfirm, Spin, Tooltip } from 'antd'
 import { CloseOutlined } from '@ant-design/icons'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { useGetUserFriendsQuery, useRemoveFriendMutation } from '@features/friend/friendSlice'
@@ -13,7 +12,6 @@ type FriendsSectionProps = {
 }
 
 function FriendsSection({ userId }: FriendsSectionProps) {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [open, setOpen] = useState(false)
   const [removingId, setRemovingId] = useState<number | null>(null)
@@ -24,9 +22,9 @@ function FriendsSection({ userId }: FriendsSectionProps) {
     setRemovingId(friendId)
     try {
       await removeFriend(friendId).unwrap()
-      message.success(t('profile.friendRemoved'))
+      message.success('Пользователь удалён из друзей')
     } catch {
-      message.error(t('profile.friendRemoveError'))
+      message.error('Не удалось удалить из друзей')
     } finally {
       setRemovingId(null)
     }
@@ -35,7 +33,7 @@ function FriendsSection({ userId }: FriendsSectionProps) {
   if (isLoading) {
     return (
       <section className="profile-shell__section">
-        <div className="profile-shell__section-label">{t('profile.friends')}</div>
+        <div className="profile-shell__section-label">{'Друзья'}</div>
         <Spin size="small" />
       </section>
     )
@@ -50,7 +48,7 @@ function FriendsSection({ userId }: FriendsSectionProps) {
 
   return (
     <section className="profile-shell__section" style={{ marginTop: 6 }}>
-      <div className="profile-shell__section-label">{t('profile.friends')}</div>
+      <div className="profile-shell__section-label">{'Друзья'}</div>
       <div className="friends-list">
         {visibleFriends.map((friend) => {
           const avatarSrc = friend.avatar ? `${API_URL}${friend.avatar}` : undefined
@@ -66,16 +64,16 @@ function FriendsSection({ userId }: FriendsSectionProps) {
                 </Link>
               </Tooltip>
               <Popconfirm
-                title={t('profile.friendRemoveConfirmTitle')}
-                okText={t('common.delete')}
-                cancelText={t('common.cancel')}
+                title={'Удалить из друзей?'}
+                okText={'Удалить'}
+                cancelText={'Отмена'}
                 okButtonProps={{ danger: true, loading: removingId === friend.id }}
                 onConfirm={() => void handleRemove(friend.id)}
               >
                 <button
                   type="button"
                   className="friends-list__remove"
-                  aria-label={t('profile.removeFriend')}
+                  aria-label={'Удалить из друзей'}
                 >
                   <CloseOutlined />
                 </button>
@@ -87,7 +85,7 @@ function FriendsSection({ userId }: FriendsSectionProps) {
           <button
             type="button"
             className="friends-list__more"
-            aria-label={t('profile.friends')}
+            aria-label={'Друзья'}
             onClick={() => setOpen(true)}
           >
             +{hiddenCount}
@@ -96,7 +94,7 @@ function FriendsSection({ userId }: FriendsSectionProps) {
       </div>
 
       <Modal
-        title={t('profile.friends')}
+        title={'Друзья'}
         open={open}
         onCancel={() => setOpen(false)}
         footer={null}
@@ -112,14 +110,14 @@ function FriendsSection({ userId }: FriendsSectionProps) {
                 actions={[
                   <Popconfirm
                     key="remove"
-                    title={t('profile.friendRemoveConfirmTitle')}
-                    okText={t('common.delete')}
-                    cancelText={t('common.cancel')}
+                    title={'Удалить из друзей?'}
+                    okText={'Удалить'}
+                    cancelText={'Отмена'}
                     okButtonProps={{ danger: true, loading: removingId === friend.id }}
                     onConfirm={() => void handleRemove(friend.id)}
                   >
                     <Button danger size="small">
-                      {t('profile.removeFriend')}
+                      {'Удалить из друзей'}
                     </Button>
                   </Popconfirm>,
                 ]}

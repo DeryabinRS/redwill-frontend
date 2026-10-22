@@ -2,10 +2,10 @@ import { useState, useCallback, useEffect, type KeyboardEvent } from 'react';
 import { Button, Input, Space, Typography } from 'antd';
 import { useYmaps3 } from '../../hooks/useYmaps3';
 import { parseLocationCoordinates, parseSearchCoordinates } from '@utils/mapLocation';
+import { API_URL } from '@config/constants';
 
 const DEFAULT_CENTER: [number, number] = [50.618423, 55.751244]; // [lng, lat]
 const DEFAULT_ZOOM = 4
-const GEOCODER_API_KEY = 'c83cc3de-70ab-47e1-8168-76d252ad4f1e'
 
 interface YMapClickEvent {
   coordinates: [number, number];
@@ -139,7 +139,7 @@ function MapPicker({
 
     try {
       const response = await fetch(
-        `https://geocode-maps.yandex.ru/1.x/?apikey=${GEOCODER_API_KEY}&geocode=${encodeURIComponent(query)}&format=json&results=1`
+        `${API_URL}/geocode?query=${encodeURIComponent(query)}`
       )
       const data = await response.json()
       const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject as GeocoderGeoObject | undefined
@@ -202,7 +202,7 @@ function MapPicker({
     const fetchAddress = async () => {
       try {
         const response = await fetch(
-          `https://geocode-maps.yandex.ru/1.x/?apikey=${GEOCODER_API_KEY}&geocode=${coords.lng},${coords.lat}&format=json&results=1`
+          `${API_URL}/geocode?query=${encodeURIComponent(`${coords.lng},${coords.lat}`)}`
         );
         const data = await response.json();
         const geoObject = data.response.GeoObjectCollection.featureMember?.[0]?.GeoObject as GeocoderGeoObject | undefined;

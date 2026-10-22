@@ -1,6 +1,5 @@
 import { App as AntdApp, Button, Flex, Select, Space } from 'antd'
 import { useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   useGetJoinedMotoclubsQuery,
   useGetMotoclubListQuery,
@@ -15,7 +14,6 @@ type UserJoinedMotoclubsProps = {
 
 /** Форма вступления в мотоклуб. */
 function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const [selectedMotoclubId, setSelectedMotoclubId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
@@ -45,21 +43,21 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
 
   const onJoin = async () => {
     if (!canJoinMore) {
-      message.warning(t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS }))
+      message.warning('Можно состоять не более чем в двух мотоклубах')
       return
     }
     if (!selectedMotoclubId) {
-      message.warning(t('profile.motoclubSelectWarning'))
+      message.warning('Выберите мотоклуб')
       return
     }
 
     try {
       await joinMotoclub(selectedMotoclubId).unwrap()
-      message.success(t('profile.motoclubJoined'))
+      message.success('Вы вступили в мотоклуб')
       setSelectedMotoclubId(null)
       onJoined?.()
     } catch {
-      message.error(t('profile.motoclubJoinError'))
+      message.error('Не удалось вступить в мотоклуб')
     }
   }
 
@@ -70,7 +68,7 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
           showSearch
           allowClear
           filterOption={false}
-          placeholder={t('profile.motoclubSelectPlaceholder')}
+          placeholder={'Выберите мотоклуб'}
           style={{ width: '100%' }}
           loading={motoclubsLoading}
           options={options}
@@ -78,7 +76,7 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
           onSearch={setSearch}
           onChange={(value) => setSelectedMotoclubId(value ?? null)}
           notFoundContent={
-            motoclubsLoading ? t('common.loading') : t('profile.motoclubSelectEmpty')
+            motoclubsLoading ? 'Загрузка...' : 'Ничего не найдено'
           }
         />
         <Button
@@ -87,7 +85,7 @@ function UserJoinedMotoclubs({ onJoined }: UserJoinedMotoclubsProps) {
           disabled={!canJoinMore || !selectedMotoclubId || isJoining}
           onClick={() => void onJoin()}
         >
-          {t('profile.motoclubJoin')}
+          {'Вступить в мотоклуб'}
         </Button>
       </Space.Compact>
     </Flex>

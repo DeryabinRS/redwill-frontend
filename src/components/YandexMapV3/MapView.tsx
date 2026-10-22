@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useYmaps3, type YmapsRouteFeature } from '@hooks/useYmaps3'
 import { parseLocationCoordinates } from '@utils/mapLocation'
+import { groupMarkers } from './clustering'
 
 export type MapViewMarker = {
   id: string | number
@@ -49,74 +50,6 @@ type UnifiedMarker = {
   description?: string | null
   avatar?: string | null
   phone?: string | null
-}
-
-function getClusterStep(zoom: number) {
-  if (zoom >= 12) return 0
-  if (zoom >= 10) return 0.02
-  if (zoom >= 8) return 0.07
-  if (zoom >= 6) return 0.18
-  return 0.45
-}
-
-function groupMarkers(markers: UnifiedMarker[], zoom: number) {
-  const step = getClusterStep(zoom)
-  const tolerance = step === 0 ? 1e-6 : step
-
-  const n = markers.length
-  if (n === 0) return []
-
-  // Union-Find: транзитивно объединяем маркеры, находящиеся в пределах tolerance.
-  // Это детерминированно (не зависит от порядка) и гарантирует, что если A близко к B,
-  // а B близко к C — A, B и C попадут в один кластер.
-  const parent = Array.from({ length: n }, (_, index) => index)
-
-  const find = (x: number): number => {
-    let root = x
-    while (parent[root] !== root) root = parent[root]
-    // Сжатие пути
-    while (parent[x] !== x) {
-      const next = parent[x]
-      parent[x] = root
-      x = next
-    }
-    return root
-  }
-
-  const union = (a: number, b: number) => {
-    const rootA = find(a)
-    const rootB = find(b)
-    if (rootA !== rootB) parent[rootA] = rootB
-  }
-
-  for (let i = 0; i < n; i++) {
-    for (let j = i + 1; j < n; j++) {
-      if (
-        Math.abs(markers[i].coords.lat - markers[j].coords.lat) <= tolerance &&
-        Math.abs(markers[i].coords.lng - markers[j].coords.lng) <= tolerance
-      ) {
-        union(i, j)
-      }
-    }
-  }
-
-  // Группируем маркеры по корню
-  const groups = new Map<number, UnifiedMarker[]>()
-  for (let i = 0; i < n; i++) {
-    const root = find(i)
-    const group = groups.get(root)
-    if (group) group.push(markers[i])
-    else groups.set(root, [markers[i]])
-  }
-
-  return [...groups.values()].map((clusterMarkers, index) => ({
-    id: `cluster-${index}`,
-    coords: {
-      lat: clusterMarkers.reduce((sum, item) => sum + item.coords.lat, 0) / clusterMarkers.length,
-      lng: clusterMarkers.reduce((sum, item) => sum + item.coords.lng, 0) / clusterMarkers.length,
-    },
-    markers: clusterMarkers,
-  }))
 }
 
 function MapView({ location, markers, hostUsers, onHostClick, height = 400, zoom: initialZoom = 14, routeType = 'driving' }: MapViewProps) {

@@ -8,7 +8,6 @@ import {
 } from '@ant-design/icons'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { API_URL } from '@config/constants'
 import {
   useGetJoinedMotoclubsQuery,
@@ -24,7 +23,6 @@ type ProfileJoinedMotoclubsProps = {
 }
 
 function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const { data: joinedData, isLoading } = useGetJoinedMotoclubsQuery({
@@ -39,7 +37,7 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
 
   const onOpenJoin = () => {
     if (!canJoinMore) {
-      message.warning(t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS }))
+      message.warning('Можно состоять не более чем в двух мотоклубах')
       return
     }
     setJoinOpen(true)
@@ -49,9 +47,9 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
     setLeavingId(motoclubId)
     try {
       await leaveMotoclub(motoclubId).unwrap()
-      message.success(t('profile.motoclubLeft'))
+      message.success('Вы вышли из мотоклуба')
     } catch {
-      message.error(t('profile.motoclubLeaveError'))
+      message.error('Не удалось выйти из мотоклуба')
     } finally {
       setLeavingId(null)
     }
@@ -60,12 +58,12 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
   return (
     <section className="profile-shell__section">
       <div className="profile-shell__section-label">
-        {t('profile.motoclubs')}
+        {'Мотоклубы'}
         <Button
           size="small"
           icon={<PlusOutlined />}
-          aria-label={t('profile.motoclubJoin')}
-          title={canJoinMore ? t('profile.motoclubJoin') : t('profile.motoclubLimit', { count: MAX_JOINED_MOTOCLUBS })}
+          aria-label={'Вступить в мотоклуб'}
+          title={canJoinMore ? 'Вступить в мотоклуб' : 'Можно состоять не более чем в двух мотоклубах'}
           onClick={onOpenJoin}
           disabled={!canJoinMore}
           style={{ marginLeft: 4 }}
@@ -75,7 +73,7 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
       {isLoading ? (
         <Spin size="small" />
       ) : joinedList.length === 0 ? (
-        <p className="profile-shell__empty">{t('profile.motoclubEmpty')}</p>
+        <p className="profile-shell__empty">{'Вы пока не состоите в мотоклубах'}</p>
       ) : (
         <div className="joined-motoclubs-grid">
           {joinedList.map((motoclub) => {
@@ -84,16 +82,16 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
             const isClubAdmin = Number(motoclub.pivot?.is_admin) === 1
             const isPending = motoclub.pivot?.verified == null
             const membershipTitle = isPending
-              ? t('profile.motoclubPending')
-              : t('profile.motoclubMember')
+              ? 'Подана заявка'
+              : 'Участник'
 
             const canLeave =
               !isOwner ||
               (motoclub.members_count ?? 0) <= 1 ||
               (motoclub.admins_count ?? 0) > 1
             const removeTitle = canLeave
-              ? t('profile.motoclubRemove')
-              : t('profile.motoclubLeaveAsAdminBlocked')
+              ? 'Выйти из мотоклуба'
+              : 'Назначьте другого администратора в «Участники», чтобы выйти из клуба'
 
             return (
               <div
@@ -130,10 +128,10 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
                     </span>
                   </Tooltip>
                   {isClubAdmin ? (
-                    <Tooltip title={t('profile.motoclubAdmin')}>
+                    <Tooltip title={'Администратор'}>
                       <span
                         className="joined-motoclub-tile__status joined-motoclub-tile__status--admin"
-                        aria-label={t('profile.motoclubAdmin')}
+                        aria-label={'Администратор'}
                       >
                         <CrownFilled />
                       </span>
@@ -148,10 +146,10 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
                     onKeyDown={(event) => event.stopPropagation()}
                   >
                     <Popconfirm
-                      title={t('profile.motoclubLeaveConfirmTitle')}
-                      description={t('profile.motoclubLeaveConfirmDesc')}
-                      okText={t('profile.motoclubLeaveConfirmOk')}
-                      cancelText={t('common.cancel')}
+                      title={'Выйти из мотоклуба?'}
+                      description={'Вы перестанете быть участником этого клуба'}
+                      okText={'Выйти'}
+                      cancelText={'Отмена'}
                       okButtonProps={{ danger: true, loading: leavingId === motoclub.id }}
                       disabled={!canLeave || leavingId === motoclub.id}
                       onConfirm={() => void onLeaveMotoclub(motoclub.id)}
@@ -175,7 +173,7 @@ function ProfileJoinedMotoclubs({ userId }: ProfileJoinedMotoclubsProps) {
       )}
 
       <Modal
-        title={t('profile.motoclubJoin')}
+        title={'Вступить в мотоклуб'}
         open={joinOpen}
         onCancel={() => setJoinOpen(false)}
         footer={null}

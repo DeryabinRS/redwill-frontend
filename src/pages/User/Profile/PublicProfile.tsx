@@ -1,7 +1,6 @@
 import { App as AntdApp, Button, Card, Spin, Typography } from 'antd'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import { API_URL } from '@config/constants'
 import { useGetPublicUserProfileQuery, useGetUserInfoQuery } from '@features/user/userSlice'
 import { useGetPublicJoinedMotoclubsQuery } from '@features/motoclub/motoclubSlice'
@@ -12,7 +11,6 @@ import './Profile.css'
 import '../JoinedMotoclubs/JoinedMotoclubs.css'
 
 function PublicProfile() {
-  const { t } = useTranslation()
   const { id } = useParams<{ id: string }>()
   const userId = Number(id)
 
@@ -62,7 +60,7 @@ function PublicProfile() {
   if (isError || !userInfo) {
     return (
       <Card size="small">
-        <Typography.Title level={4}>{t('profile.loadError')}</Typography.Title>
+        <Typography.Title level={4}>{'Не удалось загрузить данные пользователя'}</Typography.Title>
       </Card>
     )
   }
@@ -86,24 +84,24 @@ function PublicProfile() {
       if (isFriend) {
         await removeFriend(userId).unwrap()
         setIsFriend(false)
-        message.success(t('profile.friendRemoved'))
+        message.success('Пользователь удалён из друзей')
       } else {
         await addFriend(userId).unwrap()
         setIsFriend(true)
-        message.success(t('profile.friendAdded'))
+        message.success('Пользователь добавлен в друзья')
       }
     } catch {
-      message.error(isFriend ? t('profile.friendRemoveError') : t('profile.friendAddError'))
+      message.error(isFriend ? 'Не удалось удалить из друзей' : 'Не удалось добавить в друзья')
     }
   }
 
   return (
     <div className="container profile-page">
-      <section className="profile-shell" aria-label={t('profile.title')}>
+      <section className="profile-shell" aria-label={'Личные данные'}>
         <div className="profile-shell__inner">
           <header className="profile-shell__masthead">
             <div>
-              <span className="profile-shell__eyebrow">{t('profile.title')}</span>
+              <span className="profile-shell__eyebrow">{'Личные данные'}</span>
               <h1 className="profile-shell__name">{userInfo.login}</h1>
               <p className="profile-shell__handle">{handleLabel}</p>
             </div>
@@ -115,7 +113,7 @@ function PublicProfile() {
                   loading={isAddingFriend || isRemovingFriend}
                   onClick={() => void handleToggleFriend()}
                 >
-                  {isFriend ? t('profile.removeFriend') : t('profile.addFriend')}
+                  {isFriend ? 'Удалить из друзей' : 'Добавить в друзья'}
                 </Button>
               )}
               {userInfo.roles?.length
@@ -176,11 +174,11 @@ function PublicProfile() {
 
             <div className="profile-shell__identity">
               <section className="profile-shell__section">
-                <div className="profile-shell__section-label">{t('profile.motoclubs')}</div>
+                <div className="profile-shell__section-label">{'Мотоклубы'}</div>
                 {isLoadingMotoclubs ? (
                   <Spin size="small" />
                 ) : motoclubs.length === 0 ? (
-                  <p className="profile-shell__empty">{t('profile.motoclubEmpty')}</p>
+                  <p className="profile-shell__empty">{'Вы пока не состоите в мотоклубах'}</p>
                 ) : (
                   <div className="joined-motoclubs-grid">
                     {motoclubs.map((club) => {
@@ -230,11 +228,11 @@ function PublicProfile() {
               </section>
 
               <section className="profile-shell__section">
-                <div className="profile-shell__section-label">{t('profile.motorcycles')}</div>
+                <div className="profile-shell__section-label">{'Мои мотоциклы'}</div>
                 {isLoadingMotorcycles ? (
                   <Spin size="small" />
                 ) : motorcycles.length === 0 ? (
-                  <p className="profile-shell__empty">{t('profile.motorcycleEmpty')}</p>
+                  <p className="profile-shell__empty">{'Мотоциклы пока не добавлены'}</p>
                 ) : (
                   <div className="profile-motorcycles-list">
                     {motorcycles.map((m) => (
@@ -245,8 +243,8 @@ function PublicProfile() {
                           </div>
                           {m.mileage != null ? (
                             <div className="profile-motorcycle-item__meta">
-                              {t('profile.motorcycleMileage')}: {m.mileage.toLocaleString('ru-RU')}{' '}
-                              {t('profile.motorcycleMileageUnit')}
+                              {'Пробег'}: {m.mileage.toLocaleString('ru-RU')}{' '}
+                              {'км'}
                             </div>
                           ) : null}
                         </div>

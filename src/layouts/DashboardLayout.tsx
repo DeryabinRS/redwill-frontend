@@ -14,10 +14,10 @@ import {
   MailOutlined,
 } from '@ant-design/icons'
 import { NavLink, Outlet, useNavigate, useLocation, Link } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery } from '../features/user/userSlice'
 import { useGetModerationCountQuery } from '../features/dashboard/dashboardSlice'
+import { useLogoutMutation } from '../features/auth/authSlice'
 import { useAppDispatch } from '../store/hooks'
 import { resetClientState } from '../store'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
@@ -27,7 +27,6 @@ import { SITE_NAME } from '../config/constants'
 const { Header, Sider, Content, Footer } = Layout
 
 function DashboardLayout() {
-  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -57,7 +56,14 @@ function DashboardLayout() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  const handleLogout = () => {
+  const [logout] = useLogoutMutation()
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap()
+    } catch {
+      // ignore — токен мог истечь
+    }
     removeAuthToken()
     resetClientState(dispatch)
     navigate('/login')
@@ -138,7 +144,7 @@ function DashboardLayout() {
     {
       key: 'logout',
       icon: <LogoutOutlined />,
-      label: t('menu.logout'),
+      label: 'Выйти',
       danger: true,
       onClick: () => {
         handleMenuClick()

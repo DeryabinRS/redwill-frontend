@@ -1,7 +1,6 @@
 import { App as AntdApp, Button, Checkbox, Empty, Listy, Spin, Typography } from 'antd'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import {
   useGetNotificationsQuery,
   useMarkAllNotificationsReadMutation,
@@ -11,7 +10,6 @@ import {
 import './Notifications.css'
 
 function NotificationsPage() {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const { data: notifications = [], isLoading } = useGetNotificationsQuery(20)
@@ -35,9 +33,9 @@ function NotificationsPage() {
   const onMarkAll = async () => {
     try {
       await markAllRead().unwrap()
-      message.success(t('notifications.markedAllRead'))
+      message.success('Все оповещения прочитаны')
     } catch {
-      message.error(t('notifications.markAllError'))
+      message.error('Не удалось отметить оповещения')
     }
   }
 
@@ -54,10 +52,10 @@ function NotificationsPage() {
     <div className="container notifications-page">
       <div className="notifications-page__head">
         <Typography.Title level={2} style={{ margin: 0 }}>
-          {t('notifications.title')}
+          {'Оповещения'}
         </Typography.Title>
         <Button type="link" disabled={!hasUnread} loading={isMarkingAll} onClick={() => void onMarkAll()}>
-          {t('notifications.markAllRead')}
+          {'Отметить все прочитанными'}
         </Button>
       </div>
 
@@ -66,7 +64,7 @@ function NotificationsPage() {
           <Spin />
         </div>
       ) : notifications.length === 0 ? (
-        <Empty description={t('notifications.empty')} />
+        <Empty description={'Оповещений пока нет'} />
       ) : (
         <Listy
           className="notifications-page__list"

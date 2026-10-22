@@ -13,10 +13,10 @@ import {
 	UserOutlined,
 } from '@ant-design/icons'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { isAuthenticated, removeAuthToken } from '../utils/auth'
 import { useGetUserInfoQuery } from '../features/user/userSlice'
 import { useGetModerationCountQuery } from '../features/dashboard/dashboardSlice'
+import { useLogoutMutation } from '../features/auth/authSlice'
 import { useAppDispatch } from '../store/hooks'
 import { resetClientState } from '../store'
 import { SITE_NAME } from '../config/constants'
@@ -30,7 +30,6 @@ const { useBreakpoint } = Grid
 type MenuItem = Required<MenuProps>['items'][number]
 
 function MainLayout() {
-	const { t } = useTranslation()
 	const screens = useBreakpoint()
 	const isLgUp = !!screens.lg
 	const [drawerOpen, setDrawerOpen] = useState(false)
@@ -42,8 +41,14 @@ function MainLayout() {
 	} = useGetUserInfoQuery(undefined, { skip: !userIsAuthenticated })
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
+	const [logout] = useLogoutMutation()
 
-	const handleLogout = () => {
+	const handleLogout = async () => {
+		try {
+			await logout().unwrap()
+		} catch {
+			// ignore — токен мог истечь
+		}
 		removeAuthToken()
 		resetClientState(dispatch)
 		navigate('/login')
@@ -116,7 +121,7 @@ function MainLayout() {
 			{
 				key: 'logout',
 				icon: <LogoutOutlined />,
-				label: t('menu.logout'),
+				label: 'Выйти',
 				onClick: handleLogout,
 			},
 		]
@@ -124,12 +129,12 @@ function MainLayout() {
 			{
 				key: 'login',
 				icon: <LoginOutlined />,
-				label: <NavLink to="/login">{t('menu.login')}</NavLink>,
+				label: <NavLink to="/login">Войти</NavLink>,
 			},
 			{
 				key: 'register',
 				icon: <UserAddOutlined />,
-				label: <NavLink to="/register">{t('menu.register')}</NavLink>,
+				label: <NavLink to="/register">Регистрация</NavLink>,
 			},
 		]
 

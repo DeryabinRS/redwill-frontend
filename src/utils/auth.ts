@@ -1,22 +1,32 @@
-export const AUTH_TOKEN_COOKIE_NAME = 'auth_token'
+const AUTH_TOKEN_STORAGE_KEY = 'auth_token'
 
-export function setAuthToken(token: string, maxAgeSeconds = 60 * 60 * 24 * 7): void {
-  document.cookie = `${AUTH_TOKEN_COOKIE_NAME}=${encodeURIComponent(token)}; path=/; max-age=${maxAgeSeconds}; SameSite=Lax`
+/**
+ * Токен хранится в localStorage (не в cookie), чтобы не конфликтовать с HttpOnly-кукой
+ * auth_token, которую ставит бэкенд. Сам по себе токен не уходит с запросами — он
+ * подставляется в заголовок Authorization в baseQuery.
+ */
+export function setAuthToken(token: string): void {
+  try {
+    localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token)
+  } catch {
+    // ignore (например, приватный режим)
+  }
 }
 
 export function getAuthToken(): string | null {
-  const cookies = document.cookie ? document.cookie.split('; ') : []
-  const tokenCookie = cookies.find((cookie) => cookie.startsWith(`${AUTH_TOKEN_COOKIE_NAME}=`))
-
-  if (!tokenCookie) {
+  try {
+    return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY)
+  } catch {
     return null
   }
-
-  return decodeURIComponent(tokenCookie.split('=').slice(1).join('='))
 }
 
 export function removeAuthToken(): void {
-  document.cookie = `${AUTH_TOKEN_COOKIE_NAME}=; path=/; max-age=0; SameSite=Lax`
+  try {
+    localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY)
+  } catch {
+    // ignore
+  }
 }
 
 export function isAuthenticated(): boolean {

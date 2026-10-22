@@ -1,6 +1,5 @@
 import { App as AntdApp, Button, Card, Spin, Typography } from 'antd'
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import ImageCropper from '@components/ImageCropper/ImageCropper'
 import { API_URL } from '@config/constants'
 import {
@@ -21,7 +20,6 @@ import UserMotobars from '../Motobars'
 import UserServiceStations from '../ServiceStations'
 
 function Profile() {
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const { data: userInfo, isLoading } = useGetUserInfoQuery()
   const [uploadUserAvatar, { isLoading: isUploadingAvatar }] = useUploadUserAvatarMutation()
@@ -42,14 +40,14 @@ function Profile() {
 
   const onAvatarSubmit = async () => {
     if (!hasNewAvatarToUpload) {
-      message.warning(t('profile.avatarSelectWarning'))
+      message.warning('Выберите новый аватар')
       return
     }
 
     try {
       const file = await base64ToFile(pendingAvatar, logoDataUrlToFileName('avatar'))
       if (!file) {
-        message.error(t('profile.avatarPrepareError'))
+        message.error('Не удалось подготовить файл')
         return
       }
 
@@ -57,14 +55,14 @@ function Profile() {
       formData.append('avatar', file)
       const result = await uploadUserAvatar(formData).unwrap()
 
-      message.success(t('profile.avatarUpdated'))
+      message.success('Аватар обновлён')
       if (result.avatar) {
         const path = result.avatar.includes('?') ? result.avatar : `${result.avatar}?v=${Date.now()}`
         setPreviewAvatar(`${API_URL}${path}`)
       }
       setPendingAvatar('')
     } catch {
-      message.error(t('profile.avatarUpdateError'))
+      message.error('Не удалось обновить аватар')
     }
   }
 
@@ -85,9 +83,9 @@ function Profile() {
 
     try {
       await deleteUserAvatar().unwrap()
-      message.success(t('profile.avatarDeleted'))
+      message.success('Аватар удалён')
     } catch {
-      message.error(t('profile.avatarDeleteError'))
+      message.error('Не удалось удалить аватар')
       setPreviewAvatar(previousPreview)
     }
   }
@@ -103,8 +101,8 @@ function Profile() {
   if (!userInfo) {
     return (
       <Card size="small">
-        <Typography.Title level={4}>{t('profile.title')}</Typography.Title>
-        <Typography.Text>{t('profile.loadError')}</Typography.Text>
+        <Typography.Title level={4}>{'Личные данные'}</Typography.Title>
+        <Typography.Text>{'Не удалось загрузить данные пользователя'}</Typography.Text>
       </Card>
     )
   }
@@ -118,11 +116,11 @@ function Profile() {
 
   return (
     <div className="container profile-page">
-      <section className="profile-shell" aria-label={t('profile.title')}>
+      <section className="profile-shell" aria-label={'Личные данные'}>
         <div className="profile-shell__inner">
           <header className="profile-shell__masthead">
             <div>
-              <span className="profile-shell__eyebrow">{t('profile.title')}</span>
+              <span className="profile-shell__eyebrow">{'Личные данные'}</span>
               <h1 className="profile-shell__name">{userInfo.login}</h1>
               <p className="profile-shell__handle">{userInfo.email}</p>
             </div>
@@ -161,7 +159,7 @@ function Profile() {
                     onClick={() => void onAvatarSubmit()}
                     block
                   >
-                    {t('profile.avatarSave')}
+                    {'Сохранить аватар'}
                   </Button>
                 ) : null}
               </div>

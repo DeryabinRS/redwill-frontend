@@ -17,7 +17,6 @@ import { useGetMotobarListQuery } from '../../features/motobar/motobarSlice'
 import { useGetUserInfoQuery } from '../../features/user/userSlice'
 import { base64ToFile, sanitizeInput, validateLinksMaxLength } from '../../utils/form'
 import dayjs from 'dayjs'
-import { useTranslation } from 'react-i18next'
 import { BikePostHelper, StoHelper, BikeBarHelper } from './helpers'
 
 const MAX_CREATED_MOTOCLUBS = 1
@@ -43,7 +42,6 @@ type FormValues = {
 
 function AddMotoclub() {
   const [form] = Form.useForm<FormValues>()
-  const { t } = useTranslation()
   const { message } = AntdApp.useApp()
   const navigate = useNavigate()
   const { pathname } = useLocation()
@@ -105,7 +103,7 @@ function AddMotoclub() {
 
   const onSubmit = async (values: FormValues) => {
     if (!canCreate) {
-      message.warning(t('profile.motoclubCreateLimit'))
+      message.warning('Можно создать не более одного мотоклуба')
       return
     }
     try {
@@ -147,7 +145,7 @@ function AddMotoclub() {
       <Typography.Title level={2}>Добавить мотоклуб</Typography.Title>
       {!canCreate ? (
         <Typography.Paragraph type="warning">
-          {t('profile.motoclubCreateLimit')}
+          {'Можно создать не более одного мотоклуба'}
         </Typography.Paragraph>
       ) : null}
       <Card>

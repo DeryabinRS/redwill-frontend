@@ -2,7 +2,6 @@ import { Button, Tooltip } from 'antd'
 import { StarFilled, StarOutlined } from '@ant-design/icons'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useTranslation } from 'react-i18next'
 import { isAuthenticated } from '@utils/auth'
 import {
   useAddRatingMutation,
@@ -18,7 +17,6 @@ type StarRatingProps = {
 }
 
 function StarRating({ type, id, starsCount, isStarred }: StarRatingProps) {
-  const { t } = useTranslation()
   const navigate = useNavigate()
   const [count, setCount] = useState(starsCount)
   const [starred, setStarred] = useState(isStarred)
@@ -51,7 +49,7 @@ function StarRating({ type, id, starsCount, isStarred }: StarRatingProps) {
     }
   }
 
-  const label = starred ? t('rating.remove') : t('rating.add')
+  const label = starred ? 'Убрать звёздочку' : 'Отметить звёздочкой'
 
   return (
     <Tooltip title={label}>

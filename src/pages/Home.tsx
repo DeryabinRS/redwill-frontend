@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Col, Row, Skeleton, Space, Typography } from 'antd'
 import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutlined, ThunderboltOutlined, ToolOutlined } from '@ant-design/icons'
-// import { useTranslation } from 'react-i18next'
 import PostFeed from '../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
 import Seo from '@components/Seo'
@@ -26,7 +25,6 @@ function getRandomResourceItems<T extends HomeResourceItem>(items: T[]) {
 }
 
 function Home() {
-  // const { t } = useTranslation()
   const navigate = useNavigate()
   const { data: motoclubsData, isLoading: isLoadingMotoclubs } = useGetMotoclubListQuery({
     pagination: { page: 1, per_page: 100 },
