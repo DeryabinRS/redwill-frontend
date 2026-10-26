@@ -10,6 +10,7 @@ import { motorcycleApi } from '../features/motorcycle/motorcycleSlice'
 import { notificationApi } from '../features/notification/notificationSlice'
 import { friendApi } from '../features/friend/friendSlice'
 import { ratingApi } from '../features/rating/ratingSlice'
+import { rsvpApi } from '../features/rsvp/rsvpSlice'
 import { dashboardApi } from '../features/dashboard/dashboardSlice'
 
 const appSlice = createSlice({
@@ -38,6 +39,7 @@ export const store = configureStore({
     [notificationApi.reducerPath]: notificationApi.reducer,
     [friendApi.reducerPath]: friendApi.reducer,
     [ratingApi.reducerPath]: ratingApi.reducer,
+    [rsvpApi.reducerPath]: rsvpApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
   },
   devTools: import.meta.env.DEV,
@@ -54,6 +56,7 @@ export const store = configureStore({
       notificationApi.middleware,
       friendApi.middleware,
       ratingApi.middleware,
+      rsvpApi.middleware,
       dashboardApi.middleware,
     ),
 })

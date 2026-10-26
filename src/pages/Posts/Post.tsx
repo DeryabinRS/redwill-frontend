@@ -6,6 +6,7 @@ import { API_URL } from '@config/constants'
 import { useGetPostQuery, type Post as PostData } from '@features/post/postSlice'
 import MapView from '@components/YandexMapV3/MapView'
 import StarRating from '@components/StarRating'
+import RsvpPanel from '@components/RsvpPanel'
 import LinksList from '@components/LinksList/LinksList'
 import Seo from '@components/Seo'
 
@@ -171,6 +172,7 @@ function Post() {
                 )
               })()}
               <Divider style={{ margin: '0' }} />
+              <RsvpPanel postId={postData.id} />
               <Space orientation="vertical" size={8}>
                 {(postData.date_start || postData.time_start) && (
                   <Space size={8}>
