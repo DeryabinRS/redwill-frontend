@@ -200,7 +200,7 @@ function Home() {
               }
             />
             <ShellSection>
-              <PostFeed />
+              <PostFeed responsiveCompact />
             </ShellSection>
           </Shell>
 

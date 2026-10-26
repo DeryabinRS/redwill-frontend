@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Col, Pagination, Row, Spin, Typography } from 'antd'
+import { Col, Grid, Pagination, Row, Spin, Typography } from 'antd'
 import { useGetPostListQuery } from '../../features/post/postSlice'
 import PostCard from './PostCard'
 import './PostFeed.css'
 
 const { Text } = Typography
+const { useBreakpoint } = Grid
 
 interface PostFeedProps {
   initialPage?: number
@@ -13,6 +14,8 @@ interface PostFeedProps {
   perPage?: number
   emptyText?: string
   compact?: boolean
+  /** На небольших экранах (до md включительно) показывать карточки компактно, как в календаре. */
+  responsiveCompact?: boolean
   paginated?: boolean
 }
 
@@ -23,8 +26,11 @@ const PostFeed: React.FC<PostFeedProps> = ({
   perPage = 12,
   emptyText = 'Мероприятия пока не добавлены',
   compact = false,
+  responsiveCompact = false,
   paginated = false,
 }) => {
+  const screens = useBreakpoint()
+  const isCompact = responsiveCompact ? !screens.lg : compact
   const [page, setPage] = useState(initialPage)
 
   const { data, isLoading, isFetching, error } = useGetPostListQuery({
@@ -69,14 +75,14 @@ const PostFeed: React.FC<PostFeedProps> = ({
           <Col
             key={post.id}
             xs={24}
-            sm={compact ? 12 : 24}
+            sm={isCompact ? 12 : 24}
             md={12}
             lg={8}
-            xl={compact ? 8 : 6}
+            xl={isCompact ? 8 : 6}
             className={`post-feed-item animate-fade-in`}
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <PostCard post={post} compact={compact} />
+            <PostCard post={post} compact={isCompact} />
           </Col>
         ))}
       </Row>
