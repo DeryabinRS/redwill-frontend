@@ -21,6 +21,7 @@ import { useAppDispatch } from '../store/hooks'
 import { resetClientState } from '../store'
 import { SITE_NAME } from '../config/constants'
 import HeaderNotifications from '../components/HeaderNotifications/HeaderNotifications'
+import Breadcrumbs from '../components/Breadcrumbs'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
 
@@ -203,7 +204,8 @@ function MainLayout() {
 				</Drawer>
 			)}
 
-			<Content style={{ padding: 8 }}>
+			<Content style={{ padding: '8px 0 0' }}>
+				<Breadcrumbs contained />
 				<Outlet />
 			</Content>
 			<Footer style={{ textAlign: 'center' }}>© {new Date().getFullYear()} {SITE_NAME}</Footer>

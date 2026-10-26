@@ -23,6 +23,7 @@ import { resetClientState } from '../store'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
 import { SITE_NAME } from '../config/constants'
+import Breadcrumbs from '../components/Breadcrumbs'
 
 const { Header, Sider, Content, Footer } = Layout
 
@@ -257,6 +258,7 @@ function DashboardLayout() {
         </Header>
         
         <Content style={{ margin: 8, minHeight: 280 }}>
+          <Breadcrumbs />
           <Outlet />
         </Content>
         

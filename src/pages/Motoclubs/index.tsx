@@ -133,7 +133,7 @@ function Motoclubs() {
   const total = data?.total ?? 0
 
   return (
-    <div className="container" style={{ padding: '8px 0' }}>
+    <div className="container" style={{ marginTop: 8 }}>
       <Shell>
         <ShellHeader
           eyebrow="сообщество"
