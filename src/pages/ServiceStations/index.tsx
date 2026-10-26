@@ -48,7 +48,7 @@ function ServiceStationCard({ serviceStation }: { serviceStation: ServiceStation
             {serviceStation.address && (
               <div className="post-card-location">
                 <EnvironmentOutlined className="post-card-icon" />
-                <Text type="secondary" ellipsis>
+                <Text type="secondary" className="post-card-location-text" title={serviceStation.address}>
                   {serviceStation.address}
                 </Text>
               </div>

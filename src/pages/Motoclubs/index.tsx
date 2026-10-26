@@ -48,7 +48,7 @@ function MotoclubCard({ motoclub }: { motoclub: Motoclub }) {
             {motoclub.address && (
               <div className="post-card-location">
                 <EnvironmentOutlined className="post-card-icon" />
-                <Text type="secondary" ellipsis>
+                <Text type="secondary" className="post-card-location-text" title={motoclub.address}>
                   {motoclub.address}
                 </Text>
               </div>

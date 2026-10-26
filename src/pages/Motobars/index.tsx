@@ -49,7 +49,7 @@ function MotobarCard({ motobar }: { motobar: Motobar }) {
             {motobar.address && (
               <div className="post-card-location">
                 <EnvironmentOutlined className="post-card-icon" />
-                <Text type="secondary" ellipsis>
+                <Text type="secondary" className="post-card-location-text" title={motobar.address}>
                   {motobar.address}
                 </Text>
               </div>

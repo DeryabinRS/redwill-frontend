@@ -1,5 +1,5 @@
 import { Button, Card, Popconfirm, Space, Typography } from 'antd'
-import { CalendarOutlined, DeleteOutlined } from '@ant-design/icons'
+import { CalendarOutlined, DeleteOutlined, EnvironmentOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { useNavigate } from 'react-router-dom'
 import type { Post } from '../../features/post/postSlice'
@@ -75,6 +75,20 @@ function PostCard({
                     {post.date_start && dayjs(post.date_start).format('DD.MM.YYYY')}
                     {post.time_start && ` ${dayjs().hour(parseInt(post.time_start.split(':')[0])).minute(parseInt(post.time_start.split(':')[1])).format('HH:mm')}`}
                     {post.date_end && ` - ${dayjs(post.date_end).format('DD.MM.YYYY')}`}
+                  </Text>
+                </div>
+              )}
+
+              {post.address && (
+                <div className="post-card-address">
+                  <EnvironmentOutlined className="post-card-icon" />
+                  <Text
+                    type="secondary"
+                    className="post-card-address-text"
+                    style={{ fontSize: '12px' }}
+                    title={post.address}
+                  >
+                    {post.address}
                   </Text>
                 </div>
               )}

@@ -71,6 +71,9 @@
   font-weight: 600;
   line-height: 1.4;
   color: #1a1a1a;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .post-card-meta {
@@ -79,10 +82,32 @@
 
 .post-card-date,
 .post-card-location,
+.post-card-address,
 .post-card-author {
   display: flex;
   align-items: center;
   gap: 6px;
+}
+
+.post-card-location,
+.post-card-address {
+  min-width: 0;
+}
+
+.post-card-location .post-card-icon,
+.post-card-address .post-card-icon {
+  flex-shrink: 0;
+}
+
+.post-card-location-text,
+.post-card-address-text {
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
 }
 
 .post-card-icon {
