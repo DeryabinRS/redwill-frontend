@@ -60,6 +60,7 @@ export type PublicUserInfo = {
   avatar: string | null
   roles: string[]
   is_friend: boolean
+  friend_status?: 'none' | 'outgoing' | 'incoming' | 'accepted'
   friends_count?: number
 }
 

@@ -662,6 +662,38 @@
   color: #fff;
 }
 
+.friend-requests-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.friend-request-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.friend-request-card__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--profile-ink);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.friend-request-card__name:hover {
+  color: #ff8b8a;
+}
+
 @media (max-width: 991px) {
   .profile-shell__body {
     grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);

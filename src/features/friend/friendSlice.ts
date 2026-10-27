@@ -8,13 +8,22 @@ export type Friend = {
   avatar?: string | null
 }
 
-type FriendStatusResponse = {
-  data: { is_friend: boolean }
+export type FriendStatus = 'none' | 'outgoing' | 'incoming' | 'accepted'
+
+export type AddFriendResult = {
+  status: FriendStatus
+  is_friend?: boolean
+}
+
+export type FriendRequestItem = {
+  id: number
+  created_at: string
+  user: Friend
 }
 
 export const friendApi = createApi({
   reducerPath: 'friendApi',
-  tagTypes: ['Friends'],
+  tagTypes: ['Friends', 'FriendRequests'],
   baseQuery,
   endpoints: (builder) => ({
     getUserFriends: builder.query<Friend[], number>({
@@ -22,15 +31,30 @@ export const friendApi = createApi({
       transformResponse: (response: { data: Friend[] }) => response.data,
       providesTags: (_result, _error, userId) => [{ type: 'Friends', id: userId }],
     }),
-    addFriend: builder.mutation<{ is_friend: boolean }, number>({
+    addFriend: builder.mutation<AddFriendResult, number>({
       query: (userId) => ({ url: `/users/${userId}/friends`, method: 'POST' }),
-      transformResponse: (response: FriendStatusResponse) => response.data,
-      invalidatesTags: ['Friends'],
+      transformResponse: (response: { data: AddFriendResult }) => response.data,
+      invalidatesTags: ['Friends', 'FriendRequests'],
     }),
     removeFriend: builder.mutation<{ is_friend: boolean }, number>({
       query: (userId) => ({ url: `/users/${userId}/friends`, method: 'DELETE' }),
-      transformResponse: (response: FriendStatusResponse) => response.data,
-      invalidatesTags: ['Friends'],
+      transformResponse: (response: { data: { is_friend: boolean } }) => response.data,
+      invalidatesTags: ['Friends', 'FriendRequests'],
+    }),
+    getFriendRequests: builder.query<FriendRequestItem[], void>({
+      query: () => ({ url: '/user/friend-requests', method: 'GET' }),
+      transformResponse: (response: { data: FriendRequestItem[] }) => response.data,
+      providesTags: ['FriendRequests'],
+    }),
+    acceptFriendRequest: builder.mutation<{ is_friend: boolean }, number>({
+      query: (userId) => ({ url: `/user/friend-requests/${userId}/accept`, method: 'POST' }),
+      transformResponse: (response: { data: { is_friend: boolean } }) => response.data,
+      invalidatesTags: ['Friends', 'FriendRequests'],
+    }),
+    declineFriendRequest: builder.mutation<{ is_friend: boolean }, number>({
+      query: (userId) => ({ url: `/user/friend-requests/${userId}`, method: 'DELETE' }),
+      transformResponse: (response: { data: { is_friend: boolean } }) => response.data,
+      invalidatesTags: ['Friends', 'FriendRequests'],
     }),
   }),
 })
@@ -39,4 +63,7 @@ export const {
   useGetUserFriendsQuery,
   useAddFriendMutation,
   useRemoveFriendMutation,
+  useGetFriendRequestsQuery,
+  useAcceptFriendRequestMutation,
+  useDeclineFriendRequestMutation,
 } = friendApi

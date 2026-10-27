@@ -1,11 +1,17 @@
-import { App as AntdApp, Button, Card, Spin, Typography } from 'antd'
+import { App as AntdApp, Button, Card, Space, Spin, Typography } from 'antd'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { API_URL } from '@config/constants'
 import { useGetPublicUserProfileQuery, useGetUserInfoQuery } from '@features/user/userSlice'
 import { useGetPublicJoinedMotoclubsQuery } from '@features/motoclub/motoclubSlice'
 import { useGetPublicUserMotorcyclesQuery } from '@features/motorcycle/motorcycleSlice'
-import { useAddFriendMutation, useRemoveFriendMutation } from '@features/friend/friendSlice'
+import {
+  useAddFriendMutation,
+  useAcceptFriendRequestMutation,
+  useDeclineFriendRequestMutation,
+  useRemoveFriendMutation,
+  type FriendStatus,
+} from '@features/friend/friendSlice'
 import { ProfilePersonalForm } from './ProfilePersonalForm'
 import './Profile.css'
 import '../JoinedMotoclubs/JoinedMotoclubs.css'
@@ -43,10 +49,12 @@ function PublicProfile() {
   const { message } = AntdApp.useApp()
   const [addFriend, { isLoading: isAddingFriend }] = useAddFriendMutation()
   const [removeFriend, { isLoading: isRemovingFriend }] = useRemoveFriendMutation()
-  const [isFriend, setIsFriend] = useState(false)
+  const [acceptFriendRequest, { isLoading: isAcceptingFriend }] = useAcceptFriendRequestMutation()
+  const [declineFriendRequest, { isLoading: isDecliningFriend }] = useDeclineFriendRequestMutation()
+  const [friendStatus, setFriendStatus] = useState<FriendStatus>('none')
 
   useEffect(() => {
-    setIsFriend(Boolean(userInfo?.is_friend))
+    setFriendStatus(userInfo?.friend_status ?? 'none')
   }, [userInfo])
 
   if (isLoading) {
@@ -79,19 +87,43 @@ function PublicProfile() {
     return <Navigate to="/profile" replace />
   }
 
-  const handleToggleFriend = async () => {
+  const handleAddFriend = async () => {
     try {
-      if (isFriend) {
-        await removeFriend(userId).unwrap()
-        setIsFriend(false)
-        message.success('Пользователь удалён из друзей')
-      } else {
-        await addFriend(userId).unwrap()
-        setIsFriend(true)
-        message.success('Пользователь добавлен в друзья')
-      }
+      const result = await addFriend(userId).unwrap()
+      setFriendStatus(result.status ?? 'outgoing')
+      message.success(result.status === 'accepted' ? 'Вы теперь друзья' : 'Заявка отправлена')
     } catch {
-      message.error(isFriend ? 'Не удалось удалить из друзей' : 'Не удалось добавить в друзья')
+      message.error('Не удалось отправить заявку')
+    }
+  }
+
+  const handleRemoveFriend = async () => {
+    try {
+      await removeFriend(userId).unwrap()
+      setFriendStatus('none')
+      message.success('Пользователь удалён из друзей')
+    } catch {
+      message.error('Не удалось удалить из друзей')
+    }
+  }
+
+  const handleAcceptRequest = async () => {
+    try {
+      await acceptFriendRequest(userId).unwrap()
+      setFriendStatus('accepted')
+      message.success('Заявка принята')
+    } catch {
+      message.error('Не удалось принять заявку')
+    }
+  }
+
+  const handleDeclineRequest = async () => {
+    try {
+      await declineFriendRequest(userId).unwrap()
+      setFriendStatus('none')
+      message.success('Заявка отклонена')
+    } catch {
+      message.error('Не удалось отклонить заявку')
     }
   }
 
@@ -107,24 +139,41 @@ function PublicProfile() {
             </div>
             <div className="profile-shell__meta">
               {!isOwnProfile && (
-                <Button
-                  type={isFriend ? 'default' : 'primary'}
-                  danger={isFriend}
-                  loading={isAddingFriend || isRemovingFriend}
-                  onClick={() => void handleToggleFriend()}
-                >
-                  {isFriend ? 'Удалить из друзей' : 'Добавить в друзья'}
-                </Button>
-              )}
-              {userInfo.roles?.length
-                ? userInfo.roles.slice(0, 2).map((role) => (
-                    <span key={role} className="profile-shell__chip profile-shell__chip--accent">
-                      {role}
-                    </span>
-                  ))
-                : (
-                    <span className="profile-shell__chip">ID {userInfo.id}</span>
+                <Space size={8}>
+                  {friendStatus === 'incoming' ? (
+                    <>
+                      <Button
+                        type="primary"
+                        loading={isAcceptingFriend}
+                        onClick={() => void handleAcceptRequest()}
+                      >
+                        Принять заявку
+                      </Button>
+                      <Button
+                        danger
+                        loading={isDecliningFriend}
+                        onClick={() => void handleDeclineRequest()}
+                      >
+                        Отклонить
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      type={friendStatus === 'none' ? 'primary' : 'default'}
+                      danger={friendStatus === 'accepted'}
+                      loading={isAddingFriend || isRemovingFriend}
+                      disabled={friendStatus === 'outgoing'}
+                      onClick={() => void (friendStatus === 'accepted' ? handleRemoveFriend() : handleAddFriend())}
+                    >
+                      {friendStatus === 'accepted'
+                        ? 'Удалить из друзей'
+                        : friendStatus === 'outgoing'
+                          ? 'Заявка отправлена'
+                          : 'Добавить в друзья'}
+                    </Button>
                   )}
+                </Space>
+              )}
             </div>
           </header>
 
