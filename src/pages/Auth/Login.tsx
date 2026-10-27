@@ -4,6 +4,7 @@ import { useLoginMutation } from '@features/auth/authSlice'
 import { useLazyGetUserInfoQuery } from '@features/user/userSlice'
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query'
 import { setAuthToken } from '@utils/auth'
+import { setupPushNotifications } from '../../api/push'
 import { handleApiFormError } from '@utils/apiValidationErrors'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import { useAppDispatch } from '../../store/hooks'
@@ -37,6 +38,7 @@ function Login() {
       const response = await login({ ...values, recaptcha_token: token }).unwrap()
       resetClientState(dispatch)
       setAuthToken(response.token)
+      setupPushNotifications()
       await getUserInfo().unwrap()
       message.success('Успешный вход')
       navigate('/')

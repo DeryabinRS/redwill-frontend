@@ -24,6 +24,7 @@ import { resetClientState } from '../store'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
 import { SITE_NAME } from '../config/constants'
 import Breadcrumbs from '../components/Breadcrumbs'
+import { unsubscribeFromPushNotifications } from '../api/push'
 
 const { Header, Sider, Content, Footer } = Layout
 
@@ -65,6 +66,7 @@ function DashboardLayout() {
     } catch {
       // ignore — токен мог истечь
     }
+    await unsubscribeFromPushNotifications()
     removeAuthToken()
     resetClientState(dispatch)
     navigate('/login')
