@@ -18,6 +18,7 @@ export type AddressMode = 'full' | 'locality';
 export interface IMapPicker {
   onChangeLocation: (val: string) => void; 
   onChangeAddress?: (val: string) => void;
+  onChangeCountry?: (val: string) => void;
   initialLocation?: string;
   addressMode?: AddressMode;
   onlySearchInput?: boolean;
@@ -44,6 +45,7 @@ type GeocoderGeoObject = {
       AddressDetails?: {
         Country: {
           CountryName: string
+          CountryNameCode?: string
           AdministrativeArea: {
             AdministrativeAreaName: string
             SubAdministrativeArea: {
@@ -66,9 +68,14 @@ function getAddressText(geoObject: GeocoderGeoObject): string {
   return geoObject.metaDataProperty?.GeocoderMetaData?.text || '';
 }
 
+function getCountryCode(geoObject: GeocoderGeoObject | undefined): string {
+  return geoObject?.metaDataProperty?.GeocoderMetaData?.AddressDetails?.Country?.CountryNameCode || '';
+}
+
 function MapPicker({
   onChangeLocation,
   onChangeAddress,
+  onChangeCountry,
   initialLocation,
   addressMode = 'full',
   onlySearchInput = false,
@@ -160,6 +167,7 @@ function MapPicker({
 
       const nextCoords = { lat: latValue, lng: lngValue }
       const address = getAddressText(geoObject)
+      onChangeCountry?.(getCountryCode(geoObject))
 
       setCoords(nextCoords)
       setCenter([nextCoords.lng, nextCoords.lat])
@@ -171,7 +179,7 @@ function MapPicker({
     } finally {
       setIsSearching(false)
     }
-  }, [onChangeAddress, onChangeLocation])
+  }, [onChangeAddress, onChangeCountry, onChangeLocation])
 
   const handleSearch = useCallback(() => {
     runSearch(searchQuery)
@@ -209,6 +217,7 @@ function MapPicker({
         if (geoObject) {
           const address = getAddressText(geoObject)
           onChangeAddress?.(address || 'Адрес не найден');
+          onChangeCountry?.(getCountryCode(geoObject));
         } else {
           onChangeAddress?.('Адрес не найден');
         }
@@ -218,7 +227,7 @@ function MapPicker({
     };
 
     fetchAddress();
-  }, [addressMode, coords, onChangeAddress]);
+  }, [addressMode, coords, onChangeAddress, onChangeCountry]);
 
   if (error) {
     return (

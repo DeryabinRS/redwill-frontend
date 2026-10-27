@@ -9,6 +9,7 @@ import StarRating from '@components/StarRating'
 import RsvpPanel from '@components/RsvpPanel'
 import LinksList from '@components/LinksList/LinksList'
 import Seo from '@components/Seo'
+import CountryFlag from '@components/CountryFlag'
 
 const { Title, Text, Paragraph } = Typography
 
@@ -195,7 +196,11 @@ function Post() {
 
                 {postData.address && (
                   <Space size={8}>
-                    <EnvironmentOutlined />
+                    <CountryFlag
+                      code={postData.country}
+                      style={{ width: 16, height: 11, borderRadius: 2, boxShadow: '0 0 0 1px rgba(128, 128, 128, 0.3)', flexShrink: 0 }}
+                      fallback={<EnvironmentOutlined />}
+                    />
                     <Text type="secondary">{postData.address}</Text>
                   </Space>
                 )}

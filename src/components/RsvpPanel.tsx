@@ -1,5 +1,6 @@
-import { Avatar, Button, Space, Tooltip, Typography } from 'antd'
-import { CheckOutlined } from '@ant-design/icons'
+import { Avatar, Button, Modal, Space } from 'antd'
+import { CheckOutlined, TeamOutlined } from '@ant-design/icons'
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { API_URL } from '@config/constants'
 import { isAuthenticated } from '@utils/auth'
@@ -9,8 +10,6 @@ import {
   useRemoveRsvpMutation,
   type RsvpStatus,
 } from '@features/rsvp/rsvpSlice'
-
-const { Text } = Typography
 
 type RsvpPanelProps = {
   postId: number
@@ -22,21 +21,17 @@ const STATUS_OPTIONS: { value: RsvpStatus; label: string }[] = [
   { value: 'declined', label: 'Не пойду' },
 ]
 
-const MAX_VISIBLE_PARTICIPANTS = 8
-
 function RsvpPanel({ postId }: RsvpPanelProps) {
   const navigate = useNavigate()
   const { data: rsvp } = useGetRsvpQuery(postId)
   const [setRsvp, { isLoading: isSetting }] = useSetRsvpMutation()
   const [removeRsvp, { isLoading: isRemoving }] = useRemoveRsvpMutation()
+  const [participantsOpen, setParticipantsOpen] = useState(false)
 
   const counts = rsvp?.counts ?? { going: 0, maybe: 0, declined: 0 }
   const myRsvp = rsvp?.my_rsvp ?? null
   const participants = rsvp?.participants?.data ?? []
   const totalParticipants = rsvp?.participants?.total ?? 0
-
-  const visibleParticipants = participants.slice(0, MAX_VISIBLE_PARTICIPANTS)
-  const hiddenCount = Math.max(0, totalParticipants - visibleParticipants.length)
 
   const isBusy = isSetting || isRemoving
 
@@ -76,11 +71,23 @@ function RsvpPanel({ postId }: RsvpPanelProps) {
             </Button>
           )
         })}
+        {totalParticipants > 0 && (
+          <Button
+            icon={<TeamOutlined />}
+            onClick={() => setParticipantsOpen(true)}
+          />
+        )}
       </Space>
 
-      {visibleParticipants.length > 0 && (
-        <Space size={4} align="center" wrap>
-          {visibleParticipants.map((participant) => {
+
+      <Modal
+        title="Подписка на мероприятие"
+        open={participantsOpen}
+        onCancel={() => setParticipantsOpen(false)}
+        footer={null}
+      >
+        <Space direction="vertical" size={8} style={{ width: '100%' }}>
+          {participants.map((participant) => {
             if (!participant.user) return null
             const label = participant.user.nick_name?.trim() || participant.user.login
             const avatarSrc = participant.user.avatar
@@ -88,18 +95,21 @@ function RsvpPanel({ postId }: RsvpPanelProps) {
               : undefined
 
             return (
-              <Tooltip key={participant.id} title={label}>
-                <Link to={`/users/${participant.user.id}`}>
-                  <Avatar src={avatarSrc} size="small">
-                    {avatarSrc ? null : label.slice(0, 1).toUpperCase()}
-                  </Avatar>
-                </Link>
-              </Tooltip>
+              <Link
+                key={participant.id}
+                to={`/users/${participant.user.id}`}
+                onClick={() => setParticipantsOpen(false)}
+                style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'inherit' }}
+              >
+                <Avatar src={avatarSrc}>
+                  {avatarSrc ? null : label.slice(0, 1).toUpperCase()}
+                </Avatar>
+                <span>{label}</span>
+              </Link>
             )
           })}
-          {hiddenCount > 0 && <Text type="secondary">+{hiddenCount}</Text>}
         </Space>
-      )}
+      </Modal>
     </Space>
   )
 }

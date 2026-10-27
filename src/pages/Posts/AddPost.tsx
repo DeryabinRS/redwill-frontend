@@ -20,6 +20,7 @@ type FormValues = {
 	post_category_id: number
 	location?: string
 	address?: string
+	country?: string
 	motoclub_ids?: number[]
 	motobar_ids?: number[]
 	image: File
@@ -62,6 +63,7 @@ function AddPost() {
 			formData.append('post_category_id', '2')
 			if (values.location) formData.append('location', sanitizeInput(values.location))
 			if (values.address) formData.append('address', sanitizeInput(values.address))
+			if (values.country) formData.append('country', sanitizeInput(values.country))
 			;(values.links ?? []).forEach((link) => {
 				const trimmed = link.trim()
 				if (trimmed) formData.append('links[]', sanitizeInput(trimmed))
@@ -170,6 +172,9 @@ function AddPost() {
 								onChangeLocation={(loc: string) => {
 									form.setFieldValue('location', loc); // Синхронизируем с формой
 								}}
+								onChangeCountry={(code: string) => {
+									form.setFieldValue('country', code);
+								}}
 								onChangeAddress={(addr: string) => {
 									form.setFieldValue('address', addr);
 								}}
@@ -186,6 +191,9 @@ function AddPost() {
 								label="Адрес"
 							>
 								<Input readOnly placeholder="Кликните по карте, чтобы определить адрес..." />
+							</Form.Item>
+							<Form.Item name="country" style={{ display: 'none' }}>
+								<Input />
 							</Form.Item>
 							<Space size="large" style={{ width: '100%' }}>
 								<Form.Item

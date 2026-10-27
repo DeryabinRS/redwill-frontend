@@ -7,6 +7,7 @@ import { API_URL } from '../../config/constants'
 // import LinksList from '../LinksList/LinksList'
 import { ProfileCardStatusBadges } from '../ProfileCardOverlays'
 import { DELETE_CONFIRM_DESCRIPTION } from '../../utils/form'
+import CountryFlag from '../CountryFlag'
 
 const { Title, Text } = Typography
 
@@ -81,7 +82,11 @@ function PostCard({
 
               {post.address && (
                 <div className="post-card-address">
-                  <EnvironmentOutlined className="post-card-icon" />
+                  <CountryFlag
+                    code={post.country}
+                    className="post-card-flag"
+                    fallback={<EnvironmentOutlined className="post-card-icon" />}
+                  />
                   <Text
                     type="secondary"
                     className="post-card-address-text"

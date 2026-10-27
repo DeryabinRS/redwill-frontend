@@ -16,6 +16,7 @@ export type Post = {
   publication_status?: number
   moderation_status?: 0 | 1 | 2 | 3
   address?: string | null
+  country?: string | null
   location: string | null
   latitude: number | null
   longitude: number | null

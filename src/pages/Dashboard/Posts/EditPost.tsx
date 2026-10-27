@@ -18,6 +18,7 @@ type FormValues = {
   links?: string[]
   location?: string
   address?: string
+  country?: string
   motoclub_ids?: number[]
   motobar_ids?: number[]
   publication_status: boolean
@@ -72,6 +73,7 @@ function UpdatePost() {
       links: postData.links || [],
       location: postData.location || '',
       address: postData.address || '',
+      country: postData.country || '',
       motoclub_ids: postData.motoclub_ids || postData.motoclubs?.map((motoclub) => motoclub.id) || [],
       motobar_ids: postData.motobar_ids || postData.motobars?.map((motobar) => motobar.id) || [],
       publication_status: Boolean(postData.publication_status),
@@ -130,6 +132,7 @@ function UpdatePost() {
       })
       if (values.location) formData.append('location', sanitizeInput(values.location))
       if (values.address) formData.append('address', sanitizeInput(values.address))
+      if (values.country) formData.append('country', sanitizeInput(values.country))
       values.motoclub_ids?.forEach((id) => {
         formData.append('motoclub_ids[]', String(id))
       })
@@ -266,6 +269,9 @@ function UpdatePost() {
                 onChangeAddress={(addr: string) => {
                   form.setFieldValue('address', addr)
                 }}
+                onChangeCountry={(code: string) => {
+                  form.setFieldValue('country', code)
+                }}
               />
 
               <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
@@ -274,6 +280,9 @@ function UpdatePost() {
 
               <Form.Item name="address" label="Адрес">
                 <Input readOnly placeholder="Кликните по карте, чтобы определить адрес..." />
+              </Form.Item>
+              <Form.Item name="country" style={{ display: 'none' }}>
+                <Input />
               </Form.Item>
 
               <Space.Compact style={{ display: 'flex'}}>

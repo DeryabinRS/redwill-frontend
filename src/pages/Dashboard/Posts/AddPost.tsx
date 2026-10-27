@@ -16,6 +16,7 @@ type FormValues = {
   links?: string[]
   location?: string
   address?: string
+  country?: string
   motoclub_ids?: number[]
   publication_status: boolean
   moderation_status: 0 | 1 | 2
@@ -51,6 +52,7 @@ function AddPost() {
       })
       if (values.location) formData.append('location', sanitizeInput(values.location))
       if (values.address) formData.append('address', sanitizeInput(values.address))
+      if (values.country) formData.append('country', sanitizeInput(values.country))
       values.motoclub_ids?.forEach((id) => {
         formData.append('motoclub_ids[]', String(id))
       })
@@ -158,6 +160,9 @@ function AddPost() {
                 onChangeAddress={(addr: string) => {
                   form.setFieldValue('address', addr)
                 }}
+                onChangeCountry={(code: string) => {
+                  form.setFieldValue('country', code)
+                }}
               />
 
               <Form.Item name="location" label="Координаты" style={{ marginTop: 8, marginBottom: 8 }}>
@@ -166,6 +171,9 @@ function AddPost() {
 
               <Form.Item name="address" label="Адрес">
                 <Input readOnly placeholder="Кликните по карте, чтобы определить адрес..." />
+              </Form.Item>
+              <Form.Item name="country" style={{ display: 'none' }}>
+                <Input />
               </Form.Item>
 
               <Space size="large">

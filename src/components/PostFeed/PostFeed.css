@@ -99,6 +99,14 @@
   flex-shrink: 0;
 }
 
+.post-card-flag {
+  width: 16px;
+  height: 11px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(128, 128, 128, 0.3);
+}
+
 .post-card-location-text,
 .post-card-address-text {
   flex: 1;
