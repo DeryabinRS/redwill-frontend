@@ -46,10 +46,16 @@ export async function subscribeToPushNotifications(): Promise<PushSubscriptionJS
     }
 
     const registration = await navigator.serviceWorker.ready
-    const subscription = await registration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
-    })
+
+    // Переиспользуем существующую подписку, чтобы не плодить дубли
+    // (например, при двойном вызове из-за React StrictMode или Login).
+    let subscription = await registration.pushManager.getSubscription()
+    if (!subscription) {
+      subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+      })
+    }
 
     return subscription.toJSON()
   } catch {

@@ -22,7 +22,6 @@ import { resetClientState } from '../store'
 import { SITE_NAME } from '../config/constants'
 import HeaderNotifications from '../components/HeaderNotifications/HeaderNotifications'
 import Breadcrumbs from '../components/Breadcrumbs'
-import { useRealtimeNotifications } from '../hooks/useRealtimeNotifications'
 import { unsubscribeFromPushNotifications } from '../api/push'
 // import LanguageSwitcher from '../components/LanguageSwitcher'
 // import ThemeSwitcher from '../components/ThemeSwitcher'
@@ -42,7 +41,6 @@ function MainLayout() {
 		data: userInfo,
 		isLoading: isLoadingUserInfo,
 	} = useGetUserInfoQuery(undefined, { skip: !userIsAuthenticated })
-	useRealtimeNotifications(userInfo?.id)
 	const navigate = useNavigate()
 	const dispatch = useAppDispatch()
 	const [logout] = useLogoutMutation()
