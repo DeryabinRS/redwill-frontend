@@ -1,0 +1,169 @@
+/* ============================================================
+   Баннер главного мотофестиваля «В Одной Лодке»
+   Выдержан в единой стилистике сайта (тёмная панель, красные
+   акценты, Oswald для заголовков).
+   ============================================================ */
+
+.festival-banner {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.1), transparent 36%),
+    linear-gradient(165deg, rgba(38, 38, 42, 0.5), rgba(8, 8, 10, 0.96));
+  box-shadow:
+    0 22px 40px rgba(0, 0, 0, 0.34),
+    0 1px 0 rgba(255, 255, 255, 0.08) inset;
+}
+
+.festival-banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(205, 46, 44, 0.3), transparent 42%),
+    radial-gradient(circle at 92% 82%, rgba(205, 46, 44, 0.16), transparent 46%);
+  pointer-events: none;
+}
+
+.festival-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+}
+
+.festival-banner__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 48px);
+  padding: 8px 26px;
+}
+
+/* Логотип: фон + раскачивающаяся лодка */
+.festival-banner__logo-stage {
+  position: relative;
+  flex: 0 0 auto;
+  width: clamp(200px, 26vw, 260px);
+  aspect-ratio: 1 / 1;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, 0.45));
+}
+
+.festival-banner__bg,
+.festival-banner__boat {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.festival-banner__boat {
+  will-change: transform;
+  /* Точка качки — у ватерлинии, в нижней части корпуса лодки */
+  transform-origin: 50% 55%;
+  animation: festival-boat-rock 3.4s ease-in-out infinite;
+}
+
+@keyframes festival-boat-rock {
+  0%,
+  100% {
+    transform: rotate(-3.4deg);
+  }
+  50% {
+    transform: rotate(3.4deg);
+  }
+}
+
+/* Текст */
+.festival-banner__content {
+  min-width: 0;
+}
+
+.festival-banner__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(205, 46, 44, 0.45);
+  background: rgba(205, 46, 44, 0.12);
+  color: #ffb3b1;
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.festival-banner__title {
+  margin: 0;
+  padding-bottom: 16px;
+  color: #f2f2f0;
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: clamp(1.9rem, 4.4vw, 3rem);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-shadow: 0 16px 32px rgba(0, 0, 0, 0.5);
+}
+
+.festival-banner__title-accent {
+  display: block;
+  color: #ff6b68;
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .festival-banner__title-accent {
+    background: linear-gradient(120deg, #ff6b68 0%, #cd2e2c 35%, #ff8b8a 55%, #cd2e2c 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: festival-accent-shimmer 6s linear infinite;
+  }
+}
+
+@keyframes festival-accent-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Адаптив */
+@media (max-width: 767px) {
+  .festival-banner__inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .festival-banner__logo-stage {
+    width: clamp(170px, 58vw, 250px);
+  }
+
+  .festival-banner__title {
+    font-size: clamp(1.7rem, 8vw, 2.4rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .festival-banner__boat,
+  .festival-banner__title-accent {
+    animation: none !important;
+  }
+}

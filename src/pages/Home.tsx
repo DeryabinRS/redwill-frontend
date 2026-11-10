@@ -5,6 +5,7 @@ import { CoffeeOutlined, PlusOutlined, ScheduleOutlined, ShopOutlined, TeamOutli
 import PostFeed from '../components/PostFeed'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
 import Seo from '@components/Seo'
+// import FestivalBanner from '@components/FestivalBanner/FestivalBanner'
 import { Shell, ShellHeader, ShellSection } from '@components/Shell'
 import { API_URL } from '@config/constants'
 import { useGetMotoclubListQuery, type Motoclub } from '@features/motoclub/motoclubSlice'
@@ -185,6 +186,8 @@ function Home() {
 
       <section className="section">
         <div className="container">
+          {/* <FestivalBanner /> */}
+
           <Shell>
             <ShellHeader
               title="Ближайшие события"

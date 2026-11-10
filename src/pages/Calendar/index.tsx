@@ -7,7 +7,7 @@ import dayjs, { type Dayjs } from 'dayjs'
 import 'dayjs/locale/ru'
 import { useGetPostListQuery, type Post } from '../../features/post/postSlice'
 import PostCard from '../../components/PostFeed/PostCard'
-import PostFeed from '../../components/PostFeed'
+import EventTabs from '../../components/EventTabs'
 import ThemeButton from '@components/UI/Buttons/ThemeButton'
 import Seo from '@components/Seo'
 import MapView, { type MapViewMarker } from '@components/YandexMapV3/MapView'
@@ -272,7 +272,7 @@ function CalendarPage() {
               Добавить событие
             </ThemeButton>
           </Space.Compact>
-          <PostFeed compact perPage={12} paginated />
+          <EventTabs />
         </div>
       </section>
       <section className='section'>
@@ -285,7 +285,7 @@ function CalendarPage() {
               <Spin />
             </Card>
           ) : mapMarkers.length > 0 ? (
-            <MapView markers={mapMarkers} height={520} zoom={4} />
+            <MapView markers={mapMarkers} height={520} zoom={2} />
           ) : (
             <Typography.Text type="secondary">
               Нет событий с координатами для отображения на карте.

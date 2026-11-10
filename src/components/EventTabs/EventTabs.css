@@ -1,0 +1,46 @@
+.event-tabs {
+  margin-top: 24px;
+}
+
+.event-tabs__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+}
+
+.event-tabs__tabs .ant-tabs-nav {
+  margin-bottom: 16px;
+}
+
+.event-tabs__tabs .ant-tabs-nav::before {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.event-tabs__tabs .ant-tabs-tab {
+  padding: 10px 4px;
+  font-family: 'Oswald', 'Arial Narrow', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.event-tabs__tabs .ant-tabs-tab-btn {
+  color: #b08c8a;
+}
+
+.event-tabs__tabs .ant-tabs-tab:hover .ant-tabs-tab-btn {
+  color: #d8b6b4;
+}
+
+.event-tabs__tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #f5f5f5 !important;
+}
+
+.event-tabs__tabs .ant-tabs-ink-bar {
+  background: var(--theme-color);
+}
+
+.event-tabs__grid-wrap {
+  padding-top: 4px;
+}
