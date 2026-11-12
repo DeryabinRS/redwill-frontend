@@ -13,8 +13,9 @@ function useQuery() {
 function ResetPassword() {
   const [form] = Form.useForm<FormValues>()
   const query = useQuery()
-  const hash = query.get('hash') || ''
-  const id = query.get('id') || ''
+  // Ссылка из письма: /reset-password?email=&token= (токен одноразовый)
+  const email = query.get('email') || ''
+  const token = query.get('token') || ''
   const navigate = useNavigate()
   const { message } = AntdApp.useApp()
   const [done, setDone] = useState(false)
@@ -22,7 +23,7 @@ function ResetPassword() {
 
   const handleFinish = async (values: FormValues) => {
     try {
-      const res = await reset({ id, hash, password: values.password }).unwrap()
+      const res = await reset({ email, token, password: values.password }).unwrap()
       message.success(res?.message || 'Пароль успешно обновлен')
       setDone(true)
     } catch (e: unknown) {
@@ -32,7 +33,7 @@ function ResetPassword() {
     }
   }
 
-  if (!hash) {
+  if (!email || !token) {
     return (
       <Result
         status="error"
@@ -59,7 +60,14 @@ function ResetPassword() {
 
   return (
     <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
-      <Form.Item label="Новый пароль" name="password" rules={[{ required: true, message: 'Введите пароль' }]}>
+      <Form.Item
+        label="Новый пароль"
+        name="password"
+        rules={[
+          { required: true, message: 'Введите пароль' },
+          { min: 8, message: 'Минимум 8 символов' },
+        ]}
+      >
         <Input.Password placeholder="Введите новый пароль" autoComplete="new-password" />
       </Form.Item>
 

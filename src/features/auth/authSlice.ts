@@ -18,6 +18,19 @@ export type LoginResponse = {
 }
 
 type LoginRequest = { email: string; password: string; recaptcha_token?: string; }
+/** Параметры подписанной ссылки подтверждения из письма. */
+export type VerifyEmailRequest = {
+  id: string
+  hash: string
+  expires: string
+  signature: string
+}
+/** Смена пароля по одноразовому токену password broker. */
+export type ResetPasswordRequest = {
+  email: string
+  token: string
+  password: string
+}
 type RegisterRequest = {
   email: string
   password: string
@@ -44,15 +57,10 @@ export const authApi = createApi({
       query: (body) => ({ url: '/register', method: 'POST', body }),
     }),
 
-    verifyEmail: builder.mutation<{ message?: string }, { hash?: string; id?: string } | void>({
-      query: (arg) => {
-        const hash = (arg as { hash?: string; id?: string } | undefined)?.hash
-        const id = (arg as { hash?: string; id?: string } | undefined)?.id
-        const body: Record<string, string> = {}
-        if (hash) body.hash = hash
-        if (id) body.id = id
-        return { url: '/verify-email', method: 'POST', body }
-      },
+    // Параметры подписанной ссылки из письма (id, hash, expires, signature) —
+    // API сверяет подпись, поэтому их нужно передавать целиком и без правок.
+    verifyEmail: builder.mutation<{ message?: string }, VerifyEmailRequest>({
+      query: (body) => ({ url: '/verify-email', method: 'POST', body }),
     }),
     resendVerification: builder.mutation<{ message?: string }, { email: string }>({
       query: (body) => ({ url: '/resend-verification', method: 'POST', body }),
@@ -60,7 +68,8 @@ export const authApi = createApi({
     forgotPassword: builder.mutation<{ message?: string }, { email: string }>({
       query: (body) => ({ url: '/forgot-password', method: 'POST', body }),
     }),
-    resetPassword: builder.mutation<{ message?: string }, { id: string; hash: string; password: string }>({
+    // Ссылка из письма даёт email + одноразовый token из password broker.
+    resetPassword: builder.mutation<{ message?: string }, ResetPasswordRequest>({
       query: (body) => ({ url: '/reset-password', method: 'POST', body }),
     }),
     logout: builder.mutation<{ message?: string }, void>({
